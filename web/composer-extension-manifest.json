@@ -12,6 +12,6 @@
         "role": "Omerta"
     }],
     "require": {
-        "mafiascum/privatetopics": "0.4.0"
+        "mafiascum/privatetopics": "0.4.1"
     }
 }
