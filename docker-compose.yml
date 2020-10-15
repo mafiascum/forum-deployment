@@ -21,10 +21,13 @@ services:
       - database
     env_file:
       - .env
+    environment:
+      MAFIASCUM_ENVIRONMENT: staging
     volumes:
       - phpbb_data:/bitnami/phpbb
+      
 volumes:
-    mariadb_data:
-        driver: local
-    phpbb_data:
-        driver: local
+  mariadb_data:
+      driver: local
+  phpbb_data:
+      driver: local
