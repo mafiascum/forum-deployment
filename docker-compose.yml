@@ -1,14 +1,13 @@
 version: '3.3'
 services:
   database:
-    image: mariadb:10.5
+    build: ./database
     ports:
       - 3306:3306
     env_file:
       - .env
     volumes:
-      - ./data/init.d:/docker-entrypoint-initdb.d
-      - mariadb_data:/bitnami/mariadb
+      - mariadb_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       
@@ -21,13 +20,14 @@ services:
       - database
     env_file:
       - .env
-    environment:
-      MAFIASCUM_ENVIRONMENT: staging
     volumes:
+      - wiki_data:/bitnami/wiki
       - phpbb_data:/bitnami/phpbb
-      
+
 volumes:
   mariadb_data:
       driver: local
   phpbb_data:
+      driver: local
+  wiki_data:
       driver: local

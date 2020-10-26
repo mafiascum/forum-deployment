@@ -1,4 +1,5 @@
 #!/bin/bash
+
 cd /tmp
 
 curl -LJO https://raw.githubusercontent.com/mafiascum/forum-extension-manifest/main/${MAFIASCUM_ENVIRONMENT:-staging}/composer.json
@@ -6,4 +7,6 @@ curl -LJO https://raw.githubusercontent.com/mafiascum/forum-extension-manifest/m
 cd /opt/bitnami/phpbb
 
 COMPOSER=/tmp/composer.json composer.phar install
+
+rm composer.json || true
 

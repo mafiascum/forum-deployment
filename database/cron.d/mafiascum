@@ -1,0 +1,1 @@
+0 5 * * * /opt/mafiascum/scripts/ms_perform_backup.sh
