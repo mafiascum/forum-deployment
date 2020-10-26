@@ -1,6 +1,6 @@
 mkdir /opt/bitnami/wiki
 cd /tmp
-curl -O https://releases.wikimedia.org/mediawiki/1.35/mediawiki-1.35.0.tar.gz
+curl -O https://releases.wikimedia.org/mediawiki/1.28/mediawiki-1.28.1.tar.gz
 tar xvzf mediawiki-*.tar.gz -C /opt/bitnami/wiki --strip-components=1
 
 # DeleteBatch extension
