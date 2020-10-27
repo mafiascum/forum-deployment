@@ -176,7 +176,7 @@ function removeExportSpecial(&$aSpecialPages)
 $wgHooks['SpecialPage_initList'][] = 'removeExportSpecial';
 
 // PHPBB User Database Plugin. (Requires MySQL Database)
-require_once './extensions/Auth_phpBB.php';
+require_once "$IP/extensions/Auth_phpBB/Auth_phpBB.php";
 
 $wgAuth_Config = array(); // Clean.
 
