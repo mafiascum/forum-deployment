@@ -13,6 +13,7 @@ then
     aws s3 cp "s3://$AWS_BACKUP_BUCKET/web-backups/$FORUM_LATEST_TAR_FILE_NAME" /tmp/$FORUM_LATEST_TAR_FILE_NAME
     unzip -P${MAFIASCUM_BACKUP_PASSWORD} -d "${BITNAMI_VOLUME_DIR}/phpbb" /tmp/$FORUM_LATEST_TAR_FILE_NAME
     rm /tmp/$FORUM_LATEST_TAR_FILE_NAME
+    chown -R daemon:root "${BITNAMI_VOLUME_DIR}/phpbb"
 else
     echo "Found existing forum volume; proceeding."
 fi
@@ -23,6 +24,7 @@ then
     aws s3 cp "s3://$AWS_BACKUP_BUCKET/web-backups/$WIKI_LATEST_TAR_FILE_NAME" /tmp/$WIKI_LATEST_TAR_FILE_NAME
     unzip -P${MAFIASCUM_BACKUP_PASSWORD} -d "${BITNAMI_VOLUME_DIR}/wiki" /tmp/$WIKI_LATEST_TAR_FILE_NAME
     rm /tmp/$WIKI_LATEST_TAR_FILE_NAME
+    chown -R daemon:root "${BITNAMI_VOLUME_DIR}/phpbb"
 else
     echo "Found existing wiki volume; proceeding."
 fi
