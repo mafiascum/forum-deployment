@@ -3,7 +3,7 @@ DATE=`TZ="America/New_York" date +%Y%m%d_%H%M%S`
 FORUM_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.forum.$DATE.zip"
 FORUM_LATEST_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.forum.latest.zip"
 WIKI_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.wiki.$DATE.zip"
-WIKI_LATEST_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.wiki.latest.zip"
+WIKI_LATEST_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.wiki.latest.zip"
 
 echo "Backing up forum data"
 cd /bitnami/phpbb
