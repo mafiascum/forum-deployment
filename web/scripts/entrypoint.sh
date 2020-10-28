@@ -38,6 +38,8 @@ if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bi
     /post-init.sh
     # install extensions from composer after all other setup is done
     /opt/bitnami/scripts/mafiascum/ms_install_extensions.sh
+    # install styles from composer after all other setup is done
+    /opt/bitnami/scripts/mafiascum/ms_install_styles.sh
 
     info "** phpBB setup finished! **"
 fi
