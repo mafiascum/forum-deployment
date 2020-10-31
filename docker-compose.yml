@@ -11,9 +11,6 @@ services:
       
   web:
     build: ./web
-    ports:
-      - 80:8080
-      - 443:8443
     depends_on:
       - database
     env_file:
@@ -22,6 +19,15 @@ services:
       - wiki_data:/bitnami/wiki
       - phpbb_data:/bitnami/phpbb
 
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
+    env_file:
+      - .env
+    
 volumes:
   mariadb_data:
       driver: local
