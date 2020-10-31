@@ -45,7 +45,7 @@ if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bi
 fi
 
 # cron
-service crond start
+service cron start
 
 echo ""
 exec "$@"
