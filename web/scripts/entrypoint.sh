@@ -44,8 +44,5 @@ if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bi
     info "** phpBB setup finished! **"
 fi
 
-# cron
-service cron start
-
 echo ""
 exec "$@"
