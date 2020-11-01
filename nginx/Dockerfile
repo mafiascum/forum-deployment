@@ -8,4 +8,4 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 ADD ./sites /etc/nginx/conf.d.templates
-CMD dockerize -template /etc/nginx/conf.d.templates:/etc/nginx/conf.d -stdout /var/log/nginx/access.log -stderr /var/log/nginx/error.log -wait tcp://web:8080 -timeout 300s nginx -g 'daemon off;'
+CMD dockerize -template /etc/nginx/conf.d.templates:/etc/nginx/conf.d -stdout /var/log/nginx/access.log -stderr /var/log/nginx/error.log nginx -g 'daemon off;'
