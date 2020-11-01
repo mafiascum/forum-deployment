@@ -22,6 +22,8 @@ services:
   nginx:
     image: staticfloat/nginx-certbot
     restart: unless-stopped
+    depends_on:
+      - web
     ports:
       - 80:80
       - 443:443
