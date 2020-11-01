@@ -27,6 +27,8 @@ services:
       - 443:443
     env_file:
       - .env
+    environment:
+      ENVSUBST_VARS: ROOT_FQDN WWW_FQDN FORUM_FQDN WIKI_FQDN 
     volumes:
       - ./conf.d:/etc/nginx/user.conf.d:ro
       - letsencrypt_data:/etc/letsencrypt
