@@ -20,21 +20,16 @@ services:
       - phpbb_data:/bitnami/phpbb
 
   nginx:
-    build: ./nginx
+    image: staticfloat/nginx-certbot
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
     env_file:
       - .env
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt_data:/etc/letsencrypt
     
 volumes:
   mariadb_data:
@@ -42,4 +37,6 @@ volumes:
   phpbb_data:
     driver: local
   wiki_data:
+    driver: local
+  letsencrypt_data:
     driver: local
