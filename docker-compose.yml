@@ -26,6 +26,15 @@ services:
     env_file:
       - .env
 
+  sphinx:
+    build: ./sphinx
+    depends_on:
+      - database
+    env_file:
+      - .env
+    environment:
+      SPHINX_MODE: indexing
+
   nginx:
     image: staticfloat/nginx-certbot
     restart: unless-stopped
