@@ -32,6 +32,8 @@ services:
       - database
     env_file:
       - .env
+    volumes:
+      - sphinx_data:/var/lib/sphinxsearch/data
     environment:
       SPHINX_MODE: indexing
 
@@ -61,4 +63,6 @@ volumes:
   wiki_data:
     driver: local
   letsencrypt_data:
+    driver: local
+  sphinx_data:
     driver: local
