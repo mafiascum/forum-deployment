@@ -4,6 +4,9 @@ FROM mariadb:10.5
 RUN apt-get update
 RUN apt-get install -y p7zip-full awscli
 
+# add my.cnf
+COPY my.cnf /etc/mysql/my.cnf
+
 # add scripts
 RUN mkdir /opt/mafiascum
 COPY scripts /opt/mafiascum/scripts
