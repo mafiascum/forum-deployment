@@ -42,19 +42,36 @@ WHERE `phpbb_profile_fields_data`.`user_id`=`phpbb_users`.`user_id`;
 # 
 
 INSERT INTO `phpbb_profile_fields_data`
+(
+	`user_id`, 
+	`pf_user_gender`, 
+	`pf_user_pronoun`, 
+	`pf_phpbb_interests`, 
+	`pf_phpbb_occupation`, 
+	`pf_phpbb_icq`, 
+	`pf_phpbb_website`,
+	`pf_phpbb_yahoo`,
+	`pf_phpbb_aol`,
+	`pf_phpbb_location`,
+	`pf_phpbb_facebook`,
+	`pf_phpbb_skype`,
+	`pf_phpbb_twitter`,
+	`pf_phpbb_youtube`
+)
 SELECT
 	`phpbb_users`.`user_id`,
 	null,
 	null,
 	'',
 	'',
-	`phpbb_users`.`user_facebook`,
 	'',
+	'',
+	'',
+	'',
+	'',
+	`phpbb_users`.`user_facebook`,
 	`phpbb_users`.`user_skype`,
 	`phpbb_users`.`user_twitter`,
-	'',
-	'',
-	'',
 	''
 FROM `phpbb_users`
 LEFT JOIN `phpbb_profile_fields_data` ON (`phpbb_profile_fields_data`.`user_id` = `phpbb_users`.`user_id`)
