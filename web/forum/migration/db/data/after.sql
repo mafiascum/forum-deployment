@@ -57,7 +57,7 @@ SELECT
 	'',
 	''
 FROM `phpbb_users`
-LEFT JOIN `phpbb_users` ON (`phpbb_profile_fields_data`.`user_id` = `phpbb_users`.`user_id`)
+LEFT JOIN `phpbb_profile_fields_data` ON (`phpbb_profile_fields_data`.`user_id` = `phpbb_users`.`user_id`)
 WHERE `phpbb_profile_fields_data`.`user_id` IS NULL;
 
 ALTER TABLE `phpbb_users`
