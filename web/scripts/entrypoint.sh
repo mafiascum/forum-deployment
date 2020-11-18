@@ -33,7 +33,8 @@ if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bi
     # do normal phpbb setup
     /opt/bitnami/scripts/phpbb/setup.sh
     # run any MS specific pre-migrations
-    /opt/bitnami/scripts/mafiascum/ms_post_migrations.sh
+    # TODO - commenting this out - i don't see a good way of automating this w/o installing (not just downloading) styles automatically.
+    #/opt/bitnami/scripts/mafiascum/ms_post_migrations.sh
     # remove their vhosts and install our own instead
     /opt/bitnami/scripts/mafiascum/ms_vhosts.sh
     # do any other one time setup that you want for this container
