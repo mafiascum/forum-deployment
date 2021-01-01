@@ -2,6 +2,7 @@ version: '3.3'
 services:
   database:
     build: ./database
+    restart: always
     ports:
       - 3306:3306
     env_file:
@@ -11,6 +12,7 @@ services:
       
   web:
     build: ./web
+    restart: always
     depends_on:
       - database
     env_file:
@@ -21,6 +23,7 @@ services:
 
   sitechat:
     image: mafiascum/site-chat-server
+    restart: always
     depends_on:
       - database
     env_file:
@@ -28,6 +31,7 @@ services:
 
   sphinx:
     build: ./sphinx
+    restart: always
     depends_on:
       - database
     env_file:
@@ -39,7 +43,7 @@ services:
 
   nginx:
     image: staticfloat/nginx-certbot
-    restart: unless-stopped
+    restart: always
     depends_on:
       - web
       - sitechat
