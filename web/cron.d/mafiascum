@@ -1,1 +1,1 @@
-0 5 * * * /opt/bitnami/scripts/mafiascum/ms_perform_backup.sh
+0 5 * * * root /opt/bitnami/scripts/mafiascum/ms_perform_backup.sh
