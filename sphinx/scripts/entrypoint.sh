@@ -2,5 +2,5 @@
 
 cron
 echo "Started cron service"
-/sbin/entrypoint.sh
+/sbin/entrypoint.sh "$@"
 
