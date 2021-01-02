@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cron
-echo "Started cron service"
+service cron start
 /sbin/entrypoint.sh "$@"
 
