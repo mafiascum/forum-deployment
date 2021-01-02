@@ -9,7 +9,12 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 ADD ./config/sphinx.conf /etc/sphinxsearch/sphinx.conf.template
 
-ADD crontab /tmp/sphinx_cron
-RUN chmod 0644 /tmp/sphinx_cron
+COPY cron.d /etc/cron.d.template/
+RUN chmod +x /etc/cron.d.template/*
 
-ENTRYPOINT ["dockerize", "-template", "/etc/sphinxsearch/sphinx.conf.template:/etc/sphinxsearch/sphinx.conf", "-template", "/tmp:/etc/cron.d", "-wait", "tcp://database:3306", "-timeout", "30s", "/sbin/entrypoint.sh"]
+# add scripts
+RUN mkdir /opt/mafiascum
+COPY scripts /opt/mafiascum/scripts
+RUN chmod +x /opt/mafiascum/scripts/*
+
+ENTRYPOINT ["dockerize", "-template", "/etc/sphinxsearch/sphinx.conf.template:/etc/sphinxsearch/sphinx.conf", "-template", "/etc/cron.d.template:/etc/cron.d", "-wait", "tcp://database:3306", "-timeout", "30s", "/opt/mafiascum/scripts/entrypoint.sh"]
