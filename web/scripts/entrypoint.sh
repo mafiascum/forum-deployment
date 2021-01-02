@@ -7,6 +7,10 @@ set -o nounset
 set -o pipefail
 # set -o xtrace # Uncomment this line for debugging purpose
 
+# Start cron
+cron
+echo "Started cron service"
+
 # Load phpBB environment
 . /opt/bitnami/scripts/phpbb-env.sh
 

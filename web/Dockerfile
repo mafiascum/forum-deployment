@@ -3,7 +3,7 @@ FROM bitnami/phpbb:3.3.1
 USER root
 
 RUN apt-get update
-RUN apt-get install -y zip unzip awscli rsync jq
+RUN apt-get install -y zip unzip awscli rsync jq cron
 
 RUN mkdir /opt/bitnami/scripts/mafiascum
 
