@@ -14,7 +14,6 @@ RUN chmod +x /opt/mafiascum/scripts/*
 
 # add cron
 COPY cron.d /etc/cron.d/
-RUN chmod +x /etc/cron.d/*
 
 ENTRYPOINT ["/opt/mafiascum/scripts/entrypoint.sh"]
 CMD ["mysqld"]

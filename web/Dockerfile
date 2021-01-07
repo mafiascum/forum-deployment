@@ -34,7 +34,6 @@ RUN rsync -avz /opt/bitnami/scripts/mafiascum/migration/db/data/ /opt/bitnami/ph
 
 # add cron
 COPY cron.d /etc/cron.d/
-RUN chmod +x /etc/cron.d/mafiascum
 
 # make log locations for directories
 RUN /opt/bitnami/scripts/mafiascum/ms_logs.sh
