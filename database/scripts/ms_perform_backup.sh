@@ -1,5 +1,8 @@
 #!/bin/bash
 
+scriptPath=$(dirname "$(readlink -f "$0")")
+source "/opt/mafiascum/.env.sh"
+
 DATE=`TZ="America/New_York" date +%Y%m%d_%H%M%S`
 DB_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.db.$DATE.7z"
 DB_LATEST_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.db.latest.7z"
