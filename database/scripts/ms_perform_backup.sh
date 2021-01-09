@@ -1,6 +1,4 @@
 #!/bin/bash
-
-scriptPath=$(dirname "$(readlink -f "$0")")
 source "/opt/mafiascum/.env.sh"
 
 DATE=`TZ="America/New_York" date +%Y%m%d_%H%M%S`

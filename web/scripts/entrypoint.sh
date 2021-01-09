@@ -8,6 +8,8 @@ set -o pipefail
 # set -o xtrace # Uncomment this line for debugging purpose
 
 # Start cron
+printenv | sed 's/^\(.*\)$/export \1/g' > /opt/bitnami/scripts/mafiascum/.env.sh
+chmod +x /opt/bitnami/scripts/.env.sh
 service cron start
 
 # Load phpBB environment

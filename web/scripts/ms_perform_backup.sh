@@ -1,4 +1,6 @@
 #!/bin/bash
+source "/opt/bitnami/scripts/mafiascum/.env.sh"
+
 DATE=`TZ="America/New_York" date +%Y%m%d_%H%M%S`
 FORUM_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.forum.$DATE.zip"
 FORUM_LATEST_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.forum.latest.zip"
