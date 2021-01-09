@@ -12,6 +12,7 @@ then
         rm "/tmp/$DB_LATEST_TAR_FILE_NAME"
     else
         echo "No backup for this environment found. Proceeding with empty DB"
+    fi
 else
     echo "Found database volume at /var/lib/mysql; proceeding."
 fi
