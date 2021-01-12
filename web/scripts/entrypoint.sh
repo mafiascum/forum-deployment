@@ -8,7 +8,7 @@ set -o pipefail
 # set -o xtrace # Uncomment this line for debugging purpose
 
 # Start cron
-printenv | sed 's/^\(.*\)$/export \1/g' > /opt/bitnami/scripts/mafiascum/.env.sh
+printenv | perl -pe "s|(^.*?)=(.*$)|export \1\='\2'|" > /opt/bitnami/scripts/mafiascum/.env.sh
 chmod +x /opt/bitnami/scripts/mafiascum/.env.sh
 service cron start
 

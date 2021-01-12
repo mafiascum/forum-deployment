@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Import envionment and start cron
-printenv | sed 's/^\(.*\)$/export \1/g' > /opt/mafiascum/.env.sh
+printenv | perl -pe "s|(^.*?)=(.*$)|export \1\='\2'|" > /opt/mafiascum/.env.sh
+
 chmod +x /opt/mafiascum/.env.sh
 service cron start
 
