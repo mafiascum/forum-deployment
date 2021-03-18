@@ -25,6 +25,8 @@ print_welcome_page
 if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bitnami/scripts/nginx-php-fpm/run.sh" ]]; then
     info "** Starting phpBB setup **"
     /opt/bitnami/scripts/"$(web_server_type)"/setup.sh
+    # apache mod setup
+    /opt/bitnami/scripts/mafiascum/ms_apache_mods.sh
     /opt/bitnami/scripts/php/setup.sh
     /opt/bitnami/scripts/mysql-client/setup.sh
     # do pre-persistence checks here so that we can restore from database if the volume is empty. We should never be hitting is_app_initialized false in phpbb/setup,sh
