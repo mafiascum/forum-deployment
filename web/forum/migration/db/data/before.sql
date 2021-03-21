@@ -45,7 +45,7 @@ CHANGE `post_edit_user` `post_edit_user` int(10) unsigned NOT NULL DEFAULT '0',
 CHANGE `topic_id` `topic_id` int(10) unsigned NOT NULL DEFAULT '0',
 ADD KEY `poster_id_topic_id`(`poster_id`,`topic_id`),
 DROP KEY `post_text`,
-DROP KEY `post_content`,
+DROP KEY `post_content`;
 
 # InnoDB conversion
 
