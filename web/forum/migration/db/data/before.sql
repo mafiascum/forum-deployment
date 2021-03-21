@@ -45,7 +45,105 @@ CHANGE `post_edit_user` `post_edit_user` int(10) unsigned NOT NULL DEFAULT '0',
 CHANGE `topic_id` `topic_id` int(10) unsigned NOT NULL DEFAULT '0',
 ADD KEY `poster_id_topic_id`(`poster_id`,`topic_id`),
 DROP KEY `post_text`,
-DROP KEY `post_content`;
+DROP KEY `post_content`,
+
+# InnoDB conversion
+
+ALTER TABLE `phpbb_acl_groups` ENGINE=InnoDB;
+ALTER TABLE `phpbb_acl_options` ENGINE=InnoDB;
+ALTER TABLE `phpbb_acl_roles` ENGINE=InnoDB;
+ALTER TABLE `phpbb_acl_roles_data` ENGINE=InnoDB;
+ALTER TABLE `phpbb_acl_users` ENGINE=InnoDB;
+ALTER TABLE `phpbb_alts` ENGINE=InnoDB;
+ALTER TABLE `phpbb_anon_messages` ENGINE=InnoDB;
+ALTER TABLE `phpbb_attachments` ENGINE=InnoDB;
+ALTER TABLE `phpbb_backup` ENGINE=InnoDB;
+ALTER TABLE `phpbb_backup_remote_file` ENGINE=InnoDB;
+ALTER TABLE `phpbb_banlist` ENGINE=InnoDB;
+ALTER TABLE `phpbb_bbcodes` ENGINE=InnoDB;
+ALTER TABLE `phpbb_bookmarks` ENGINE=InnoDB;
+ALTER TABLE `phpbb_bots` ENGINE=InnoDB;
+ALTER TABLE `phpbb_captcha_answers` ENGINE=InnoDB;
+ALTER TABLE `phpbb_captcha_questions` ENGINE=InnoDB;
+ALTER TABLE `phpbb_config` ENGINE=InnoDB;
+ALTER TABLE `phpbb_config_text` ENGINE=InnoDB;
+ALTER TABLE `phpbb_confirm` ENGINE=InnoDB;
+ALTER TABLE `phpbb_disallow` ENGINE=InnoDB;
+ALTER TABLE `phpbb_drafts` ENGINE=InnoDB;
+ALTER TABLE `phpbb_ext` ENGINE=InnoDB;
+ALTER TABLE `phpbb_extension_groups` ENGINE=InnoDB;
+ALTER TABLE `phpbb_extensions` ENGINE=InnoDB;
+ALTER TABLE `phpbb_forums` ENGINE=InnoDB;
+ALTER TABLE `phpbb_forums_access` ENGINE=InnoDB;
+ALTER TABLE `phpbb_forums_track` ENGINE=InnoDB;
+ALTER TABLE `phpbb_forums_watch` ENGINE=InnoDB;
+ALTER TABLE `phpbb_groups` ENGINE=InnoDB;
+ALTER TABLE `phpbb_icons` ENGINE=InnoDB;
+ALTER TABLE `phpbb_invitational_participant` ENGINE=InnoDB;
+ALTER TABLE `phpbb_invitational_player_rating` ENGINE=InnoDB;
+ALTER TABLE `phpbb_lang` ENGINE=InnoDB;
+ALTER TABLE `phpbb_log` ENGINE=InnoDB;
+ALTER TABLE `phpbb_login_attempts` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_factions` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_game_status` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_game_types` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_games` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_moderators` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_modifiers` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_players` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_roles` ENGINE=InnoDB;
+ALTER TABLE `phpbb_mafia_slots` ENGINE=InnoDB;
+ALTER TABLE `phpbb_migrations` ENGINE=InnoDB;
+ALTER TABLE `phpbb_moderator_cache` ENGINE=InnoDB;
+ALTER TABLE `phpbb_modules` ENGINE=InnoDB;
+ALTER TABLE `phpbb_notification_emails` ENGINE=InnoDB;
+ALTER TABLE `phpbb_notification_types` ENGINE=InnoDB;
+ALTER TABLE `phpbb_notifications` ENGINE=InnoDB;
+ALTER TABLE `phpbb_oauth_accounts` ENGINE=InnoDB;
+ALTER TABLE `phpbb_oauth_states` ENGINE=InnoDB;
+ALTER TABLE `phpbb_oauth_tokens` ENGINE=InnoDB;
+ALTER TABLE `phpbb_poll_options` ENGINE=InnoDB;
+ALTER TABLE `phpbb_poll_votes` ENGINE=InnoDB;
+ALTER TABLE `phpbb_posts` ENGINE=InnoDB;
+ALTER TABLE `phpbb_posts_archive` ENGINE=InnoDB;
+ALTER TABLE `phpbb_private_topic_users` ENGINE=InnoDB;
+ALTER TABLE `phpbb_privmsgs` ENGINE=InnoDB;
+ALTER TABLE `phpbb_privmsgs_folder` ENGINE=InnoDB;
+ALTER TABLE `phpbb_privmsgs_rules` ENGINE=InnoDB;
+ALTER TABLE `phpbb_privmsgs_to` ENGINE=InnoDB;
+ALTER TABLE `phpbb_profile_fields` ENGINE=InnoDB;
+ALTER TABLE `phpbb_profile_fields_data` ENGINE=InnoDB;
+ALTER TABLE `phpbb_profile_fields_lang` ENGINE=InnoDB;
+ALTER TABLE `phpbb_profile_lang` ENGINE=InnoDB;
+ALTER TABLE `phpbb_qa_confirm` ENGINE=InnoDB;
+ALTER TABLE `phpbb_ranks` ENGINE=InnoDB;
+ALTER TABLE `phpbb_reports` ENGINE=InnoDB;
+ALTER TABLE `phpbb_reports_reasons` ENGINE=InnoDB;
+ALTER TABLE `phpbb_search_results` ENGINE=InnoDB;
+ALTER TABLE `phpbb_search_wordlist` ENGINE=InnoDB;
+ALTER TABLE `phpbb_search_wordmatch` ENGINE=InnoDB;
+ALTER TABLE `phpbb_sessions` ENGINE=InnoDB;
+ALTER TABLE `phpbb_sessions_keys` ENGINE=InnoDB;
+ALTER TABLE `phpbb_sitelist` ENGINE=InnoDB;
+ALTER TABLE `phpbb_smilies` ENGINE=InnoDB;
+ALTER TABLE `phpbb_sphinx` ENGINE=InnoDB;
+ALTER TABLE `phpbb_styles` ENGINE=InnoDB;
+ALTER TABLE `phpbb_teampage` ENGINE=InnoDB;
+ALTER TABLE `phpbb_topic_mod` ENGINE=InnoDB;
+ALTER TABLE `phpbb_topic_posters` ENGINE=InnoDB;
+ALTER TABLE `phpbb_topics` ENGINE=InnoDB;
+ALTER TABLE `phpbb_topics_posted` ENGINE=InnoDB;
+ALTER TABLE `phpbb_topics_track` ENGINE=InnoDB;
+ALTER TABLE `phpbb_topics_watch` ENGINE=InnoDB;
+ALTER TABLE `phpbb_user_group` ENGINE=InnoDB;
+ALTER TABLE `phpbb_user_notifications` ENGINE=InnoDB;
+ALTER TABLE `phpbb_users` ENGINE=InnoDB;
+ALTER TABLE `phpbb_warnings` ENGINE=InnoDB;
+ALTER TABLE `phpbb_words` ENGINE=InnoDB;
+ALTER TABLE `phpbb_wpm` ENGINE=InnoDB;
+ALTER TABLE `phpbb_zebra` ENGINE=InnoDB;
+
+# end InnoDB Converstion
 
 UPDATE `phpbb_posts`, `temp_post_approved` SET
 	`phpbb_posts`.`post_visibility`=`temp_post_approved`.`post_approved`
