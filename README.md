@@ -24,13 +24,15 @@ TODO: ensure that services can come up regardless of order
 1) `docker-compose up -d sitechat nginx`
 1) log into the website and go to the ACP
 1) If necessary, change the cookie domain to match the actual domain you're using
-1) Deactivate the old mafSilver that exists
+1) Set cookies to secure
+1) change the board's default style to something other than mafSilver
+1) Uninstall the old mafSilver that exists. you may need to do this in the db itself.
 1) Install all styles (mafSilver, mafSepia, mafBlack)
 1) make mafBlack the default style and disable proSilver
 1) ensure that the anonymos user style is the new mafblack
 1) exec into the web container and run `/opt/bitnami/scripts/mafiascum/ms_post_migrations.sh`
 1) enable all the relevant extensions
-1) exec into the web container run run `/opt/bitnami/scripts/mafiascum/ms_post_extensions.sh`
+1) exec into the db container, get a db terminal, and run the sql in /Users/charlie.ciccia/sandbox/forum-deployment/web/forum/migration/db/data/after_extensions.sql
 1) exec into the web container and reparse all the bbcodes by running `cd /opt/bitnami/phpbb && php bin/phpbbcli.php reparser:reparse`
 1) set search engine to sphinx
 1) Set the path to: /var/lib/sphinxsearch/data
