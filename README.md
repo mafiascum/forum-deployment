@@ -4,6 +4,16 @@ MS Forum Deployment Configuration
 Instructions
 TODO: ensure that services can come up regardless of order
 
+## If restoring from a backup from current prod (TODO - automate this from prod to staging s3)
+
+1) download the latest db backup from the current prod backups bucket.
+1) save this archive as s3://<staging backup bucket>/db-backups/mafiascum.backup.<environment name>.db.latest.7z
+1) download the latest web backup from the current prod backups bucket
+1) expand this archive with the backup password from prod
+1) inside of this backup, take the following: forum/store, forum/images, forum/store - put into a single archive called s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.forum.latest.zip, encrypted with the new environment's backup password. take the following: wiki/images - put into a single archive called s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.wiki.latest.zip, encrypted with the new environment's backup password.
+
+## Always do these steps
+
 1) clone this repo in your target environment
 1) copy `.env.sample` to `.env` and fill out params appropriately (sphinx_id you will not yet know)
 1) `docker-compose build`
