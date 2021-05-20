@@ -243,3 +243,7 @@ SELECT `user_id`, `user_style`
 FROM `phpbb_users`;
 
 ALTER TABLE `phpbb_users` change `user_old_emails` `user_old_emails` TEXT NULL DEFAULT NULL;
+
+# delete old v/la modules
+DELETE FROM `phpbb_modules` where `module_basename` = 'ucp_vla';
+DELETE FROM `phpbb_modules` where `module_langname` = 'ACP_USER_VLA';
