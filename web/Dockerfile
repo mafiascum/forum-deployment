@@ -1,4 +1,4 @@
-FROM bitnami/phpbb:3.3.1
+FROM bitnami/phpbb:3.3.4
 
 USER root
 
