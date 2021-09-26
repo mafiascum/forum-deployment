@@ -10,7 +10,7 @@ TODO: ensure that services can come up regardless of order
 1) save this archive as s3://<staging backup bucket>/db-backups/mafiascum.backup.<environment name>.db.latest.7z
 1) download the latest web backup from the current prod backups bucket
 1) expand this archive with the backup password from prod
-1) inside of this backup, take the following: forum/store, forum/images, forum/store - put into a single archive called s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.forum.latest.zip, encrypted with the new environment's backup password. take the following: wiki/images - put into a single archive called s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.wiki.latest.zip, encrypted with the new environment's backup password.
+1) inside of this backup, take the following: forum/store, forum/images, forum/files - put into a single archive called `s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.forum.latest.zip`, encrypted with the new environment's backup password. take the following: wiki/images - put into a single archive called `s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.wiki.latest.zip`, encrypted with the new environment's backup password.
 
 ## Always do these steps
 
