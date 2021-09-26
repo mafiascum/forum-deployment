@@ -23,7 +23,7 @@ UPDATE phpbb_users, temp_user_old_style SET
 	))
 WHERE phpbb_users.user_id=temp_user_old_style.user_id;
 
-DROP TABLE IF EXISTS `temp_user_old_style`;
+-- DROP TABLE IF EXISTS `temp_user_old_style`;
 
 ###
 #
@@ -51,7 +51,6 @@ INSERT INTO `phpbb_profile_fields_data`
 	`pf_phpbb_icq`, 
 	`pf_phpbb_website`,
 	`pf_phpbb_yahoo`,
-	`pf_phpbb_aol`,
 	`pf_phpbb_location`,
 	`pf_phpbb_facebook`,
 	`pf_phpbb_skype`,
@@ -62,7 +61,6 @@ SELECT
 	`phpbb_users`.`user_id`,
 	null,
 	null,
-	'',
 	'',
 	'',
 	'',

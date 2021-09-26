@@ -7,17 +7,18 @@ curl -LJO https://raw.githubusercontent.com/mafiascum/forum-extension-manifest/m
 cd /opt/bitnami/phpbb
 
 COMPOSER=/tmp/composer.json composer.phar install
+COMPOSER=/tmp/composer.json composer.phar update
 
 rm composer.json || true
 
 # no subject in reply extension from zip
 cd /tmp
 curl -o /tmp/extension.zip https://www.phpbb.com/customise/db/download/181996
-unzip /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
+unzip -o /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
 rm /tmp/extension.zip
 
 # modern quote extension
 cd /tmp
 curl -o /tmp/extension.zip https://www.phpbb.com/customise/db/download/159701
-unzip /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
+unzip -o /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
 rm /tmp/extension.zip
