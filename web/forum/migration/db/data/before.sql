@@ -9,7 +9,6 @@
 -- 	PRIMARY KEY (`config_name`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-
 ###
 #
 # Run single, consolidated alter against post table
@@ -93,7 +92,7 @@ ALTER TABLE `phpbb_mafia_modifiers` ENGINE=InnoDB;
 ALTER TABLE `phpbb_mafia_players` ENGINE=InnoDB;
 ALTER TABLE `phpbb_mafia_roles` ENGINE=InnoDB;
 ALTER TABLE `phpbb_mafia_slots` ENGINE=InnoDB;
-ALTER TABLE `phpbb_migrations` ENGINE=InnoDB;
+# ALTER TABLE `phpbb_migrations` ENGINE=InnoDB;
 ALTER TABLE `phpbb_moderator_cache` ENGINE=InnoDB;
 ALTER TABLE `phpbb_modules` ENGINE=InnoDB;
 # ALTER TABLE `phpbb_notification_emails` ENGINE=InnoDB;
@@ -242,7 +241,8 @@ INSERT INTO `temp_user_old_style`
 SELECT `user_id`, `user_style`
 FROM `phpbb_users`;
 
-ALTER TABLE `phpbb_users` change `user_old_emails` `user_old_emails` TEXT NULL DEFAULT NULL;
+# ALTER TABLE `phpbb_users` change `user_old_emails` `user_old_emails` TEXT NULL DEFAULT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_old_emails` `user_old_emails` TEXT NOT NULL DEFAULT '';
 
 # delete old v/la modules
 DELETE FROM `phpbb_modules` where `module_basename` = 'ucp_vla';
