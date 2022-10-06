@@ -94,3 +94,10 @@ INSERT INTO phpbb_teampage VALUES
 (5,13667,'',4,0),
 (6,13647,'',5,0),
 (7,13696,'',6,0);
+
+###
+#
+# Hide specific bbcodes from the post editor screen
+#
+###
+UPDATE `phpbb_bbcodes` SET `display_on_posting`=0 WHERE `bbcode_tag` IN('votecount','votecountBB');
