@@ -7,7 +7,7 @@ TODO: ensure that services can come up regardless of order
 ## If restoring from a backup from current prod (TODO - automate this from prod to staging s3)
 
 1) download the latest db backup from the current prod backups bucket.
-1) save this archive as s3://<staging backup bucket>/db-backups/mafiascum.backup.<environment name>.db.latest.7z
+1) save this archive as `s3://<staging backup bucket>/db-backups/mafiascum.backup.<environment name>.db.latest.7z`
 1) download the latest web backup from the current prod backups bucket
 1) expand this archive with the backup password from prod
 1) inside of this backup, take the following: forum/store, forum/images, forum/files - put into a single archive called `s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.forum.latest.zip`, encrypted with the new environment's backup password. take the following: wiki/images - put into a single archive called `s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.wiki.latest.zip`, encrypted with the new environment's backup password.
@@ -20,7 +20,7 @@ TODO: ensure that services can come up regardless of order
 1) `docker-compose up -d database`
 1) check the container logs and wait until the database starts serving connections (this may take a while the first time due to loading from S3)
 1) `docker-compose up -d web`
-1) check the container logs and wait until apache statts serving connections (this may take a while the first time due to running migrations)
+1) check the container logs and wait until apache starts serving connections (this may take a while the first time due to running migrations)
 1) `docker-compose up -d sitechat nginx`
 1) log into the website and go to the ACP
 1) If necessary, change the cookie domain to match the actual domain you're using
