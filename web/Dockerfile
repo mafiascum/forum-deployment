@@ -1,9 +1,9 @@
-FROM bitnami/phpbb:3.3.4
+FROM bitnami/phpbb:3.3.8
 
 USER root
 
 RUN apt-get update
-RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev
+RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip
 
 RUN mkdir /opt/bitnami/scripts/mafiascum
 
@@ -21,6 +21,9 @@ COPY vhost_templates/wiki.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
 # add scripts
 COPY scripts /opt/bitnami/scripts/mafiascum
 RUN chmod +x /opt/bitnami/scripts/mafiascum/*
+
+# python 3 environment
+RUN pip3 install mariadb
 
 # install wikimedia and extensions
 RUN /opt/bitnami/scripts/mafiascum/ms_install_mediawiki.sh

@@ -84,8 +84,14 @@ def reparse_quotes(cursor, limit, start=0):
     return highest_post_id
 
 def main():
-    cnx = mariadb.connect(user='root', password='password', host='127.0.0.1', database='ms_phpbb3', autocommit=True)
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    cnx = mariadb.connect(
+        user=os.getenv('PHPBB_DATABASE_USER'), 
+        password=os.getenv('PHPBB_DATABASE_PASSWORD'), 
+        host=os.getenv('PHPBB_DATABASE_HOST'), 
+        database=os.getenv('PHPBB_DATABASE_NAME'), 
+        autocommit=True
+    )
+    logging.basicConfig(stream=sys.stdout, level=os.getenv('LOG_LEVEL', logging.INFO), format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging.info('Connection established. Starting at 0.')
     cursor = cnx.cursor()
     cursor.execute("CREATE TEMPORARY TABLE IF NOT EXISTS t_ref_posts (post_id integer primary key)")

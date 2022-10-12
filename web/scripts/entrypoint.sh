@@ -2,6 +2,7 @@
 
 # shellcheck disable=SC1091
 
+set -x
 set -o errexit
 set -o nounset
 set -o pipefail
