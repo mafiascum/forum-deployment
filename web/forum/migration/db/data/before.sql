@@ -246,3 +246,6 @@ ALTER TABLE `phpbb_users` CHANGE `user_old_emails` `user_old_emails` TEXT NOT NU
 # delete old v/la modules
 DELETE FROM `phpbb_modules` where `module_basename` = 'ucp_vla';
 DELETE FROM `phpbb_modules` where `module_langname` = 'ACP_USER_VLA';
+
+ALTER TABLE `phpbb_private_topic_users`
+CHANGE `permission_type` `permission_type` tinyint(3) unsigned NOT NULL DEFAULT 1;
