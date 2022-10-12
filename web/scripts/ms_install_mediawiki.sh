@@ -5,9 +5,9 @@ tar xvzf mediawiki-*.tar.gz -C /opt/bitnami/wiki --strip-components=1
 
 # Auth PHPBB
 [ -d /opt/bitnami/wiki/extensions/Auth_phpBB ] || mkdir /opt/bitnami/wiki/extensions/Auth_phpBB
-curl -o /tmp/mediawiki-extensions-PHPBB_Auth-master.zip https://codeload.github.com/Digitalroot/MediaWiki_PHPBB_Auth/zip/master
-unzip /tmp/mediawiki-extensions-PHPBB_Auth-master.zip
-mv /tmp/MediaWiki_PHPBB_Auth-master/* /opt/bitnami/wiki/extensions/Auth_phpBB/
+curl -o /tmp/mediawiki-extensions-PHPBB_Auth-3.5.0.zip https://codeload.github.com/Digitalroot/MediaWiki_PHPBB_Auth/zip/3.5.0
+unzip /tmp/mediawiki-extensions-PHPBB_Auth-3.5.0.zip
+mv /tmp/MediaWiki_PHPBB_Auth-3.5.0/* /opt/bitnami/wiki/extensions/Auth_phpBB/
 
 # DeleteBatch extension
 [ -d /opt/bitnami/wiki/extensions/DeleteBatch ] || mkdir /opt/bitnami/wiki/extensions/DeleteBatch
