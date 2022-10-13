@@ -16,7 +16,7 @@ TODO: ensure that services can come up regardless of order
 
 1) clone this repo in your target environment
 1) copy `.env.sample` to `.env` and fill out params appropriately (sphinx_id you will not yet know)
-1) ensure docker is installed on the system
+1) ensure docker is installed on the system. Anecdotally, snap doesn't work well with docker-compose; better to use apt or yum.
 1) `docker-compose build`
 1) `docker-compose up -d database`
 1) check the container logs and wait until the database starts serving connections (this may take a while the first time due to loading from S3)
