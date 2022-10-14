@@ -3,7 +3,7 @@ set -x
 
 cd /tmp
 
-curl -LJO https://raw.githubusercontent.com/mafiascum/forum-extension-manifest/main/${MAFIASCUM_ENVIRONMENT:-staging}/styles.json
+yes | curl -LJO https://raw.githubusercontent.com/mafiascum/forum-extension-manifest/main/${MAFIASCUM_ENVIRONMENT:-staging}/styles.json
 
 while read line
 do
