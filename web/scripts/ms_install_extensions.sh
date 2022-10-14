@@ -25,7 +25,7 @@ extensions=( \
 	"https://www.phpbb.com/customise/db/download/152041" \
 
 	## PM Search
-	"https://www.mafiascum.net/downloads/phpbb-extensions/pmsearch.zip" \
+	"https://mafiascum-files.s3.us-west-2.amazonaws.com/static/phpbb-extensions/pmsearch.zip" \
 
 	## Birthday Cake
 	"https://www.phpbb.com/customise/db/download/183386" \
