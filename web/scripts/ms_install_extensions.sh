@@ -13,14 +13,30 @@ COMPOSER=/tmp/composer.json composer.phar update --ignore-platform-reqs
 
 rm composer.json || true
 
-# no subject in reply extension from zip
-cd /tmp
-curl -o /tmp/extension.zip https://www.phpbb.com/customise/db/download/181996
-unzip -o /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
-rm /tmp/extension.zip
+extensions=( \
 
-# modern quote extension
-cd /tmp
-curl -o /tmp/extension.zip https://www.phpbb.com/customise/db/download/159701
-unzip -o /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
-rm /tmp/extension.zip
+	## No Subject In Reply
+	"https://www.phpbb.com/customise/db/download/181996" \
+
+	## Modern Quote
+	"https://www.phpbb.com/customise/db/download/159701" \
+
+	## Stop Forum Spam
+	"https://www.phpbb.com/customise/db/download/152041" \
+
+	## PM Search
+	"https://www.mafiascum.net/downloads/phpbb-extensions/pmsearch.zip" \
+
+	## Birthday Cake
+	"https://www.phpbb.com/customise/db/download/183386" \
+
+	## PM Welcome
+	"https://www.phpbb.com/customise/db/download/183901" \
+)
+
+for extension in "${extensions[@]}" ; do
+	cd /tmp
+	curl -o /tmp/extension.zip "$extension"
+	unzip -o /tmp/extension.zip -d /opt/bitnami/phpbb/ext/
+	rm /tmp/extension.zip
+done
