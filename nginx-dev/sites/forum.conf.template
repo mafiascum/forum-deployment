@@ -1,13 +1,13 @@
 server {
     listen 80;
-    server_name {{ .Env.FORUM_FQDN }};
+    server_name ${FORUM_FQDN};
 
-    return 301 https://{{ .Env.FORUM_FQDN}}$request_uri;
+    return 301 https://${FORUM_FQDN}$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name {{ .Env.FORUM_FQDN }};
+    server_name ${FORUM_FQDN};
     ssl_certificate /etc/nginx/certs/forum.dev.mafiascum.net.cert.pem;
     ssl_certificate_key /etc/nginx/certs/forum.dev.mafiascum.net.key.pem;
 
