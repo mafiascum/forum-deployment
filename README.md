@@ -46,3 +46,11 @@ TODO: ensure that services can come up regardless of order
 1) `docker-compose up -d sphinx`
 1) exec into the web container and run `python3 /opt/bitnami/scripts/mafiascum/reparse_quotes.py`
 1) Wait for sphinx to index and the reparse_quotes to finish...
+
+## To use this setup for extension/style development
+In addition to the above steps:
+1) `cp docker-compose.override.yml.sample docker-compose.override.yml`
+1) `git clone` all the mafia extensions/styles into the `dev-extensions` and `dev-styles` directories, respectively
+1) ensure that your `MAFIASCUM_ENVIRONMENT` env var is named one of the following: `development`, `dev`, or `local`
+1) start containers. You should have volumes mounted in the `web` container for extensions and styles at `/mafiascum` and they should be symlinked to the proper phpbb locations. one symlink for all extensions since we can just symlink the mafiascum namespace, but styles need one symlink per style since they live alongside non-ms styles. No ms extensions/styles will be pulled automatically, so you should ensure you've cloned everything it needs to run, even stuff you're not actively working on.
+1) you will get a certficiate warning in your browser for using a self-signed cert (included in this project). You can safely move past this.
