@@ -22,7 +22,7 @@ install_ms_styles_dev() {
     cd /mafiascum/styles
 
     for file in *; do
-        if [[ -d "$file" ]]; then
+        if [[ -d "$file" ]] && [[ ! -e "/opt/bitnami/phpbb/styles/$file" ]]; then
             ln -s $(realpath "$file") "/opt/bitnami/phpbb/styles/$file"
         fi 
     done
