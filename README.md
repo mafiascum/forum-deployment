@@ -27,13 +27,13 @@ TODO: ensure that services can come up regardless of order
 1) If necessary, change the cookie domain to match the actual domain you're using
 1) Set cookies to secure
 1) change the board's default style to something other than mafSilver
-1) Uninstall the old mafSilver that exists. you may need to do this in the db itself.
+1) Run the following SQL query to rename the old mafSilver theme to avoid name collision with the new theme: ```UPDATE `phpbb_styles` SET `style_name`='mafSilverOld' WHERE `style_name`='mafSilver' AND `style_parent_tree`='';```
 1) Install all styles (mafSilver, mafSepia, mafBlack)
 1) make mafBlack the default style and disable proSilver
 1) ensure that the anonymos user style is the new mafblack
 1) exec into the web container and run `/opt/bitnami/scripts/mafiascum/ms_post_migrations.sh`
 1) enable all the relevant extensions
-1) exec into the db container, get a db terminal, and run the sql in /Users/charlie.ciccia/sandbox/forum-deployment/web/forum/migration/db/data/after_extensions.sql
+1) exec into the db container, get a db terminal, and run the sql in https://github.com/mafiascum/forum-deployment/blob/main/web/forum/migration/db/data/after_extensions.sql
 1) exec into the web container and reparse all the bbcodes by running `cd /opt/bitnami/phpbb && php bin/phpbbcli.php reparser:reparse`
 1) set search engine to sphinx
 1) Set the path to: /var/lib/sphinxsearch/data
@@ -54,3 +54,6 @@ In addition to the above steps:
 1) ensure that your `MAFIASCUM_ENVIRONMENT` env var is named one of the following: `development`, `dev`, or `local`
 1) start containers. You should have volumes mounted in the `web` container for extensions and styles at `/mafiascum` and they should be symlinked to the proper phpbb locations. one symlink for all extensions since we can just symlink the mafiascum namespace, but styles need one symlink per style since they live alongside non-ms styles. No ms extensions/styles will be pulled automatically, so you should ensure you've cloned everything it needs to run, even stuff you're not actively working on.
 1) you will get a certficiate warning in your browser for using a self-signed cert (included in this project). You can safely move past this.
+
+## Useful commands
+To restart the web container without impacting any volumes: `docker-compose stop web && docker-compose rm -f web && docker-compose build web && docker-compose up -d web`
