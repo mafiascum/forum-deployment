@@ -25,6 +25,9 @@ RUN chmod +x /opt/bitnami/scripts/mafiascum/*
 # python 3 environment
 RUN pip3 install mariadb
 
+# install pgn4web for chess tags
+RUN /opt/bitnami/scripts/mafiascum/ms_install_pgn4web.sh
+
 # install wikimedia and extensions
 RUN /opt/bitnami/scripts/mafiascum/ms_install_mediawiki.sh
 
