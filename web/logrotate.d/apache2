@@ -1,0 +1,17 @@
+/opt/bitnami/apache2/logs/access/*-file.log /opt/bitnami/apache2/logs/error/*-file.log {
+	daily
+	missingok
+	rotate 36500
+	compress
+	compresscmd /usr/bin/zip
+	compressext .zip
+	dateext
+	dateformat .%Y%m%d
+	delaycompress
+	notifempty
+	create 640 root adm
+	sharedscripts
+	postrotate
+        /opt/bitnami/apache/bin/apachectl -k graceful
+	endscript
+}

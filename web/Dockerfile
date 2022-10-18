@@ -3,7 +3,7 @@ FROM bitnami/phpbb:3.3.8
 USER root
 
 RUN apt-get update
-RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip
+RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate
 
 RUN mkdir /opt/bitnami/scripts/mafiascum
 
@@ -22,11 +22,17 @@ COPY vhost_templates/wiki.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
 COPY scripts /opt/bitnami/scripts/mafiascum
 RUN chmod +x /opt/bitnami/scripts/mafiascum/*
 
+# logrotate
+COPY logrotate.d/apache2 /etc/logrotate.d/apache2
+
 # python 3 environment
 RUN pip3 install mariadb
 
 # install pgn4web for chess tags
 RUN /opt/bitnami/scripts/mafiascum/ms_install_pgn4web.sh
+
+# install access log parser
+RUN /opt/bitnami/scripts/mafiascum/ms_install_access_parser.sh
 
 # install wikimedia and extensions
 RUN /opt/bitnami/scripts/mafiascum/ms_install_mediawiki.sh
