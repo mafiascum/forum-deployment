@@ -44,6 +44,11 @@ RUN mkdir /opt/bitnami/scripts/mafiascum/migration
 COPY forum/migration /opt/bitnami/scripts/mafiascum/migration
 RUN rsync -avz /opt/bitnami/scripts/mafiascum/migration/db/data/ /opt/bitnami/phpbb/phpbb/db/migration/data/
 
+# monkey patched files. this is your LAST RESORT for doing custom script work - try to use extensions if at all possible.
+RUN mkdir /opt/bitnami/scripts/mafiascum/patches
+COPY forum/patches /opt/bitnami/scripts/mafiascum/patches
+RUN rsync -avz /opt/bitnami/scripts/mafiascum/patches/ /opt/bitnami/phpbb/
+
 # add cron
 COPY cron.d /etc/cron.d/
 
