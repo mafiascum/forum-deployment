@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+    nginx:
+        image: nginx
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - web
+        env_file:
+            - .env
+        volumes:
+            - ./nginx.conf:/etc/nginx.conf
+            - ./nginx-dev/cert:/etc/nginx/certs
+            - ./nginx-dev/sites:/etc/nginx/templates
+    web:
+        build: ./web
+        restart: always
+        depends_on:
+            - database
+        env_file:
+            - .env
+        volumes:
+            - wiki_data:/bitnami/wiki
+            - phpbb_data:/bitnami/phpbb
+            - ./web/apache/httpd.conf:/opt/bitnami/apache/conf/httpd.conf
+            - ./web/apache/usertrack.conf:/opt/bitnami/apache/conf/usertrack.conf
+            - ./dev-extensions:/mafiascum/extensions
+            - ./dev-styles:/mafiascum/styles

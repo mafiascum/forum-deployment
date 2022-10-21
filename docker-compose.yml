@@ -40,6 +40,8 @@ services:
       - .env
     volumes:
       - sphinx_data:/var/lib/sphinxsearch/data
+      - ./sphinx/config/sphinx.conf:/etc/sphinxsearch/sphinx.conf.template
+      - ./sphinx/cron.d:/etc/cron.d.template
     environment:
       SPHINX_MODE: indexing
 
