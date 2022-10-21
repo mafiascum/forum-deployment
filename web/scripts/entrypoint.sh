@@ -51,6 +51,8 @@ if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bi
     /opt/bitnami/scripts/mafiascum/ms_install_extensions.sh
     # install styles from composer after all other setup is done
     /opt/bitnami/scripts/mafiascum/ms_install_styles.sh
+    # Perform wiki migration
+    /opt/bitnami/scripts/mafiascum/ms_mediawiki_migrate.sh
 
     info "** phpBB setup finished! **"
 fi

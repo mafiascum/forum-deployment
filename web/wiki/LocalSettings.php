@@ -19,8 +19,6 @@ if( defined( 'MW_INSTALL_PATH' ) ) {
 $path = array( $IP, "$IP/includes", "$IP/languages" );
 set_include_path( implode( PATH_SEPARATOR, $path ) . PATH_SEPARATOR . get_include_path() );
 
-require_once( "includes/DefaultSettings.php" );
-
 # If PHP's memory limit is very low, some operations may fail.
 # ini_set( 'memory_limit', '20M' );
 
@@ -33,6 +31,7 @@ if ( $wgCommandLineMode ) {
 	if( !ini_get( 'zlib.output_compression' ) ) @ob_start( 'ob_gzhandler' );
 }
 
+$wgServer           = getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('WIKI_FQDN');
 $wgSitename         = "MafiaWiki";
 
 $wgScriptPath	    = "";
@@ -128,22 +127,11 @@ $wgRightsIcon = "";
 
 $wgDiff3 = "/usr/bin/diff3";
 
-
-require_once "$IP/skins/CologneBlue/CologneBlue.php";
-require_once "$IP/skins/Modern/Modern.php";
-require_once "$IP/skins/MonoBook/MonoBook.php";
-require_once "$IP/skins/Vector/Vector.php";
-
-
-# SpamBlackList added by -JEEP 28 Sept 2007
-# http://www.mediawiki.org/wiki/Extension:SpamBlacklist
-require_once( "$IP/extensions/SpamBlacklist/SpamBlacklist.php" );
-$wgSpamBlacklistFiles = array(
- "$IP/extensions/SpamBlacklist/wikimedia_blacklist", // Wikimedia's list
-// database      title
-   "DB: wikidb My_spam_blacklist",
-  "http://meta.wikimedia.org/w/index.php?title=Spam_blacklist&action=raw&sb_ver=1" // Wikimedia's list
-);
+wfLoadSkin( 'CologneBlue' );
+wfLoadSkin( 'Modern' );
+wfLoadSkin( 'MonoBook' );
+wfLoadSkin( 'Timeless' );
+wfLoadSkin( 'Vector' );
 
 // Allow user to edit their talk pages when blocked.
 $wgBlockAllowsUTEdit = true;
@@ -151,10 +139,6 @@ $wgBlockAllowsUTEdit = true;
 # Restrict editing of wiki to registered users - added by mith 17 Dec 2010
 
 $wgGroupPermissions['*']['edit'] = false;
-
-# ParserFunctions added by -JEEP 4 Mar 2007
-# http://meta.wikimedia.org/wiki/ParserFunctions
-require_once( "$IP/extensions/ParserFunctions/ParserFunctions.php" );
 
 #Allow user style code; enabled by -JEEP 4 Mar 2007
 $wgAllowUserJs  = true;
@@ -174,9 +158,6 @@ function removeExportSpecial(&$aSpecialPages)
         return true;
 }
 $wgHooks['SpecialPage_initList'][] = 'removeExportSpecial';
-
-// PHPBB User Database Plugin. (Requires MySQL Database)
-require_once "$IP/extensions/Auth_phpBB/Auth_phpBB.php";
 
 $wgAuth_Config = array(); // Clean.
 
@@ -218,8 +199,6 @@ $wgAuth_Config['PathToPHPBB']    = '../phpbb/';         // Path from this file t
 $wgAuth_Config['LoginMessage']   = '<b>You need a phpBB account to login.</b><br /><a href="http://forum.mafiascum.net/ucp.php?mode=register">Click here to create an account.</a>'; // Localize this message.
 $wgAuth_Config['NoWikiError']    = 'You are not a member of the required phpBB group.'; // Localize this message.
 
-$wgAuth = new Auth_phpBB($wgAuth_Config);     // Auth_phpBB Plugin.
-
 $wgNoFollowDomainExceptions = array( 
         getenv('ROOT_FQDN'),
         getenv('WWW_FQDN'),
@@ -227,19 +206,17 @@ $wgNoFollowDomainExceptions = array(
         getenv('WIKI_FQDN')
 );
 
-require_once("$IP/extensions/intersection/DynamicPageList.php");
-
+wfLoadExtension( 'PluggableAuth' );
+wfLoadExtension( 'Auth_phpBB' );
+wfLoadExtension( 'ParserFunctions' );
 wfLoadExtension( 'WikiSEO' );
-
-require_once("$IP/extensions/DeleteBatch/DeleteBatch.php");
-
+wfLoadExtension( 'AbuseFilter' );
+wfLoadExtension( 'DeleteBatch' );
 wfLoadExtension( 'Nuke' );
+wfLoadExtension( 'intersection' );
 
 $wgGroupPermissions['sysop']['nuke'] = false;
 $wgGroupPermissions['nuke']['nuke'] = true;
-
-wfLoadExtension( 'AbuseFilter' );
-
 $wgGroupPermissions['sysop']['abusefilter-modify'] = true;
 $wgGroupPermissions['sysop']['abusefilter-log-detail'] = true;
 $wgGroupPermissions['sysop']['abusefilter-view'] = true;

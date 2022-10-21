@@ -26,9 +26,8 @@ RUN chmod +x /opt/bitnami/scripts/mafiascum/*
 RUN pip3 install mariadb
 
 # install wikimedia and extensions
+COPY wiki/LocalSettings.php /tmp/
 RUN /opt/bitnami/scripts/mafiascum/ms_install_mediawiki.sh
-
-COPY wiki/LocalSettings.php /opt/bitnami/wiki
 
 # add substitute migrations
 RUN mkdir /opt/bitnami/scripts/mafiascum/migration
