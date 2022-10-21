@@ -12,6 +12,9 @@
 	create 640 root adm
 	sharedscripts
 	postrotate
-        /opt/bitnami/apache/bin/apachectl -k graceful
+		echo "Top of postrotate" >> /tmp/postrotate.txt 2>&1
+		/usr/bin/whoami >> /tmp/postrotate.txt 2>&1
+		/opt/bitnami/apache/bin/apachectl -k graceful >> /tmp/postrotate.txt 2>&1
+		echo "Bottom of postrotate" >> /tmp/postrotate.txt 2>&1
 	endscript
 }
