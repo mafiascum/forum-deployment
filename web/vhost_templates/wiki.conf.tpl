@@ -20,9 +20,9 @@
 	SetEnvIf filetype "^static$" is_static
 
 	CustomLog /opt/bitnami/apache/logs/access/access.log combined env=!filetype
-	CustomLog /opt/bitnami/apache/logs/access/access-file.log combined env=!filetype
+	CustomLog /opt/bitnami/apache/logs/access/raw/access-file.log combined env=!filetype
 	CustomLog /opt/bitnami/apache/logs/access/static-stdout.log combined env=is_static
-	CustomLog /opt/bitnami/apache/logs/access/static-file.log combined env=is_static
+	CustomLog /opt/bitnami/apache/logs/access/raw/static-file.log combined env=is_static
 
 	# RewriteEngine on
 	# RewriteCond %{SERVER_NAME} ={{WIKI_FQDN}}

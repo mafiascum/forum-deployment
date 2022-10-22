@@ -4,6 +4,7 @@
 
 echo ${APACHE_LOGS_DIR}
 mkdir ${APACHE_LOGS_DIR}/access
+mkdir ${APACHE_LOGS_DIR}/access/raw
 mkdir ${APACHE_LOGS_DIR}/error
 
 ln -sf "/dev/stdout" "${APACHE_LOGS_DIR}/access/access.log"
