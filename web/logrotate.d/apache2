@@ -1,4 +1,4 @@
-/opt/bitnami/apache2/logs/access/*-file.log /opt/bitnami/apache2/logs/error/*-file.log {
+/opt/bitnami/apache2/logs/access/raw/*-file.log /opt/bitnami/apache2/logs/error/*-file.log {
 	daily
 	missingok
 	rotate 36500
