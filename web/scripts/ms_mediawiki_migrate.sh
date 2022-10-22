@@ -1,0 +1,1 @@
+(cd /opt/bitnami/wiki/maintenance/ && php update.php --quick)
