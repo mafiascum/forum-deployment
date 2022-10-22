@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteRule ^dontpanic.html(.*)$ https://%{HTTP_HOST}/dontpanic.php$1 [R=301,L]
+RewriteRule ^donation.html(.*)$ https://%{HTTP_HOST}/donation.php$1 [R=301,L]
+RewriteRule ^cardlist.htm(.*)$ https://%{HTTP_HOST}/cardlist.php$1 [R=301,L]
+RewriteRule ^cards.htm(.*)$ https://%{HTTP_HOST}/cards.php$1 [R=301,L]
+RewriteRule ^cardlist.htm(.*)$ https://%{HTTP_HOST}/cardlist.php$1 [R=301,L]
+RewriteRule ^tshirt.htm(.*)$ https://%{HTTP_HOST}/tshirt.php$1 [R=301,L]
+RewriteRule ^replacementform/index.html(.*)$ https://%{HTTP_HOST}/replacementform/index.php$1 [R=301,L]
