@@ -1,7 +1,9 @@
 #!/bin/bash
 
+source /opt/bitnami/scripts/mafiascum/.env.sh
+
 SOURCE_DIR="/opt/bitnami/apache/logs/access/raw/"
-ZIP_FILE_PATTERN="access-file.log.*.zip"
+ZIP_FILE_PATTERN="*-file.log.*.zip"
 PARSED_DIRECTORY="/opt/bitnami/apache/logs/access/formatted/"
 TIMESTAMP_TODAY=`date '+%Y%m%d' -d "0 days ago"`
 TIMESTAMP_YESTERDAY=`date '+%Y%m%d' -d "1 days ago"`
