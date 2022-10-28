@@ -5,7 +5,7 @@ source /opt/bitnami/scripts/mafiascum/.env.sh
 ZIP_FILE_PATTERN="$1"
 FORMATTED_FILE_NAME_FORMAT="$2"
 
-if [ -z "$1" || -z "$2" ] ; then
+if [[ -z "$1" || -z "$2" ]] ; then
     echo "Usage: <<ZipFilePattern>> <<FormattedFileNamePattern>>"
     exit
 fi
