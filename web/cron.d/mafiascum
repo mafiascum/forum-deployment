@@ -1,2 +1,3 @@
 0 5 * * * root /opt/bitnami/scripts/mafiascum/ms_perform_backup.sh >> /var/log/cron-mafiascum.log 2>&1
-0 7 * * * root /opt/bitnami/scripts/mafiascum/ms_parse_access_logs.sh >> /var/log/cron-mafiascum.log 2>&1
+0 7 * * * root /opt/bitnami/scripts/mafiascum/ms_parse_access_logs.sh 'access-file.log.*.zip' 'access-parsed.%s.log' >> /var/log/cron-mafiascum.log 2>&1
+0 7 * * * root /opt/bitnami/scripts/mafiascum/ms_parse_access_logs.sh 'static-file.log.*.zip' 'static-parsed.%s.log' >> /var/log/cron-mafiascum.log 2>&1

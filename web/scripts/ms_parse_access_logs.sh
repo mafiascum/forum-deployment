@@ -2,8 +2,15 @@
 
 source /opt/bitnami/scripts/mafiascum/.env.sh
 
+ZIP_FILE_PATTERN="$1"
+FORMATTED_FILE_NAME_FORMAT="$2"
+
+if [ -z "$1" || -z "$2" ] ; then
+    echo "Usage: <<ZipFilePattern>> <<FormattedFileNamePattern>>"
+    exit
+fi
+
 SOURCE_DIR="/opt/bitnami/apache/logs/access/"
-ZIP_FILE_PATTERN="*-file.log.*.zip"
 PARSED_DIRECTORY="/tmp/access-parsed"
 TIMESTAMP_TODAY=`date '+%Y%m%d' -d "0 days ago"`
 TIMESTAMP_YESTERDAY=`date '+%Y%m%d' -d "1 days ago"`
@@ -13,7 +20,7 @@ HOSTNAME="`hostname`"
 mkdir -p "$PARSED_DIRECTORY"
 
 for file in `find "$SOURCE_DIR" -maxdepth 1 -mindepth 1 -type f -name "$ZIP_FILE_PATTERN" | sort -n` ; do
-    unzip -p "$file" '-' | sort -t' ' -k4,5 | /usr/local/bin/access_log_parser -fileNameFormat 'access-parsed.%s.log' -writePath "${PARSED_DIRECTORY}/"
+    unzip -p "$file" '-' | sort -t' ' -k4,5 | /usr/local/bin/access_log_parser -fileNameFormat "$FORMATTED_FILE_NAME_FORMAT" -writePath "${PARSED_DIRECTORY}/"
 
     fileNameRenamed="${HOSTNAME}-${file##*/}"
 
@@ -22,7 +29,11 @@ for file in `find "$SOURCE_DIR" -maxdepth 1 -mindepth 1 -type f -name "$ZIP_FILE
     rm -f "$file"
 done
 
-for file in `find "$PARSED_DIRECTORY" -maxdepth 1 -mindepth 1 -type f -name "access-parsed.*.log" -not -name "access-parsed.$TIMESTAMP_TODAY.log" -not -name "access-parsed.$TIMESTAMP_YESTERDAY.log"` ; do
+## Replace the '%s' with '*' for the find command
+FORMATTED_FILE_SEARCH_PATTERN=`echo "$FORMATTED_FILE_NAME_FORMAT" | sed 's/%s/*/g'`
+FORMATTED_FILE_TODAY_PATTERN=`echo "$FORMATTED_FILE_NAME_FORMAT" | sed 's/%s/'"$TIMESTAMP_TODAY"'/g'`
+FORMATTED_FILE_YESTERDAY_PATTERN=`echo "$FORMATTED_FILE_NAME_FORMAT" | sed 's/%s/'"$TIMESTAMP_YESTERDAY"'/g'`
+for file in `find "$PARSED_DIRECTORY" -maxdepth 1 -mindepth 1 -type f -name "$FORMATTED_FILE_SEARCH_PATTERN" -not -name "$FORMATTED_FILE_TODAY_PATTERN" -not -name "$FORMATTED_FILE_YESTERDAY_PATTERN"` ; do
     compressedFile="${file}.zip"
     compressedFileNameRenamed="${HOSTNAME}-${compressedFile##*/}"
 
