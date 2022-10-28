@@ -7,6 +7,13 @@ MW_VERSION_MAJOR=`echo "$MW_VERSION_FULL" | awk -F'.' '{print $1"."$2}'`
 curl -O https://releases.wikimedia.org/mediawiki/$MW_VERSION_MAJOR/mediawiki-$MW_VERSION_FULL.tar.gz
 tar xvzf mediawiki-*.tar.gz -C /opt/bitnami/wiki --strip-components=1
 mv /tmp/LocalSettings.php /opt/bitnami/wiki/
+rm -f mediawiki-*.tar.gz
+
+#####
+  #
+  # Extensions
+  #
+#####
 
 # DeleteBatch extension
 [ -d /opt/bitnami/wiki/extensions/DeleteBatch ] || mkdir /opt/bitnami/wiki/extensions/DeleteBatch
@@ -57,7 +64,6 @@ mv /tmp/mediawiki-extensions-ParserFunctions-REL1_38 /opt/bitnami/wiki/extension
 rm -f /tmp/mediawiki-extensions-ParserFunctions-REL1_38.zip
 
 # WikiSEO
-# Note - newer versions of this will require a mediawiki upgrade
 [ -d /opt/bitnami/wiki/extensions/WikiSEO ] || mkdir /opt/bitnami/wiki/extensions/WikiSEO
 curl -o /tmp/mediawiki-extensions-WikiSEO-REL1_38.zip https://codeload.github.com/wikimedia/mediawiki-extensions-WikiSEO/zip/REL1_38
 unzip /tmp/mediawiki-extensions-WikiSEO-REL1_38.zip
@@ -73,14 +79,13 @@ rm -rf /opt/bitnami/wiki/extensions/AbuseFilter/
 mv /tmp/mediawiki-extensions-AbuseFilter-REL1_38 /opt/bitnami/wiki/extensions/AbuseFilter
 rm -f /tmp/mediawiki-extensions-AbuseFilter-REL1_38.zip
 
-# # Spam Blacklist
-# TODO: was this built in at some point?
-# [ -d /opt/bitnami/wiki/extensions/SpamBlacklist ] || mkdir /opt/bitnami/wiki/extensions/SpamBlacklist
-# curl -o /tmp/mediawiki-extensions-SpamBlacklist-REL1_38.zip https://codeload.github.com/wikimedia/mediawiki-extensions-SpamBlacklist/zip/REL1_38
-# unzip /tmp/mediawiki-extensions-SpamBlacklist-REL1_38.zip
-# mv /tmp/mediawiki-extensions-SpamBlacklist-REL1_38/* /opt/bitnami/wiki/extensions/SpamBlacklist/
+#####
+  #
+  # Skins
+  #
+#####
 
-## Skins
+## CologneBlue
 [ -d /opt/bitnami/wiki/skins/CologneBlue ] || mkdir /opt/bitnami/wiki/skins/CologneBlue
 curl -o /tmp/mediawiki-skins-CologneBlue-REL1_38.zip https://codeload.github.com/wikimedia/mediawiki-skins-CologneBlue/zip/REL1_38
 unzip /tmp/mediawiki-skins-CologneBlue-REL1_38.zip
@@ -88,6 +93,7 @@ rm -rf /opt/bitnami/wiki/skins/CologneBlue/
 mv /tmp/mediawiki-skins-CologneBlue-REL1_38 /opt/bitnami/wiki/skins/CologneBlue
 rm -f /tmp/mediawiki-skins-CologneBlue-REL1_38.zip
 
+## Modern
 [ -d /opt/bitnami/wiki/skins/Modern ] || mkdir /opt/bitnami/wiki/skins/Modern
 curl -o /tmp/mediawiki-skins-Modern-REL1_38.zip https://codeload.github.com/wikimedia/mediawiki-skins-Modern/zip/REL1_38
 unzip /tmp/mediawiki-skins-Modern-REL1_38.zip

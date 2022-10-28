@@ -1,7 +1,6 @@
 <html>
  <head>
   <title>mafiascum.net - Don't Panic!</title>
-  <base href="//www.mafiascum.net/" />
   <style type="text/css"> 
   <!--  A{text-decoration:none; color: "#FF0000"}  A:visited {text-decoration: none; color: "#BFBFBF"}  A:active { text-decoration: underline; color: "#00FF00" }  A:hover {text-decoration: underline; font-style: normal; color: "#00FF00"}  P{text-decoration: none;}  -->
   </style>
@@ -34,7 +33,7 @@
       <br/>
       <font face="helvetica, arial" size="2">
        <br/>
-       <b>June 6, 2011</b> - Five by five, no problems anticipated or being experienced in the <a href="https://forum.mafiascum.net/">forum</a> or the <a href="/wiki">wiki</a>.
+       <b>June 6, 2011</b> - Five by five, no problems anticipated or being experienced in the <a href="<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('FORUM_FQDN')) ?>">forum</a> or the <a href="<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('WIKI_FQDN')) ?>">wiki</a>.
        <br>--The Management</font>
       </font>
      </td>

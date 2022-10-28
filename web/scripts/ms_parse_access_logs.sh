@@ -10,8 +10,8 @@ if [ -z "$1" || -z "$2" ] ; then
     exit
 fi
 
-SOURCE_DIR="/opt/bitnami/apache/logs/access/"
-PARSED_DIRECTORY="/tmp/access-parsed"
+SOURCE_DIR="/opt/bitnami/apache/logs/access/raw/"
+PARSED_DIRECTORY="/opt/bitnami/apache/logs/access/formatted/"
 TIMESTAMP_TODAY=`date '+%Y%m%d' -d "0 days ago"`
 TIMESTAMP_YESTERDAY=`date '+%Y%m%d' -d "1 days ago"`
 BUCKET_NAME="$AWS_BACKUP_BUCKET"

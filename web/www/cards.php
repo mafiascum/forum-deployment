@@ -25,7 +25,7 @@ P{text-decoration: none;}
 <br>
 <br>Order Deck(s)</b></font></center>
 <br>
-<br><font size="3">Our Mafia deck will contain 72 cards (see current list of cards <a href="http://www.mafiascum.net/cardlist.htm">here</a>, subject to minor changes), and comes with a rule book (including a number of suggested open and semi-open setups), and a deck box to hold it all.
+<br><font size="3">Our Mafia deck will contain 72 cards (see current list of cards <a href="/cardlist.php">here</a>, subject to minor changes), and comes with a rule book (including a number of suggested open and semi-open setups), and a deck box to hold it all.
 <br>
 <br>
 <br><form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -85,7 +85,7 @@ P{text-decoration: none;}
 <br>
 <br>
 <br>
-<br><font size="3">Thank you for supporting mafiascum.net through your purchase. If you would like to donate further to offset future server costs and/or to expedite future mafiascum, please visit the <a href="./donation.html">Donation Page</a>.
+<br><font size="3">Thank you for supporting mafiascum.net through your purchase. If you would like to donate further to offset future server costs and/or to expedite future mafiascum, please visit the <a href="./donation.php">Donation Page</a>.
 <br>
 <br>mith
 </td> 

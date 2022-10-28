@@ -100,7 +100,7 @@ P{text-decoration: none;}
 <br>
 <br>
 <br>
-<br><font size="3">Thank you for supporting mafiascum.net through your purchase. If you would like to donate further to offset future server costs and/or to expedite future mafiascum products (cards are pretty far along in the pipeline, and we have had a number of alternate t-shirt suggestions!), please visit the <a href="./donation.html">Donation Page</a>.
+<br><font size="3">Thank you for supporting mafiascum.net through your purchase. If you would like to donate further to offset future server costs and/or to expedite future mafiascum products (cards are pretty far along in the pipeline, and we have had a number of alternate t-shirt suggestions!), please visit the <a href="./donation.php">Donation Page</a>.
 <br>
 <br>mith
 </td> 

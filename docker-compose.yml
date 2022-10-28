@@ -20,6 +20,7 @@ services:
     volumes:
       - wiki_data:/bitnami/wiki
       - phpbb_data:/bitnami/phpbb
+      - access_logs:/opt/bitnami/apache/logs
       - ./web/apache/httpd.conf:/opt/bitnami/apache/conf/httpd.conf
       - ./web/apache/usertrack.conf:/opt/bitnami/apache/conf/usertrack.conf
 
@@ -73,4 +74,6 @@ volumes:
   letsencrypt_data:
     driver: local
   sphinx_data:
+    driver: local
+  access_logs:
     driver: local
