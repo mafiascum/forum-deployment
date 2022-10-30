@@ -3,7 +3,7 @@ FROM bitnami/phpbb:3.3.8
 USER root
 
 RUN apt-get update
-RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate
+RUN apt-get install -y zip unzip awscli rsync jq cron php-xml apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate
 
 RUN mkdir /opt/bitnami/scripts/mafiascum
 
