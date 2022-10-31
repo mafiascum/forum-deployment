@@ -63,6 +63,12 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/user.conf.d:ro
       - letsencrypt_data:/etc/letsencrypt
+
+  postfix:
+    image: boky/postfix
+    env_file:
+      - .env
+    restart: always
     
 volumes:
   mariadb_data:
