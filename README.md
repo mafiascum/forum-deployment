@@ -2,7 +2,31 @@
 MS Forum Deployment Configuration 
 
 Instructions
-TODO: ensure that services can come up regardless of order
+
+## AWS Setup that needs to be done before bringing an environment up
+1) You will need to create an IAM user for application support. Call this `mafiascum-app`. 
+    1) This user needs only "programmatic access"; no console access required.
+    1) As of now, this needs the "AmazonS3FullAccess" existing policy and nothing else.
+    1) Copy down the access key ID and secret access key - you will need them when you set up `.env`
+1) Go to S3 app. Create an S3 bucket for backups. Convention is: `mafiascum-<env>-backups`
+    1) No versioning
+    1) No public access
+1) Next, set up SMTP with SES (go to "Simple Email Service" app)
+    1) Create a verified identity on the "Verified Identities" tab:
+        1) Use a "Domain" type entity
+        1) domain should be the root domain where the app lives: e.g. `mafiascum.net`
+        1) check "use a custom MAIL FROM Domain"
+        1) set the subdomain value to "mailer"
+        1) uncheck "Publish DNS records to Route53" unless you are using Route53
+    1) At this point, you will be returned to the details screen for this identity, and you will need to do some work on your DNS provider
+        1) In order to verify the identity, you will need to create three CNAME records, listed below the pending identity to be verified. Do this, and wait for the status to change to verified.
+        1) In order to verify the MAIL FROM domain (scroll down a bit) you will need to create an MX record and either an SPF or TXT record, both shown below. Use SPF if your DNS provider allows it, but otherwise you can use TXT. 
+            * Ensure that your DNS records look correct; some DNS providers may only want you to put the subdomains in the "name" field. You don't want to end up with mafiascum.net.mafiascum.net in your name fields
+    1) Now, create SMTP credentials - go to "SMTP Settings"
+        1) "Create SMTP Credentials"
+        1) set the IAM user name to `mafiascum-smtp`
+        1) Click "Show user SMTP credentials"
+        1) Copy these down - you will need to plug them into PhpBB later
 
 ## If restoring from a backup from current prod (TODO - automate this from prod to staging s3)
 
@@ -42,6 +66,10 @@ TODO: ensure that services can come up regardless of order
 1) Set memory limit to: 0
 1) produce a config file and note the sphinx_id in it (it's the nonsense alphanumeric string in source_phpbb_SPHINX_ID_main)
 1) Create an index for Sphinx fulltext
+1) While in here, go to the email settings: 
+    * server: email-smtp.us-east-1.amazonaws.com
+    * port: 587
+    * username / password: mafiascum-smtp IAM credentials you created above
 1) in your `.env`, set the SPHINX_ID to that alphanumeric string you noted earlier
 1) `docker-compose up -d sphinx`
 1) exec into the web container and run `python3 /opt/bitnami/scripts/mafiascum/reparse_quotes.py`
