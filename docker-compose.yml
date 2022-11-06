@@ -51,7 +51,7 @@ services:
     restart: always
     depends_on:
       - web
-      - sitechat3
+      - sitechat
     ports:
       - 80:80
       - 443:443
