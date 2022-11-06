@@ -29,7 +29,7 @@ SELECT
 FROM phpbb_posts;
 
 ALTER TABLE `phpbb_posts`
-DROP KEY `post_subject`,
+DROP KEY IF EXISTS `post_subject`,
 DROP KEY `post_approved`,
 DROP `post_approved`,
 ADD `post_visibility` tinyint(3) NOT NULL DEFAULT '0',
@@ -43,8 +43,8 @@ CHANGE `poster_id` `poster_id` int(10) unsigned NOT NULL DEFAULT '0',
 CHANGE `post_edit_user` `post_edit_user` int(10) unsigned NOT NULL DEFAULT '0',
 CHANGE `topic_id` `topic_id` int(10) unsigned NOT NULL DEFAULT '0',
 ADD KEY `poster_id_topic_id`(`poster_id`,`topic_id`),
-DROP KEY `post_text`,
-DROP KEY `post_content`;
+DROP KEY IF EXISTS `post_text`,
+DROP KEY IF EXISTS `post_content`;
 
 # InnoDB conversion
 
