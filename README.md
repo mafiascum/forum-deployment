@@ -28,7 +28,7 @@ Instructions
         1) Click "Show user SMTP credentials"
         1) Copy these down - you will need to plug them into PhpBB later
 
-## If restoring from a backup from current prod (TODO - automate this from prod to staging s3)
+## If restoring from a backup from current prod (See https://github.com/mafiascum/migration-data-export-3-0-7 for how to do this in prod)
 
 1) download the latest db backup from the current prod backups bucket.
 1) save this archive as `s3://<staging backup bucket>/db-backups/mafiascum.backup.<environment name>.db.latest.7z`
