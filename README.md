@@ -58,7 +58,7 @@ Instructions
 1) exec into the web container and run `/opt/bitnami/scripts/mafiascum/ms_post_migrations.sh`
 1) enable all the relevant extensions
 1) exec into the db container, get a db terminal, and run the sql in https://github.com/mafiascum/forum-deployment/blob/main/web/forum/migration/db/data/after_extensions.sql
-1) exec into the web container and reparse all the bbcodes by running `cd /opt/bitnami/phpbb && php bin/phpbbcli.php reparser:reparse`
+1) exec into the web container and reparse all the bbcodes by running `/opt/bitnami/scripts/mafiascum/ms_reparse_threaded.sh`
 1) set search engine to sphinx
 1) Set the path to: /var/lib/sphinxsearch/data
 1) Set the host to: sphinx
