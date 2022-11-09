@@ -101,3 +101,6 @@ INSERT INTO phpbb_teampage VALUES
 #
 ###
 UPDATE `phpbb_bbcodes` SET `display_on_posting`=0 WHERE `bbcode_tag` IN('votecount','votecountBB');
+
+## Disable FAQ Manager module, since the code no longer exists after upgrading
+UPDATE phpbb_modules SET module_enabled=0 WHERE module_langname='ACP_FAQ_MANAGER';
