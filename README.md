@@ -70,6 +70,7 @@ Instructions
     * server: email-smtp.us-east-1.amazonaws.com
     * port: 587
     * username / password: mafiascum-smtp IAM credentials you created above
+1) in ACP, go to `Board Features` and set `Display unapproved posts to the author:` to `No`. This tanks performance if left on.
 1) in your `.env`, set the SPHINX_ID to that alphanumeric string you noted earlier
 1) `docker-compose up -d sphinx`
 1) exec into the web container and run `python3 /opt/bitnami/scripts/mafiascum/reparse_quotes.py`
