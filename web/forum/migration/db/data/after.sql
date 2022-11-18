@@ -95,12 +95,5 @@ INSERT INTO phpbb_teampage VALUES
 (6,13647,'',5,0),
 (7,13696,'',6,0);
 
-###
-#
-# Hide specific bbcodes from the post editor screen
-#
-###
-UPDATE `phpbb_bbcodes` SET `display_on_posting`=0 WHERE `bbcode_tag` IN('votecount','votecountBB');
-
 ## Disable FAQ Manager module, since the code no longer exists after upgrading
 UPDATE phpbb_modules SET module_enabled=0 WHERE module_langname='ACP_FAQ_MANAGER';
