@@ -23,6 +23,8 @@ services:
       - access_logs:/opt/bitnami/apache/logs
       - ./web/apache/httpd.conf:/opt/bitnami/apache/conf/httpd.conf
       - ./web/apache/usertrack.conf:/opt/bitnami/apache/conf/usertrack.conf
+      - ./web/apache/remoteip.conf:/opt/bitnami/apache2/conf/remoteip.conf
+
 
   sitechat:
     image: mafiascum/site-chat-server
