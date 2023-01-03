@@ -7,6 +7,19 @@ import re
 import logging
 from functools import partial
 
+def extract_post_number_from_link_text(link_text):
+    match=re.match(r'post #?(\d+)', link_text)
+    if(match is None):
+        return None
+    return int(match.group(1))
+
+def build_quote_tag_text(username, ref_post_id, post_time, poster_id, post_num):
+    quote_elem_text = f'[quote={username} post_id={ref_post_id} time={post_time} user_id={poster_id}'
+    if(post_num is not None):
+        quote_elem_text += f' post_num={post_num}'
+    quote_elem_text += ']'
+    return quote_elem_text
+
 def reparse_quotes(table, id_column, text_column, necessary_insert_cols, cursor, limit, start=0):
 
     # get all posts within 'limit' starting with 'start' that match a particular pattern where a url to another post is embedded
@@ -17,20 +30,22 @@ def reparse_quotes(table, id_column, text_column, necessary_insert_cols, cursor,
 
     all_ref_post_ids = set()
     all_postdata = dict()
-    ref_quotes_to_post_ids = dict()
+    ref_quotes_to_post_details = dict()
 
     # for each post, parse out other post_ids mentioned and map quoted segments to reference post_ids
     for (post_id, post_text, ref_quotes) in cursor:
         ref_quotes_arr = re.split(r'(?<=\]) (?=\[)', ref_quotes)
 
         try:
-            for ref_quote in ref_quotes_arr: 
-                ref_post_id = re.match(r'\[quote=".+?\[url=https?:\/\/(www\.|forum\.)?mafiascum\.net(\/forum)?\/viewtopic\.php\?p=(\d+)#.*?\](.*?)\[\/url\](.*?)"]', ref_quote).group(3)
+            for ref_quote in ref_quotes_arr:
+                pattern_match = re.match(r'\[quote=".+?\[url=https?:\/\/(www\.|forum\.)?mafiascum\.net(\/forum)?\/viewtopic\.php\?p=(\d+)#.*?\](.*?)\[\/url\](.*?)"]', ref_quote)
+                ref_post_id = pattern_match.group(3)
+                link_text = pattern_match.group(4)
+                post_num = extract_post_number_from_link_text(link_text)
                 all_ref_post_ids.add(ref_post_id)
-                ref_quotes_to_post_ids[ref_quote] = ref_post_id
+                ref_quotes_to_post_details[ref_quote] = {'post_id': ref_post_id, 'post_num': post_num}
         except:
             logging.warning(f'Could not parse post content from quote: {table}, {post_id}, {ref_quote}. Skipping.')
-                
         all_postdata[post_id] = post_text
 
     if not all_postdata:
@@ -44,7 +59,7 @@ def reparse_quotes(table, id_column, text_column, necessary_insert_cols, cursor,
     all_mapped_posts = dict()
     # build a map of post_id -> info about that post to replace into quotes
     for (post_id, poster_id, post_time, username) in cursor:
-        all_mapped_posts[post_id] = (poster_id, post_time, username)
+        all_mapped_posts[post_id] = (poster_id, post_time, post_num, username)
 
     to_update = list()
 
@@ -55,17 +70,21 @@ def reparse_quotes(table, id_column, text_column, necessary_insert_cols, cursor,
         for quote_elem in elems:
             quote_s_elem = quote_elem.find('./s')
             ref_quote = quote_s_elem.text
-            ref_post_id = ref_quotes_to_post_ids.get(ref_quote, None)
+            ref_post_details = ref_quotes_to_post_details.get(ref_quote, None)
+            ref_post_id = ref_post_details['post_id']
+            ref_post_num = ref_post_details['post_num']
             if ref_post_id:
                 try:
                     if int(ref_post_id) in all_mapped_posts:
-                        (poster_id, post_time, username) = all_mapped_posts[int(ref_post_id)]
+                        (poster_id, post_time, post_num, username) = all_mapped_posts[int(ref_post_id)]
                         quote_elem.attrib.pop('url')
                         quote_elem.set('author', str(username))
                         quote_elem.set('post_id', str(ref_post_id))
                         quote_elem.set('time', str(post_time))
                         quote_elem.set('user_id', str(poster_id))
-                        quote_s_elem.text = f'[quote={username} post_id={ref_post_id} time={post_time} user_id={poster_id}]'
+                        if(ref_post_num is not None):
+                            quote_elem.set('post_num', str(ref_post_num))
+                        quote_s_elem.text = build_quote_tag_text(username, ref_post_id, post_time, poster_id, ref_post_num)
                     else:
                         logging.info(f'post {ref_post_id} was deleted, so we cannot link to it.')
                 except:
@@ -124,5 +143,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
