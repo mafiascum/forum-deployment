@@ -59,6 +59,7 @@ COPY forum/config.php.tpl /opt/bitnami/phpbb
 
 # add extension composer files
 COPY composer-extension-manifest.json /opt/bitnami/phpbb
+COPY composer-extension-manifest.lock /opt/bitnami/phpbb
 
 ENTRYPOINT [ "/opt/bitnami/scripts/mafiascum/entrypoint.sh" ]
 CMD [ "/opt/bitnami/scripts/apache/run.sh" ]
