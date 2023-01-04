@@ -5,6 +5,11 @@
     "homepage": "https://github.com/mafiascum/forum-deployment",
     "time": "2020-10-13",
     "license": "GPL-2.0",
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
     "authors": [{
         "name": "Charlie Ciccia",
         "email": "cciccia@gmail.com",
@@ -12,6 +17,12 @@
         "role": "Omerta"
     }],
     "require": {
-        "mafiascum/privatetopics": "0.4.1"
+        "mafiascum/privatetopics": "dev-main",
+        "mafiascum/isos": "dev-main",
+        "mafiascum/sitechat": "dev-main",
+        "mafiascum/authentication": "dev-main",
+        "mafiascum/bbcodes": "dev-main",
+        "mafiascum/mcp": "dev-main",
+        "mafiascum/miscellaneous": "dev-main"
     }
 }

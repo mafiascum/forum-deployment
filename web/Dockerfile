@@ -57,5 +57,8 @@ RUN /opt/bitnami/scripts/mafiascum/ms_logs.sh
 # add docker config.php.tpl
 COPY forum/config.php.tpl /opt/bitnami/phpbb
 
+# add extension composer files
+COPY composer-extension-manifest.json /opt/bitnami/phpbb
+
 ENTRYPOINT [ "/opt/bitnami/scripts/mafiascum/entrypoint.sh" ]
 CMD [ "/opt/bitnami/scripts/apache/run.sh" ]
