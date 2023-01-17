@@ -71,9 +71,9 @@ def reparse_quotes(table, id_column, text_column, necessary_insert_cols, cursor,
             quote_s_elem = quote_elem.find('./s')
             ref_quote = quote_s_elem.text
             ref_post_details = ref_quotes_to_post_details.get(ref_quote, None)
-            ref_post_id = ref_post_details['post_id']
-            ref_post_num = ref_post_details['post_num']
-            if ref_post_id:
+            if ref_post_details:
+                ref_post_id = ref_post_details['post_id']
+                ref_post_num = ref_post_details['post_num']
                 try:
                     if int(ref_post_id) in all_mapped_posts:
                         (poster_id, post_time, post_num, username) = all_mapped_posts[int(ref_post_id)]
