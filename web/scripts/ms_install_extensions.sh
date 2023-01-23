@@ -33,17 +33,8 @@ install_non_ms_extensions () {
 }
 
 install_ms_extensions_prod () {
-
-    cd /tmp
-
-    curl -LJO https://raw.githubusercontent.com/mafiascum/forum-extension-manifest/main/${MAFIASCUM_ENVIRONMENT:-staging}/composer.json
-
     cd /opt/bitnami/phpbb
-
-    COMPOSER=/tmp/composer.json composer.phar install --ignore-platform-reqs
-    COMPOSER=/tmp/composer.json composer.phar update --ignore-platform-reqs
-
-    rm composer.json || true
+    COMPOSER=composer-extension-manifest.json composer.phar install --ignore-platform-reqs
 }
 
 install_ms_extensions_dev () {

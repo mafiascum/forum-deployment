@@ -1,4 +1,4 @@
-FROM bitnami/phpbb:3.3.8
+FROM bitnami/phpbb:3.3.9
 
 USER root
 
@@ -56,6 +56,10 @@ RUN /opt/bitnami/scripts/mafiascum/ms_logs.sh
 
 # add docker config.php.tpl
 COPY forum/config.php.tpl /opt/bitnami/phpbb
+
+# add extension composer files
+COPY composer-extension-manifest.json /opt/bitnami/phpbb
+COPY composer-extension-manifest.lock /opt/bitnami/phpbb
 
 ENTRYPOINT [ "/opt/bitnami/scripts/mafiascum/entrypoint.sh" ]
 CMD [ "/opt/bitnami/scripts/apache/run.sh" ]
