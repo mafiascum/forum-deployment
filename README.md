@@ -46,7 +46,7 @@ Instructions
 1) check the container logs and wait until the database starts serving connections (this may take a while the first time due to loading from S3)
 1) `docker-compose up -d web`
 1) check the container logs and wait until apache starts serving connections (this may take a while the first time due to running migrations)
-1) `docker-compose up -d sitechat nginx`
+1) `docker-compose up -d sitechat nginx postfix`
 1) log into the website and go to the ACP
 1) If necessary, change the cookie domain to match the actual domain you're using
 1) Set cookies to secure
@@ -67,9 +67,9 @@ Instructions
 1) produce a config file and note the sphinx_id in it (it's the nonsense alphanumeric string in source_phpbb_SPHINX_ID_main)
 1) Create an index for Sphinx fulltext
 1) While in here, go to the email settings: 
-    * server: email-smtp.us-east-1.amazonaws.com
+    * server: postfix
     * port: 587
-    * username / password: mafiascum-smtp IAM credentials you created above
+    * username / password: leave blank
 1) in ACP, go to `Board Features` and set `Display unapproved posts to the author:` to `No`. This tanks performance if left on.
 1) in your `.env`, set the SPHINX_ID to that alphanumeric string you noted earlier
 1) `docker-compose up -d sphinx`
