@@ -16,3 +16,5 @@ RewriteRule ^wiki/?(.*)$ https://%{ENV:WIKI_FQDN}/$1 [R=301,L]
 RewriteCond %{REQUEST_URI} ^/forum$ [OR]
 RewriteCond %{REQUEST_URI} ^/forum/.*$
 RewriteRule ^forum/?(.*)$ https://%{ENV:FORUM_FQDN}/$1 [R=301,L]
+
+RewriteRule ^metrics/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/metrics/$1 [R=301,L]

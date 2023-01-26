@@ -3,7 +3,7 @@ FROM bitnami/phpbb:3.3.9
 USER root
 
 RUN apt-get update
-RUN apt-get install -y zip unzip awscli rsync jq cron php-xml apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate
+RUN apt-get install -y zip unzip awscli rsync jq cron php-xml apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate nano
 
 RUN mkdir /opt/bitnami/scripts/mafiascum
 
@@ -21,6 +21,9 @@ COPY vhost_templates/wiki.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
 # add scripts
 COPY scripts /opt/bitnami/scripts/mafiascum
 RUN chmod +x /opt/bitnami/scripts/mafiascum/*
+
+# add bash alias for all users
+RUN echo "alias ll='ls -lA'" >> /etc/bash.bashrc
 
 # logrotate
 COPY logrotate.d/apache2 /etc/logrotate.d/apache2

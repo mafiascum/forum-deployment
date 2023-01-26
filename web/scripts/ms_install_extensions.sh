@@ -15,7 +15,7 @@ install_non_ms_extensions () {
         "https://www.phpbb.com/customise/db/download/152041" \
 
         ## PM Search
-        "https://mafiascum-files.s3.us-west-2.amazonaws.com/static/phpbb-extensions/pmsearch.zip" \
+        "https://mafiascum-prod-static.s3.amazonaws.com/phpbb-extensions/pmsearch.zip" \
 
         ## Birthday Cake
         "https://www.phpbb.com/customise/db/download/183386" \

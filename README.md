@@ -11,6 +11,9 @@ Instructions
 1) Go to S3 app. Create an S3 bucket for backups. Convention is: `mafiascum-<env>-backups`
     1) No versioning
     1) No public access
+1) Go to S3 app. Create an S3 bucket for static files. Convention is: `mafiascum-<env>-static`
+    1) No versioning
+    1) Ensure public access is enabled
 1) Next, set up SMTP with SES (go to "Simple Email Service" app)
     1) Create a verified identity on the "Verified Identities" tab:
         1) Use a "Domain" type entity

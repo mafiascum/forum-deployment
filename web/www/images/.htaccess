@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteRule ^img-tags/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/images/img-tags/$1 [R=301,L]
+RewriteRule ^marathon/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/images/marathon/$1 [R=301,L]
+RewriteRule ^mith/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/images/mith/$1 [R=301,L]
+RewriteRule ^rebranding/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/images/rebranding/$1 [R=301,L]
+RewriteRule ^scummies/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/images/scummies/$1 [R=301,L]
