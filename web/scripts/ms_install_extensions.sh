@@ -35,6 +35,10 @@ install_non_ms_extensions () {
 install_ms_extensions_prod () {
     cd /opt/bitnami/phpbb
     COMPOSER=composer-extension-manifest.json composer.phar install --ignore-platform-reqs
+    while read line
+    do
+        COMPOSER=composer-extension-manifest.json composer.phar update $line --ignore-platform-reqs
+    done  < <( jq -rc '.require | keys | .[]' composer-extension-manifest.json )
 }
 
 install_ms_extensions_dev () {
