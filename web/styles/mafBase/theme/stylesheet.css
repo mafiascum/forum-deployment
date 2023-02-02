@@ -1,0 +1,9 @@
+/*  phpBB3 Style Sheet
+    --------------------------------------------------------------
+	Style name:			mafBase
+	Based on style:		prosilver
+    --------------------------------------------------------------
+*/
+
+@import url("../../prosilver/theme/stylesheet.css?v=3.2");
+@import url("stylesheet_mafbase.css?v=3.2");

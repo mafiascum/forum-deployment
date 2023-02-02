@@ -36,24 +36,17 @@ if [[ "$1" = "/opt/bitnami/scripts/$(web_server_type)/run.sh" || "$1" = "/opt/bi
     /opt/bitnami/scripts/mafiascum/ms_wiki_persistence.sh
     # apply env vars to config.php template
     /opt/bitnami/scripts/mafiascum/ms_create_config.sh
-    # run any MS specific pre-migrations
-    /opt/bitnami/scripts/mafiascum/ms_pre_migrations.sh
     # do normal phpbb setup
     /opt/bitnami/scripts/phpbb/setup.sh
-    # run any MS specific pre-migrations
-    # TODO - commenting this out - i don't see a good way of automating this w/o installing (not just downloading) styles automatically.
-    #/opt/bitnami/scripts/mafiascum/ms_post_migrations.sh
     # remove their vhosts and install our own instead
     /opt/bitnami/scripts/mafiascum/ms_vhosts.sh
+    # dev env setup (not done in prod)
+    /opt/bitnami/scripts/mafiascum/ms_install_extensions_dev.sh
+    /opt/bitnami/scripts/mafiascum/ms_install_styles_dev.sh
     # do any other one time setup that you want for this container
     /post-init.sh
-    # install extensions from composer after all other setup is done
-    /opt/bitnami/scripts/mafiascum/ms_install_extensions.sh
-    # install styles from composer after all other setup is done
-    /opt/bitnami/scripts/mafiascum/ms_install_styles.sh
-    # Perform wiki migration
+    # Perform wiki migration if needed
     /opt/bitnami/scripts/mafiascum/ms_mediawiki_migrate.sh
-
     info "** phpBB setup finished! **"
 fi
 

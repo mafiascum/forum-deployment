@@ -1,0 +1,46 @@
+services:
+  mafiascum.privatetopics.listener:
+    class: mafiascum\privatetopics\event\main_listener
+    arguments:
+        - '@controller.helper'
+        - '@template'
+        - '@request'
+        - '@dbal.conn'
+        - '@user'
+        - '@user_loader'
+        - '@language'
+        - '@auth'
+        - '@log'
+        - '%core.table_prefix%'
+        - '%core.root_path%'
+        - '%core.php_ext%'
+    tags:
+        - { name: event.listener }
+  mafiascum.privatetopics.verifyUsernameController:
+    class: mafiascum\privatetopics\controller\verifyUsername
+    arguments:
+        - '@request'
+        - '@user_loader'
+
+  mafiascum.privatetopics.lockController:
+    class: mafiascum\privatetopics\controller\lock
+    arguments:
+        - '@request'
+        - '@dbal.conn'
+        - '@user'
+        - '@auth'
+        - '@log'
+        - '@dispatcher'
+        - '%core.table_prefix%'
+        - '%core.root_path%'
+        - '%core.php_ext%'
+
+  mafiascum.privatetopics.mafiascum_privatetopics_autolock:
+    class: mafiascum\privatetopics\task\mafiascum_privatetopics_autolock
+    arguments:
+        - '@config'
+        - '@dbal.conn'
+    calls:
+        - [set_name, [mafiascum_privatetopics_autolock.mafiascum_privatetopics_autolock]]
+    tags:
+        - { name: cron.task }

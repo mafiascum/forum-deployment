@@ -18,10 +18,6 @@ COPY vhost_templates/forum.conf.tpl /opt/bitnami/scripts/apache/bitnami-template
 COPY vhost_templates/www.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
 COPY vhost_templates/wiki.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
 
-# add scripts
-COPY scripts /opt/bitnami/scripts/mafiascum
-RUN chmod +x /opt/bitnami/scripts/mafiascum/*
-
 # add bash alias for all users
 RUN echo "alias ll='ls -lA'" >> /etc/bash.bashrc
 
@@ -30,6 +26,10 @@ COPY logrotate.d/apache2 /etc/logrotate.d/apache2
 
 # python 3 environment
 RUN pip3 install mariadb
+
+# add scripts
+COPY scripts /opt/bitnami/scripts/mafiascum
+RUN chmod +x /opt/bitnami/scripts/mafiascum/*
 
 # install pgn4web for chess tags
 RUN /opt/bitnami/scripts/mafiascum/ms_install_pgn4web.sh
@@ -40,11 +40,6 @@ RUN /opt/bitnami/scripts/mafiascum/ms_install_access_parser.sh
 # install wikimedia and extensions
 COPY wiki/LocalSettings.php /tmp/
 RUN /opt/bitnami/scripts/mafiascum/ms_install_mediawiki.sh
-
-# add substitute migrations
-RUN mkdir /opt/bitnami/scripts/mafiascum/migration
-COPY forum/migration /opt/bitnami/scripts/mafiascum/migration
-RUN rsync -avz /opt/bitnami/scripts/mafiascum/migration/db/data/ /opt/bitnami/phpbb/phpbb/db/migration/data/
 
 # monkey patched files. this is your LAST RESORT for doing custom script work - try to use extensions if at all possible.
 RUN mkdir /opt/bitnami/scripts/mafiascum/patches
@@ -60,9 +55,14 @@ RUN /opt/bitnami/scripts/mafiascum/ms_logs.sh
 # add docker config.php.tpl
 COPY forum/config.php.tpl /opt/bitnami/phpbb
 
-# add extension composer files
-COPY composer-extension-manifest.json /opt/bitnami/phpbb
-COPY composer-extension-manifest.lock /opt/bitnami/phpbb
+# internal extensions and styles
+RUN mkdir /opt/bitnami/phpbb/ext/mafiascum
+COPY extensions /opt/bitnami/phpbb/ext/mafiascum
+COPY styles/ /opt/bitnami/phpbb/styles/
+
+# external extension build
+COPY external-extensions.json /opt/bitnami/phpbb
+RUN /opt/bitnami/scripts/mafiascum/ms_install_extensions_external.sh
 
 ENTRYPOINT [ "/opt/bitnami/scripts/mafiascum/entrypoint.sh" ]
 CMD [ "/opt/bitnami/scripts/apache/run.sh" ]

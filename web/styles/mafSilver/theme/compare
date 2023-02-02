@@ -1,0 +1,6 @@
+#!/bin/bash
+
+filename="$1"
+
+diff "$1" "../../mafSepia/theme/$1"
+diff "$1" "../../mafBlack/theme/$1"
