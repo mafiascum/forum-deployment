@@ -1,0 +1,16 @@
+services:
+    mafiascum.sitechat.listener:
+        class: mafiascum\sitechat\event\main_listener
+        arguments:
+            - '@controller.helper'
+            - '@template'
+            - '@request'
+            - '@user'
+        tags:
+            - { name: event.listener }
+    mafiascum.siteChat.toggleSiteChatController:
+        class: mafiascum\sitechat\controller\toggleSiteChat
+        arguments:
+            - '@request'
+            - '@user'
+            - '@dbal.conn'

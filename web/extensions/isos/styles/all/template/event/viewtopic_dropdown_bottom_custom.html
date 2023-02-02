@@ -1,0 +1,29 @@
+<form action="{U_ISO_BASE_URL}" method="get">
+  <div class="dropdown-container dropdown-button-control topic-tools dropdown-right dropdown-down">
+    <span title="{{ lang('ISO_SELECTED') }}" class="button button-secondary dropdown-trigger dropdown-select dropdown-toggle">
+      {{ lang('ISO_SELECTED') }}
+      <span class="caret">
+        <i class="icon fa-sort-down fa-fw"></i>
+      </span>
+    </span>
+    <div class="dropdown">
+      <div class="pointer">
+        <div class="pointer-inner"></div>
+      </div>
+      <ul class="dropdown-contents">
+        <fieldset class="display-options">
+		  <input type="hidden" name="sid" value="{{ _SID }}">
+		  <input type="hidden" name="f" value="{{ FORUM_ID }}">
+          <input type="hidden" name="t" value="{{ TOPIC_ID }}">
+          {% for user in TOPIC_USERS %}
+          <li>
+            <label><span>{{ user.USERNAME }}</span> <input type="checkbox" name="user_select[]" value="{{ user.ID }}"></label>
+          </li>
+          {% endfor %}
+          <hr class="dashed">
+          <input class="button2" type="submit" value="{{ lang('GO') }}">
+        </fieldset>
+	  </ul>
+    </div>
+  </div>
+</form>

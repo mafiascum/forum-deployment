@@ -1,0 +1,61 @@
+/** content.css **/
+/* Dice block */
+div.dicebox {
+	background-color: #FFF7DF;
+	border: 1px solid #47751D;
+}
+
+div.dicetop {
+	border-bottom: 1px solid  #47751D;
+}
+
+blockquote {
+	background: transparent none 6px 8px no-repeat;
+	background-image: url("./images/quote.gif");
+}
+
+.postprofile {
+	border: none;
+}
+
+.glow {
+	background: no-repeat 0 -7px url('./images/logo-text-bg.png');
+}
+
+.post {
+	padding: 20px;
+}
+
+input {
+	background-color: #f4f0ed;
+	border-color: #a58c61;
+	color: #333;
+	border: 1px solid;
+}
+input:focus,
+input:hover {
+	border-color: #b70c09;
+}
+
+.activity-overview th span {
+	color: #B28449;
+}
+
+blockquote,
+blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote
+{
+	background-color: #EDDFD0;
+}
+
+blockquote blockquote,
+blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote
+{
+	background-color: #EAE4DC;
+}

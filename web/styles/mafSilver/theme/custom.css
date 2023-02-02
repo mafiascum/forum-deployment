@@ -1,0 +1,46 @@
+/** content.css **/
+/* Dice block */
+div.dicebox {
+	background-color: #FFF7DF;
+	border: 1px solid #47751D;
+}
+
+div.dicetop {
+	border-bottom: 1px solid  #47751D;
+}
+
+blockquote {
+	background-repeat: no-repeat;
+	background-image: url("./images/quote.gif");
+}
+
+blockquote,
+blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote
+{
+	background-color: #E0E2E5;
+}
+
+blockquote blockquote,
+blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote
+{
+	background-color: #E9ECF3;
+}
+
+.postprofile {
+	border: none;
+}
+
+.glow {
+	background: no-repeat 0 -7px url('./images/logo-text-bg.png');
+}
+
+.post {
+	padding: 20px;
+}

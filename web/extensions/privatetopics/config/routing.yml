@@ -1,0 +1,7 @@
+verify_username_route:
+    path: /verify_username
+    defaults: { _controller: mafiascum.privatetopics.verifyUsernameController:handle }
+
+lock_route:
+    path: /lock
+    defaults: { _controller: mafiascum.privatetopics.lockController:handle }

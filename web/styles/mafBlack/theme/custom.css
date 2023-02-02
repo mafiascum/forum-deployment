@@ -1,0 +1,115 @@
+/** content.css **/
+/* Dice block */
+div.dicebox {
+	background-color: #222222;
+	border: 1px solid #FFFFFF;
+}
+
+div.dicetop {
+	border-bottom: 1px solid  #FFFFFF;
+}
+
+dl.row-item {
+	background-size: initial;
+}
+
+dl.row-item dt {
+	background-size: initial;
+}
+
+.postbody h3 {
+	color: #FFCC66;
+}
+
+p.author {
+	color: #FFCC66 !important;
+}
+
+blockquote {
+	background: transparent none 6px 8px no-repeat;
+	background-image: url("./images/quote.gif");
+}
+
+blockquote,
+blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote
+{
+	background-color: #404040;
+}
+
+blockquote blockquote,
+blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote,
+blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote blockquote
+{
+	background-color: #303030;
+}
+
+.glow {
+	background: no-repeat 0 -7px url('./images/logo-text-bg.png');
+}
+
+.post .postprofile {
+	border: none;
+}
+
+input {
+	background-color: #eee;
+	border-color: #999;
+	color: #000;
+	border: 1px solid;
+	border-radius: 2px;
+	padding: 2px;
+}
+input:hover {
+	border-color: #ccc;
+}
+
+h2 {
+	color: #dcdcdc;
+}
+
+.activity-overview th span {
+	color: #ccc;
+}
+
+.activity-overview caption {
+	color: #dcdcdc;
+}
+
+@-moz-document url-prefix() {
+	.display-options {
+		overflow-y: scroll;
+	}
+}
+
+.postbody {
+	text-shadow: 1px 1px #000;
+}
+
+.postlink {
+	color: #fff;
+}
+
+.postbody a {
+	color: #fff;
+}
+
+.topiclist.forums dl.row-item dt .list-inner,
+.topiclist.topics dl.row-item dt .list-inner {
+	padding-left: 57px;
+}
+
+.forabg, .forumbg {
+	padding: 0;
+}
+
+.private .dropdown,
+.private .dropdown a,
+.private .dropdown a:hover {
+	color: #fff !important;
+}
