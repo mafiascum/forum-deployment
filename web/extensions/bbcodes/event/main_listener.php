@@ -194,6 +194,9 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	function configure_bbcodes($event) {
+
+		$bbcodesWithoutLineBreakAfter = array('LIST');
+
 		$event['configurator']->tags['SIZE']->filterChain
 		->append(array(__CLASS__, 'filter_size'));
 
@@ -221,7 +224,9 @@ class main_listener implements EventSubscriberInterface
 				//}
 			}
 
-			$tag->rules->ignoreSurroundingWhitespace(false);
+			if(!in_array($sourceTagName, $bbcodesWithoutLineBreakAfter)) {
+				$tag->rules->ignoreSurroundingWhitespace(false);
+			}
 		}
 
 		// Change hardcoded bbcode templates to be <div> based so they can contain other <div> based tags
