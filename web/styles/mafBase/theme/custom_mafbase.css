@@ -963,3 +963,7 @@ sub {
 .signature-collapsed {
 	display: none;
 }
+
+.postlink {
+	display: inline !important;
+}
