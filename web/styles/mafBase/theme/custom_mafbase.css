@@ -964,6 +964,7 @@ sub {
 	display: none;
 }
 
+.postbody a,
 .postlink {
 	display: inline !important;
 }
