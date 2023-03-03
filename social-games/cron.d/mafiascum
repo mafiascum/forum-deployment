@@ -1,0 +1,2 @@
+0 9 * * * root /scripts/perform-backups.sh >> /var/log/cron-mafiascum.log 2>&1
+### Don't edit anything below this line - the last line of the crontab must be blank
