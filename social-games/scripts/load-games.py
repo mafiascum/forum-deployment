@@ -13,6 +13,7 @@ mysql_user=os.environ['SOCIAL_GAMES_DB_USER']
 mysql_password=os.environ['MYSQL_ROOT_PASSWORD']
 domain_name=os.environ['SOCIAL_GAMES_DOMAIN_NAME']
 http_schema=os.environ['SOCIAL_GAMES_HTTP_SCHEMA']
+web_prefix=os.environ['SOCIAL_GAMES_WEB_PREFIX']
 doc_root=os.environ['SOCIAL_GAMES_DOC_ROOT']
 
 gameIndexFile = open('/game-index.txt', 'r')
@@ -38,7 +39,7 @@ def import_database(schema_name, web_name, db_backup_s3_path):
     with pymysql.connect(host = mysql_host, user = mysql_user, password = mysql_password, database = schema_name) as db:
         cursor = db.cursor()
         base_web_path = doc_root + '/' + web_name
-        base_web_url = http_schema + domain_name + '/' + web_name
+        base_web_url = http_schema + domain_name + web_prefix + '/' + web_name
 
         cursor.execute("""
             UPDATE smf_settings SET value=%s WHERE variable='attachmentUploadDir'
@@ -87,7 +88,7 @@ def import_web_files(web_name):
 
 
 def update_web_config(web_name, schema_name, mysql_db_username_for_board, mysql_db_password_for_board):
-    subprocess.run(["/scripts/update-settings-file.sh", web_name, schema_name, mysql_db_username_for_board, mysql_db_password_for_board])
+    subprocess.run(["/scripts/update-settings-file.sh", web_name, schema_name, web_prefix, mysql_db_username_for_board, mysql_db_password_for_board])
 
 
 def init_database_user(schema_name, mysql_db_username_for_board, mysql_db_password_for_board):
