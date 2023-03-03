@@ -17,4 +17,8 @@ RewriteCond %{REQUEST_URI} ^/forum$ [OR]
 RewriteCond %{REQUEST_URI} ^/forum/.*$
 RewriteRule ^forum/?(.*)$ https://%{ENV:FORUM_FQDN}/$1 [R=301,L]
 
+RewriteCond %{REQUEST_URI} ^/social-games$ [OR]
+RewriteCond %{REQUEST_URI} ^/social-games/.*$
+RewriteRule ^social-games/?(.*)$ http://social-games/$1 [QSA,L,P]
+
 RewriteRule ^metrics/(.*)$ https://%{ENV:AWS_STATIC_BUCKET}.s3.amazonaws.com/www/metrics/$1 [R=301,L]

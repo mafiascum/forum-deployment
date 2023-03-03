@@ -72,6 +72,16 @@ services:
       - .env
     restart: always
 
+  social-games:
+    build:
+      context: ./social-games
+    env_file:
+      - .env
+    depends_on:
+      - database
+    volumes:
+      - social_games_www:/var/www/html
+
 volumes:
   mariadb_data:
     driver: local
@@ -84,4 +94,6 @@ volumes:
   sphinx_data:
     driver: local
   access_logs:
+    driver: local
+  social_games_www:
     driver: local
