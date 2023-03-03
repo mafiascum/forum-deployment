@@ -2,11 +2,12 @@
 
 WEB_NAME="$1"
 SCHEMA_NAME="$2"
-MYSQL_USER_FOR_BOARD="$3"
-MYSQL_PASSWORD_FOR_BOARD="$4"
+WEB_PREFIX="$3"
+MYSQL_USER_FOR_BOARD="$4"
+MYSQL_PASSWORD_FOR_BOARD="$5"
 
 DEST_PATH="/var/www/html/$WEB_NAME"
-BOARD_URL=$(echo "${SOCIAL_GAMES_HTTP_SCHEMA}${SOCIAL_GAMES_DOMAIN_NAME}/${WEB_NAME}" | sed 's/\//\\\//g')
+BOARD_URL=$(echo "${SOCIAL_GAMES_HTTP_SCHEMA}${SOCIAL_GAMES_DOMAIN_NAME}${WEB_PREFIX}/${WEB_NAME}" | sed 's/\//\\\//g')
 BOARD_DIR=$(echo "${DEST_PATH}" | sed 's/\//\\\//g')
 SOURCE_DIR=$(echo "${DEST_PATH}/Sources" | sed 's/\//\\\//g')
 CACHE_DIR=$(echo "${DEST_PATH}/cache" | sed 's/\//\\\//g')
