@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /opt/bitnami/scripts/mafiascum/.env.sh
+source /opt/mafiascum/scripts/.env.sh
 
 ZIP_FILE_PATTERN="$1"
 FORMATTED_FILE_NAME_FORMAT="$2"
@@ -10,8 +10,8 @@ if [[ -z "$1" || -z "$2" ]] ; then
     exit
 fi
 
-SOURCE_DIR="/opt/bitnami/apache/logs/access/raw/"
-PARSED_DIRECTORY="/opt/bitnami/apache/logs/access/formatted/"
+SOURCE_DIR="/etc/apache2/logs/access/raw/"
+PARSED_DIRECTORY="/etc/apache2/logs/access/formatted/"
 TIMESTAMP_TODAY=`date '+%Y%m%d' -d "0 days ago"`
 TIMESTAMP_YESTERDAY=`date '+%Y%m%d' -d "1 days ago"`
 BUCKET_NAME="$AWS_BACKUP_BUCKET"

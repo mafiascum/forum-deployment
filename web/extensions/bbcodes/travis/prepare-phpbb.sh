@@ -9,7 +9,7 @@
 # the docs/CREDITS.txt file.
 #
 set -e
-set -x
+[ "$MAFIASCUM_DEBUG" == 'true' ] && set -x
 
 EXTNAME=$1
 BRANCH=$2

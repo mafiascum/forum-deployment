@@ -1,22 +1,22 @@
-FROM bitnami/phpbb:3.3.9
-
-USER root
+FROM php:8.1.14-apache
 
 RUN apt-get update
-RUN apt-get install -y zip unzip awscli rsync jq cron php-xml apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate nano
+RUN apt-get -y upgrade
+RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate nano
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-RUN mkdir /opt/bitnami/scripts/mafiascum
+RUN mkdir -p /opt/mafiascum/scripts
 
-# Only persist things we don't plan to install ourselves
-ENV PHPBB_DATA_TO_PERSIST="store files images"
+# Change this to change the version
+ENV PHPBB_MAJOR_VERSION=3
+ENV PHPBB_MINOR_VERSION=3
+ENV PHPBB_PATCH_VERSION=10
 
 # copy legacy sites
-COPY www /opt/bitnami/www
+COPY www /opt/mafiascum/www
 
 # copy vhost templates
-COPY vhost_templates/forum.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
-COPY vhost_templates/www.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
-COPY vhost_templates/wiki.conf.tpl /opt/bitnami/scripts/apache/bitnami-templates
+COPY vhost_templates /opt/mafiascum/apache/vhost-templates
 
 # add bash alias for all users
 RUN echo "alias ll='ls -lA'" >> /etc/bash.bashrc
@@ -28,41 +28,54 @@ COPY logrotate.d/apache2 /etc/logrotate.d/apache2
 RUN pip3 install mariadb
 
 # add scripts
-COPY scripts /opt/bitnami/scripts/mafiascum
-RUN chmod +x /opt/bitnami/scripts/mafiascum/*
+COPY scripts /opt/mafiascum/scripts
+RUN chmod +x /opt/mafiascum/scripts/*
+
+# php environment
+RUN /opt/mafiascum/scripts/ms_env_php.sh
+
+# add apache utils
+RUN mkdir -p /opt/mafiascum/apache
+
+# install phpbb
+RUN /opt/mafiascum/scripts/ms_unpack_phpbb.sh
+
+# add other web targets
+RUN mkdir -p /opt/mafiascum/www
+RUN mkdir -p /opt/mafiascum/wiki
 
 # install pgn4web for chess tags
-RUN /opt/bitnami/scripts/mafiascum/ms_install_pgn4web.sh
+RUN /opt/mafiascum/scripts/ms_install_pgn4web.sh
 
 # install access log parser
-RUN /opt/bitnami/scripts/mafiascum/ms_install_access_parser.sh
+RUN /opt/mafiascum/scripts/ms_install_access_parser.sh
 
 # install wikimedia and extensions
 COPY wiki/LocalSettings.php /tmp/
-RUN /opt/bitnami/scripts/mafiascum/ms_install_mediawiki.sh
+RUN /opt/mafiascum/scripts/ms_install_mediawiki.sh
 
 # monkey patched files. this is your LAST RESORT for doing custom script work - try to use extensions if at all possible.
-RUN mkdir /opt/bitnami/scripts/mafiascum/patches
-COPY forum/patches /opt/bitnami/scripts/mafiascum/patches
-RUN rsync -avz /opt/bitnami/scripts/mafiascum/patches/ /opt/bitnami/phpbb/
+RUN mkdir /opt/mafiascum/scripts/patches
+COPY forum/patches /opt/mafiascum/scripts/patches
+RUN rsync -avz /opt/mafiascum/scripts/patches/ /opt/mafiascum/forum/
 
 # add cron
 COPY cron.d /etc/cron.d/
 
 # make log locations for directories
-RUN /opt/bitnami/scripts/mafiascum/ms_logs.sh
+RUN /opt/mafiascum/scripts/ms_logs.sh
 
 # add docker config.php.tpl
-COPY forum/config.php.tpl /opt/bitnami/phpbb
+COPY forum/config.php.tpl /opt/mafiascum/forum
 
 # internal extensions and styles
-RUN mkdir /opt/bitnami/phpbb/ext/mafiascum
-COPY extensions /opt/bitnami/phpbb/ext/mafiascum
-COPY styles/ /opt/bitnami/phpbb/styles/
+RUN mkdir -p /opt/mafiascum/forum/ext/mafiascum
+COPY extensions /opt/mafiascum/forum/ext/mafiascum
+COPY styles/ /opt/mafiascum/forum/styles/
 
 # external extension build
-COPY external-extensions.json /opt/bitnami/phpbb
-RUN /opt/bitnami/scripts/mafiascum/ms_install_extensions_external.sh
+COPY external-extensions.json /opt/mafiascum/forum
+RUN /opt/mafiascum/scripts/ms_install_extensions_external.sh
 
-ENTRYPOINT [ "/opt/bitnami/scripts/mafiascum/entrypoint.sh" ]
-CMD [ "/opt/bitnami/scripts/apache/run.sh" ]
+ENTRYPOINT [ "/opt/mafiascum/scripts/entrypoint.sh" ]
+CMD ["apache2-foreground"]

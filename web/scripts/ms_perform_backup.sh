@@ -1,5 +1,5 @@
 #!/bin/bash
-source "/opt/bitnami/scripts/mafiascum/.env.sh"
+source "/opt/mafiascum/scripts/.env.sh"
 
 if [[ $MAFIASCUM_ENVIRONMENT != 'development' ]] && [[ $MAFIASCUM_ENVIRONMENT != 'dev' ]] && [[ $MAFIASCUM_ENVIRONMENT != 'local' ]]; then
     DATE=`TZ="America/New_York" date +%Y%m%d_%H%M%S`
@@ -9,7 +9,7 @@ if [[ $MAFIASCUM_ENVIRONMENT != 'development' ]] && [[ $MAFIASCUM_ENVIRONMENT !=
     WIKI_LATEST_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.wiki.latest.zip"
 
     echo "Backing up forum data"
-    cd /bitnami/phpbb
+    cd /data/forum
     zip -r -P${MAFIASCUM_BACKUP_PASSWORD} "$FORUM_TAR_FILE_NAME" *
     echo "Sending forum data to S3"
     aws s3 cp "$FORUM_TAR_FILE_NAME" "s3://$AWS_BACKUP_BUCKET/web-backups/$FORUM_TAR_FILE_NAME"
@@ -17,7 +17,7 @@ if [[ $MAFIASCUM_ENVIRONMENT != 'development' ]] && [[ $MAFIASCUM_ENVIRONMENT !=
     rm "$FORUM_TAR_FILE_NAME"
 
     echo "Backing up wiki data"
-    cd /bitnami/wiki
+    cd /data/wiki
     zip -r -P${MAFIASCUM_BACKUP_PASSWORD} "$WIKI_TAR_FILE_NAME" *
     echo "Sending wiki data to S3"
     aws s3 cp "$WIKI_TAR_FILE_NAME" "s3://$AWS_BACKUP_BUCKET/web-backups/$WIKI_TAR_FILE_NAME"

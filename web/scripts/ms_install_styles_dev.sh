@@ -1,12 +1,12 @@
 #!/bin/bash
-set -x
+[ "$MAFIASCUM_DEBUG" == 'true' ] && set -x
 
 install_ms_styles_dev() {
     cd /mafiascum/styles
 
     for file in *; do
-        rm -rf "/opt/bitnami/phpbb/styles/$file"
-        ln -s $(realpath "$file") "/opt/bitnami/phpbb/styles/$file"
+        rm -rf "/opt/mafiascum/forum/styles/$file"
+        ln -s $(realpath "$file") "/opt/mafiascum/forum/styles/$file"
     done
 }
 

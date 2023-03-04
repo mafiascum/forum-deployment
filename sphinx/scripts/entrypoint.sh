@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+[ "$MAFIASCUM_DEBUG" == 'true' ] && set -x
 
 service cron start
 envsubst '${PHPBB_DATABASE_HOST}
