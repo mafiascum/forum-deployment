@@ -443,13 +443,20 @@ class main_listener implements EventSubscriberInterface
         $user_cache = $event['user_cache'];
         $poster_id = $event['poster_id'];
         $post_row = $event['post_row'];
-
-        $post_row['S_BIRTHDAY'] = $user_cache[$poster_id]['user_birthday'];
-        $post_row['S_SCUMDAY'] = $user_cache[$poster_id]['user_scumday'];
-        $post_row['S_VLA'] = $user_cache[$poster_id]['vla'];
-		$post_row['S_VLA_END'] = $user_cache[$poster_id]['vla_display'];
-        $post_row['S_VLA_UNTIL'] = $this->language->lang('VLA_UNTIL', $user_cache[$poster_id]['vla_display']);
-
+        if (isset($user_cache[$poster_id]['user_birthday'])) {
+            $post_row['S_BIRTHDAY'] = $user_cache[$poster_id]['user_birthday'];
+        }
+        if (isset($user_cache[$poster_id]['user_scumday'])) {
+            $post_row['S_SCUMDAY'] = $user_cache[$poster_id]['user_scumday'];
+        }
+        if (isset($user_cache[$poster_id]['vla'])) {
+            $post_row['S_VLA'] = $user_cache[$poster_id]['vla'];
+        }
+        if (isset($user_cache[$poster_id]['vla_display'])) {
+            $post_row['S_VLA_END'] = $user_cache[$poster_id]['vla_display'];
+            $post_row['S_VLA_UNTIL'] = $this->language->lang('VLA_UNTIL', $user_cache[$poster_id]['vla_display']);
+        }
+        
         $event['post_row'] = $post_row;
     }
 }

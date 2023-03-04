@@ -256,9 +256,10 @@ class main_listener implements EventSubscriberInterface
 		$iso_post_number = $is_isolation ? $localized_post_number : '';
 
 		//pronoun additions
-		$pronoun = array_key_exists('PROFILE_USER_PRONOUN_TEXT_VALUE', $event['cp_row']['row']) ? $event['cp_row']['row']['PROFILE_USER_PRONOUN_TEXT_VALUE'] : '';
-
-		$post_row['PRONOUN'] = $pronoun;
+		if (array_key_exists('row', $event['cp_row'])) {
+			$pronoun = array_key_exists('PROFILE_USER_PRONOUN_TEXT_VALUE', $event['cp_row']['row']) ? $event['cp_row']['row']['PROFILE_USER_PRONOUN_TEXT_VALUE'] : '';
+			$post_row['PRONOUN'] = $pronoun;
+		}
         $post_row['ISO_URL'] = append_sid("{$phpbb_root_path}viewtopic.{$phpEx}", "p=$post_id&f=$forum_id&t={$topic_id}&user_select%5B%5D={$poster_id}#p$post_id");
 		$post_row['POST_NUMBER'] = $actual_post_number;
 		$post_row['ISO_POST_NUMBER'] = $iso_post_number;
