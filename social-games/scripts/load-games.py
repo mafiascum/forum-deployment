@@ -36,6 +36,11 @@ def import_database(schema_name, web_name, db_backup_s3_path):
     s3.meta.client.download_file(bucket_name, db_backup_s3_path, archive_file_path)
     subprocess.run(["/scripts/import-db.sh", schema_name])
 
+    if(os.path.isfile(archive_file_path)):
+        os.remove(archive_file_path)
+
+
+def update_database_tables(schema_name):
     with pymysql.connect(host = mysql_host, user = mysql_user, password = mysql_password, database = schema_name) as db:
         cursor = db.cursor()
         base_web_path = doc_root + '/' + web_name
@@ -78,9 +83,6 @@ def import_database(schema_name, web_name, db_backup_s3_path):
 
         db.commit()
         cursor.close()
-
-    if(os.path.isfile(archive_file_path)):
-        os.remove(archive_file_path)
 
 
 def import_web_files(web_name):
@@ -151,6 +153,9 @@ for line in lines:
         import_web_files(web_name)
     else:
         print(' - Web directory already exists. Skipping import.')
+
+    print(' - Updating database tables.')
+    update_database_tables(schema_name)
 
     print(' - Updating web config.')
     update_web_config(web_name, schema_name, mysql_db_username_for_board, mysql_db_password_for_board)
