@@ -133,7 +133,7 @@ class main_listener implements EventSubscriberInterface
 		$xpath = new \DOMXPath($dom);
 
 		// QUOTE
-		$result = $xpath->query("//QUOTE[not(@post_num)]");
+		$result = $xpath->query("//QUOTE[@post_id and not(@post_num)]");
 		foreach($result as $countdown) {
 			$post_id = $result->item(0)->attributes->getNamedItem('post_id')->value;
 			$topic_id = $this->get_topic_id_from_post_id($post_id);
