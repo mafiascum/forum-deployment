@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ -n ${PHP_INI_DEVELOPMENT+development} ]]; then
+if [[ -n ${PHP_INI_DEVELOPMENT} ]]; then
     echo "Using development ini"
     ENV_TYPE="development"
 else
