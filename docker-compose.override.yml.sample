@@ -14,7 +14,10 @@ services:
             - ./nginx-dev/cert:/etc/nginx/certs
             - ./nginx-dev/sites:/etc/nginx/templates
     web:
-        build: ./web
+        build: 
+            context: ./web
+            args:
+                PHP_INI_DEVELOPMENT: true
         restart: always
         depends_on:
             - database

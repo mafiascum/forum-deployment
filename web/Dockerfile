@@ -1,5 +1,8 @@
 FROM php:8.1.14-apache
 
+ARG PHP_INI_DEVELOPMENT
+ENV PHP_INI_DEVELOPMENT=$PHP_INI_DEVELOPMENT
+
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate nano libicu-dev

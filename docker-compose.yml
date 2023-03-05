@@ -11,7 +11,8 @@ services:
       - mariadb_data:/var/lib/mysql
       
   web:
-    build: ./web
+    build:
+      context: ./web
     restart: always
     depends_on:
       - database
