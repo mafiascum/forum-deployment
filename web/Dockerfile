@@ -2,8 +2,9 @@ FROM php:8.1.14-apache
 
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate nano
+RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev python3-pip gcc g++ cmake logrotate nano libicu-dev
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN docker-php-ext-install intl && docker-php-ext-enable intl
 
 RUN mkdir -p /opt/mafiascum/scripts
 
