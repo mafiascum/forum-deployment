@@ -103,6 +103,17 @@ class main_listener implements EventSubscriberInterface
 		return $post_number;
 	}
 
+	private function get_topic_id_from_post_id($post_id) {
+		$sql = "SELECT topic_id 
+				FROM " . POSTS_TABLE . "
+				WHERE post_id=$post_id";
+		$result = $this->db->sql_query($sql);
+		$topic_id = (int) $this->db->sql_fetchfield('topic_id');
+		$this->db->sql_freeresult($result);
+
+		return $topic_id;
+	}
+
 	public function posting_modify_quote_attributes($event)
 	{
 		$quote_attributes = $event['quote_attributes'];
@@ -120,6 +131,15 @@ class main_listener implements EventSubscriberInterface
 		$dom = new \DOMDocument;
 		$dom->loadXML($event['xml']);
 		$xpath = new \DOMXPath($dom);
+
+		// QUOTE
+		$result = $xpath->query("//QUOTE[not(@post_num)]");
+		foreach($result as $countdown) {
+			$post_id = $result->item(0)->attributes->getNamedItem('post_id')->value;
+			$topic_id = $this->get_topic_id_from_post_id($post_id);
+			$post_num = $this->get_post_number($topic_id, $post_id);
+			$result->item(0)->setAttribute("post_num", $post_num);
+		}
 
 		// COUNTDOWN
 		$result = $xpath->query("//COUNTDOWN/text()[normalize-space()]");
@@ -238,6 +258,22 @@ class main_listener implements EventSubscriberInterface
 		//TODO is this the right thing to do?
 		//$event['configurator']->tags['color']->template = new UnsafeTemplate($event['configurator']->templateNormalizer->normalizeTemplate('<span style="color: {COLOR}"><xsl:apply-templates/></span>'));
 		$event['configurator']->BBCodes->addCustom('[COLOR={COLOR}]{TEXT}[/COLOR]', new UnsafeTemplate($event['configurator']->templateNormalizer->normalizeTemplate('<div style="display: inline; color: {COLOR}"><xsl:apply-templates/></div>')));		
+		$event['configurator']->BBCodes->addCustom("[QUOTE
+		author={TEXT1;optional}
+		post_id={UINT;optional}
+		post_num={UINT;optional}
+		post_url={URL;optional;postFilter=#false}
+		msg_id={UINT;optional}
+		msg_url={URL;optional;postFilter=#false}
+		profile_url={URL;optional;postFilter=#false}
+		time={UINT;optional}
+		url={URL;optional}
+		user_id={UINT;optional}
+		author={PARSE=/^\\[url=(?'url'.*?)](?'author'.*)\\[\\/url]$/i}
+		author={PARSE=/^\\[url](?'author'(?'url'.*?))\\[\\/url]$/i}
+		author={PARSE=/(?'url'https?:\\/\\/[^[\\]]+)/i}
+	]{TEXT2}[/QUOTE]", $event['configurator']->tags['quote']->template);
+
 	}
 
 	static public function filter_size(\s9e\TextFormatter\Parser\Tag $tag) {
