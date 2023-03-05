@@ -1,8 +1,8 @@
 <VirtualHost *:8080>
 	ServerAdmin admin@mafiascum.net
 	DocumentRoot /opt/mafiascum/wiki/
-	ServerName {{WIKI_FQDN}}
-	ServerAlias {{WIKI_FQDN}}
+	ServerName ${WIKI_FQDN}
+	ServerAlias ${WIKI_FQDN}
 	ErrorDocument 404 /404.php
 
 	<Directory "/opt/mafiascum/wiki/">

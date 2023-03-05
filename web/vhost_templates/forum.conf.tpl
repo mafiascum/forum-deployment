@@ -1,8 +1,8 @@
 <VirtualHost *:8080>
 	ServerAdmin admin@mafiascum.net
 	DocumentRoot /opt/mafiascum/forum/
-	ServerName {{FORUM_FQDN}}
-	ServerAlias {{FORUM_FQDN}}
+	ServerName ${FORUM_FQDN}
+	ServerAlias ${FORUM_FQDN}
 	ErrorDocument 404 /404.php
 
 	<Directory "/opt/mafiascum/forum/">
