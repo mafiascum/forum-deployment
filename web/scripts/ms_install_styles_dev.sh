@@ -5,8 +5,10 @@ install_ms_styles_dev() {
     cd /mafiascum/styles
 
     for file in *; do
-        rm -rf "/opt/mafiascum/forum/styles/$file"
-        ln -s $(realpath "$file") "/opt/mafiascum/forum/styles/$file"
+        if [[ -d "$file" ]]; then
+            rm -rf "/opt/mafiascum/forum/styles/$file"
+            ln -s $(realpath "$file") "/opt/mafiascum/forum/styles/$file"
+        fi
     done
 }
 

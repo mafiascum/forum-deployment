@@ -19,6 +19,7 @@ chown -R daemon:root /data/forum
 chown -R daemon:root /opt/mafiascum/forum/store
 chown -R daemon:root /opt/mafiascum/forum/files
 chown -R daemon:root /opt/mafiascum/forum/images
+chown -R daemon:root /opt/mafiascum/forum/cache
 
 
 db_host="$(phpbb_conf_get "\$dbhost")"
