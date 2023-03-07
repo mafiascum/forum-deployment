@@ -134,11 +134,11 @@ class main_listener implements EventSubscriberInterface
 
 		// QUOTE
 		$result = $xpath->query("//QUOTE[@post_id and not(@post_num)]");
-		foreach($result as $countdown) {
-			$post_id = $result->item(0)->attributes->getNamedItem('post_id')->value;
+		foreach($result as $el) {
+			$post_id = $el->attributes->getNamedItem('post_id')->value;
 			$topic_id = $this->get_topic_id_from_post_id($post_id);
 			$post_num = $this->get_post_number($topic_id, $post_id);
-			$result->item(0)->setAttribute("post_num", $post_num);
+			$el->setAttribute("post_num", $post_num);
 		}
 
 		// COUNTDOWN
