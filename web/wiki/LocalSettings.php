@@ -191,7 +191,7 @@ $wgAuth_Config['MySQL_Database']    = getenv("PHPBB_DATABASE_NAME");      // php
 $wgAuth_Config['UserTB']         = 'phpbb_users';       // Name of your PHPBB user table. (i.e. phpbb_users)
 $wgAuth_Config['GroupsTB']       = 'phpbb_groups';      // Name of your PHPBB groups table. (i.e. phpbb_groups)
 $wgAuth_Config['User_GroupTB']   = 'phpbb_user_group';  // Name of your PHPBB user_group table. (i.e. phpbb_user_group)
-$wgAuth_Config['PathToPHPBB']    = '../phpbb/';         // Path from this file to your phpBB install. Must end with '/'.
+$wgAuth_Config['PathToPHPBB']    = '../forum/';         // Path from this file to your phpBB install. Must end with '/'.
 
 // Local
 // $wgAuth_Config['LoginMessage']   = '<b>You need a phpBB account to login.</b><br /><a href="' . $wgAuth_Config['PathToPHPBB'] .
