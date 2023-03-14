@@ -14,7 +14,7 @@ Instructions
 1) Go to S3 app. Create an S3 bucket for static files. Convention is: `mafiascum-<env>-static`
     1) No versioning
     1) Ensure public access is enabled
-1) Next, set up SMTP with SES (go to "Simple Email Service" app)
+1) (Skip if not using SES) Next, set up SMTP with SES (go to "Simple Email Service" app)
     1) Create a verified identity on the "Verified Identities" tab:
         1) Use a "Domain" type entity
         1) domain should be the root domain where the app lives: e.g. `mafiascum.net`
@@ -31,14 +31,6 @@ Instructions
         1) Click "Show user SMTP credentials"
         1) Copy these down - you will need to plug them into PhpBB later
 
-## If restoring from a backup from current prod (See https://github.com/mafiascum/migration-data-export-3-0-7 for how to do this in prod)
-
-1) download the latest db backup from the current prod backups bucket.
-1) save this archive as `s3://<staging backup bucket>/db-backups/mafiascum.backup.<environment name>.db.latest.7z`
-1) download the latest web backup from the current prod backups bucket
-1) expand this archive with the backup password from prod
-1) inside of this backup, take the following: forum/store, forum/images, forum/files - put into a single archive called `s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.forum.latest.zip`, encrypted with the new environment's backup password. take the following: wiki/images - put into a single archive called `s3://<staging backup bucket>/web-backups/mafiascum.backup.<environment name>.wiki.latest.zip`, encrypted with the new environment's backup password.
-
 ## Always do these steps
 
 1) clone this repo in your target environment
@@ -53,30 +45,7 @@ Instructions
 1) log into the website and go to the ACP
 1) If necessary, change the cookie domain to match the actual domain you're using
 1) Set cookies to secure
-1) change the board's default style to something other than mafSilver
-1) Run the following SQL query to rename the old mafSilver theme to avoid name collision with the new theme: ```UPDATE `phpbb_styles` SET `style_name`='mafSilverOld' WHERE `style_name`='mafSilver' AND `style_parent_tree`='';```
-1) Install all styles (mafSilver, mafSepia, mafBlack)
-1) make mafBlack the default style and disable proSilver
-1) ensure that the anonymos user style is the new mafblack
-1) exec into the web container and run `/opt/bitnami/scripts/mafiascum/ms_post_migrations.sh`
-1) enable all the relevant extensions
-1) exec into the db container, get a db terminal, and run the sql in https://github.com/mafiascum/forum-deployment/blob/main/web/forum/migration/db/data/after_extensions.sql
-1) exec into the web container and reparse all the bbcodes by running `/opt/bitnami/scripts/mafiascum/ms_reparse_threaded.sh`
-1) set search engine to sphinx
-1) Set the path to: /var/lib/sphinxsearch/data
-1) Set the host to: sphinx
-1) Set the port to: 9312
-1) Set memory limit to: 0
-1) produce a config file and note the sphinx_id in it (it's the nonsense alphanumeric string in source_phpbb_SPHINX_ID_main)
-1) Create an index for Sphinx fulltext
-1) While in here, go to the email settings: 
-    * server: postfix
-    * port: 587
-    * username / password: leave blank
-1) in ACP, go to `Board Features` and set `Display unapproved posts to the author:` to `No`. This tanks performance if left on.
-1) in your `.env`, set the SPHINX_ID to that alphanumeric string you noted earlier
 1) `docker-compose up -d sphinx`
-1) exec into the web container and run `python3 /opt/bitnami/scripts/mafiascum/reparse_quotes.py`
 1) Wait for sphinx to index and the reparse_quotes to finish...
 
 ## To use this setup for extension/style development

@@ -1,16 +1,16 @@
 <VirtualHost *:8080>
     ServerAdmin admin@mafiascum.net
-    DocumentRoot /opt/bitnami/www/
-    ServerName {{WWW_FQDN}}
-    ServerAlias {{WWW_FQDN}} {{ROOT_FQDN}}
+    DocumentRoot /opt/mafiascum/www/
+    ServerName ${WWW_FQDN}
+    ServerAlias ${WWW_FQDN} ${ROOT_FQDN}}
     ErrorDocument 404 /404.php
 
-    <Directory "/opt/bitnami/www/">
+    <Directory "/opt/mafiascum/www/">
             AllowOverride All
             Require all granted
     </Directory>
 
-    ErrorLog /opt/bitnami/apache/logs/error/error.log
+    ErrorLog /etc/apache2/logs/error/error.log
 
     # Possible values include: debug, info, notice, warn, error, crit, alert, emerg.
     LogLevel warn
@@ -19,10 +19,10 @@
 
     SetEnvIf filetype "^static$" is_static
 
-    CustomLog /opt/bitnami/apache/logs/access/access.log combined env=!filetype
-    CustomLog /opt/bitnami/apache/logs/access/raw/access-file.log combined env=!filetype
-	CustomLog /opt/bitnami/apache/logs/access/static.log combined env=is_static
-    CustomLog /opt/bitnami/apache/logs/access/raw/static-file.log combined env=is_static
+    CustomLog /etc/apache2/logs/access/access.log combined env=!filetype
+    CustomLog /etc/apache2/logs/access/raw/access-file.log combined env=!filetype
+	CustomLog /etc/apache2/logs/access/static.log combined env=is_static
+    CustomLog /etc/apache2/logs/access/raw/static-file.log combined env=is_static
 
     # RewriteEngine on
     # RewriteCond %{SERVER_NAME} ={{ROOT_FQDN}} [OR]

@@ -11,19 +11,20 @@ services:
       - mariadb_data:/var/lib/mysql
       
   web:
-    build: ./web
+    build:
+      context: ./web
     restart: always
     depends_on:
       - database
     env_file:
       - .env
     volumes:
-      - wiki_data:/bitnami/wiki
-      - phpbb_data:/bitnami/phpbb
-      - access_logs:/opt/bitnami/apache/logs
-      - ./web/apache/httpd.conf:/opt/bitnami/apache/conf/httpd.conf
-      - ./web/apache/usertrack.conf:/opt/bitnami/apache/conf/usertrack.conf
-      - ./web/apache/remoteip.conf:/opt/bitnami/apache2/conf/remoteip.conf
+      - wiki_data:/data/wiki
+      - phpbb_data:/data/forum
+      - access_logs:/etc/apache2/logs
+      - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
+      - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
+      - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
 
 
   sitechat:

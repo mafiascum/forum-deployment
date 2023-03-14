@@ -14,16 +14,21 @@ services:
             - ./nginx-dev/cert:/etc/nginx/certs
             - ./nginx-dev/sites:/etc/nginx/templates
     web:
-        build: ./web
+        build: 
+            context: ./web
+            args:
+                PHP_INI_DEVELOPMENT: true
         restart: always
         depends_on:
             - database
         env_file:
             - .env
         volumes:
-            - wiki_data:/bitnami/wiki
-            - phpbb_data:/bitnami/phpbb
-            - ./web/apache/httpd.conf:/opt/bitnami/apache/conf/httpd.conf
-            - ./web/apache/usertrack.conf:/opt/bitnami/apache/conf/usertrack.conf
+            - wiki_data:/data/wiki
+            - phpbb_data:/data/forum
+            - access_logs:/etc/apache2/logs
+            - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
+            - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
+            - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
             - ./web/extensions:/mafiascum/extensions
             - ./web/styles:/mafiascum/styles

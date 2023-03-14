@@ -1,8 +1,8 @@
 #!/bin/bash
 
-. /opt/bitnami/scripts/apache-env.sh
+export APACHE_LOGS_DIR="/etc/apache2/logs"
 
-echo ${APACHE_LOGS_DIR}
+mkdir ${APACHE_LOGS_DIR}
 mkdir ${APACHE_LOGS_DIR}/access
 mkdir ${APACHE_LOGS_DIR}/access/raw
 mkdir ${APACHE_LOGS_DIR}/error

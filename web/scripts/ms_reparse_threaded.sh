@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /opt/bitnami/phpbb
+cd /opt/mafiascum/forum
 RANGE_SIZE="10000"
 
 php bin/phpbbcli.php reparser:reparse --range-max=3000000 --range-size="$RANGE_SIZE" post_text &

@@ -1,4 +1,8 @@
-. /opt/bitnami/scripts/apache-env.sh
-. /opt/bitnami/scripts/libapache.sh
+[ "$MAFIASCUM_DEBUG" == 'true' ] && set -x
 
-render-template "${BITNAMI_ROOT_DIR}/phpbb/config.php.tpl" > "${BITNAMI_ROOT_DIR}/phpbb/config.php"
+envsubst '${PHPBB_DATABASE_HOST}
+${PHPBB_DATABASE_USER}
+${PHPBB_DATABASE_PASSWORD}
+${PHPBB_DATABASE_NAME}
+${PHPBB_DATABASE_PORT_NUMBER}
+${MAFIASCUM_SITE_CHAT_URL}' < "/opt/mafiascum/forum/config.php.tpl" > "/opt/mafiascum/forum/config.php"

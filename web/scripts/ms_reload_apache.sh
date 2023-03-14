@@ -1,3 +1,3 @@
 #!/bin/bash
-source /opt/bitnami/scripts/mafiascum/.env.sh
-/opt/bitnami/apache/bin/apachectl -k graceful
+source /opt/mafiascum/scripts/.env.sh
+/usr/sbin/apachectl -k graceful
