@@ -54,7 +54,8 @@ class main_listener implements EventSubscriberInterface
 			'core.viewtopic_before_f_read_check' => 'viewtopic_before_f_read_check',
 			'core.viewtopic_highlight_modify' => 'viewtopic_highlight_modify',
 			'core.page_header' => 'page_header_after',
-			'core.viewtopic_post_rowset_data' => 'viewtopic_post_rowset_data'
+			'core.viewtopic_post_rowset_data' => 'viewtopic_post_rowset_data',
+			'core.viewtopic_modify_quick_reply_template_vars' => 'viewtopic_modify_quick_reply_template_vars',
         );
     }
 
@@ -98,6 +99,17 @@ class main_listener implements EventSubscriberInterface
 
 		$this->db->sql_freeresult($result);
 		return $is_mafia_forum;
+	}
+	public function viewtopic_modify_quick_reply_template_vars($event) {
+		global $config;
+		$tpl_ary = $event['tpl_ary'];
+		$topic_data = $event['topic_data'];
+
+		if($this->is_mafia_forum($config, $topic_data['forum_id']) && $topic_data['topic_status'] == ITEM_LOCKED) {
+			$tpl_ary['S_QUICK_REPLY'] = false;
+		}
+
+		$event['tpl_ary'] = $tpl_ary;
 	}
 	public function viewtopic_post_rowset_data($event)
 	{
