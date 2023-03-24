@@ -93,7 +93,7 @@ class main_listener implements EventSubscriberInterface
             'core.posting_modify_submission_errors'          => 'posting_modify_submission_errors',
             'core.viewtopic_modify_post_row'                 => 'viewtopic_modify_post_row',
             'core.ucp_pm_compose_quotepost_query_after'      => 'ucp_pm_compose_quotepost_query_after',
-            'core.notification_manager_add_notifications_before' => 'notification_manager_add_notifications_before',
+            'core.notification_manager_add_notifications_for_users_modify_data' => 'notification_manager_add_notifications_for_users_modify_data',
         );
     }
 
@@ -942,7 +942,6 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	public function notification_manager_add_notifications($event) {
-
 		$data = $event['data'];
 		
 		if(array_key_exists("topic_id", $data))
@@ -1047,11 +1046,10 @@ class main_listener implements EventSubscriberInterface
 		$event['total_match_count'] = min($event['total_match_count'], $this->sphinx_max_matches);
 	}
 
-    public function notification_manager_add_notifications_before($event) {
+    public function notification_manager_add_notifications_for_users_modify_data($event) {
         if ($event['notification_type_name'] == 'notification.type.quote') {
             if (in_array($event['data']['forum_id'], $this->private_topic_forums)) {
-                $event['add_notifications_override'] = true;
-                $event['notified_users'] = array();
+                $event['notify_users'] = array();
             }
         }
     }
