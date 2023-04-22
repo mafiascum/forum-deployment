@@ -22,7 +22,7 @@ swap_containers() {
     docker-compose up -d "$new_container_dc"
     new_container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $new_container_name)
 
-    until [[ $(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r') == "200" ]]; do sleep 5; done
+    until [[ $(docker-compose exec $new_container_dc sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r') == "200" ]]; do sleep 5; done
 
     docker-compose stop "$old_container_dc"
     docker-compose rm -f "$old_container_dc"
