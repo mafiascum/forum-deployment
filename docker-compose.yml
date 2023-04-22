@@ -91,7 +91,7 @@ services:
     environment:
       ENVSUBST_VARS: ROOT_FQDN WWW_FQDN FORUM_FQDN WIKI_FQDN SITECHAT_FQDN
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/nginx-blue.conf:/etc/nginx/nginx-blue.conf:ro
       - ./nginx/nginx-green.conf:/etc/nginx/nginx-green.conf:ro
       - ./nginx/conf.d:/etc/nginx/user.conf.d:ro
