@@ -22,7 +22,7 @@ swap_containers() {
     docker-compose up -d "$new_container_dc"
     new_container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $new_container_name)
 
-    until [[ $(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080') == "200" ]]; do sleep 5; done
+    until [[ $(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080 | tr -d "\r"') == "200" ]]; do sleep 5; done
 
     docker-compose stop "$old_container_dc"
     docker-compose rm -f "$old_container_dc"
@@ -34,7 +34,7 @@ green_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{
 green_exists=$?
 
 if [[ blue_exists -eq 0 && green_exists -ne 0 ]]; then
-    blue_response=$(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080')
+    blue_response=$(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080 | tr -d "\r"')
     if [[ "$blue_response" == "200" ]]; then
         echo "Blue (main) container is serving connections."
         echo "Green (alternate) container coming up to replace it."
@@ -45,7 +45,7 @@ if [[ blue_exists -eq 0 && green_exists -ne 0 ]]; then
         exit 1
     fi
 elif [[ blue_exists -ne 0 && green_exists -eq 0 ]]; then
-    green_response=$(docker-compose exec web-alt sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080')
+    green_response=$(docker-compose exec web-alt sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080 | tr -d "\r"')
     if [[ "$green_response" == "200" ]]; then
         echo "Green (alternate) container is serving connections."
         echo "Blue (main) container coming up to replace it."
