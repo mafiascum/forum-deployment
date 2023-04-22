@@ -9,6 +9,9 @@ services:
       - .env
     volumes:
       - mariadb_data:/var/lib/mysql
+    networks:
+      backend:
+        ipv4_address: 172.40.0.10
       
   web:
     build:
@@ -25,6 +28,28 @@ services:
       - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
       - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
       - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
+    networks:
+      backend:
+        ipv4_address: 172.40.0.11
+
+  web-alt:
+    build:
+      context: ./web
+    restart: never
+    depends_on:
+      - database
+    env_file:
+      - .env
+    volumes:
+      - wiki_data:/data/wiki
+      - phpbb_data:/data/forum
+      - access_logs:/etc/apache2/logs
+      - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
+      - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
+      - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
+    networks:
+      backend:
+        ipv4_address: 172.40.0.12
 
 
   sitechat:
@@ -34,6 +59,9 @@ services:
       - database
     env_file:
       - .env
+    networks:
+      backend:
+        ipv4_address: 172.40.0.13
 
   sphinx:
     build: ./sphinx
@@ -48,13 +76,13 @@ services:
       - ./sphinx/cron.d:/etc/cron.d.template
     environment:
       SPHINX_MODE: indexing
+    networks:
+      backend:
+        ipv4_address: 172.40.0.14
 
   nginx:
     image: staticfloat/nginx-certbot
     restart: always
-    depends_on:
-      - web
-      - sitechat
     ports:
       - 80:80
       - 443:443
@@ -66,12 +94,18 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/user.conf.d:ro
       - letsencrypt_data:/etc/letsencrypt
+    networks:
+      backend:
+        ipv4_address: 172.40.0.2
     
   postfix:
     image: boky/postfix
     env_file:
       - .env
     restart: always
+    networks:
+        backend:
+          ipv4_address: 172.40.0.15
 
   social-games:
     build:
@@ -82,6 +116,9 @@ services:
       - database
     volumes:
       - social_games_www:/var/www/html
+    networks:
+      backend:
+        ipv4_address: 172.40.0.16
 
 volumes:
   mariadb_data:
@@ -98,3 +135,9 @@ volumes:
     driver: local
   social_games_www:
     driver: local
+
+networks:
+  backend:
+    ipam:
+      config:
+        - subnet: 172.40.0.0/16
