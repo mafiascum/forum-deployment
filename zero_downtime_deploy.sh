@@ -40,7 +40,7 @@ toggle_upstreams() {
         perl -pi -e "s/172.40.0.12:8080;/172.40.0.11:8080;/g" nginx/nginx.conf
     fi
 
-    docker-compose exec nginx service nginx restart
+    docker-compose exec nginx sh -c "nginx -s reload"
 
     set +e
 }
