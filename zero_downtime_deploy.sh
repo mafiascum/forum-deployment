@@ -16,8 +16,8 @@ swap_containers() {
         new_container_name="forum-deployment-web-1"
     fi
 
-    # git checkout main
-    # git pull
+    git checkout main
+    git pull
     docker-compose build "$new_container_dc"
     docker-compose up -d "$new_container_dc"
     new_container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $new_container_name)
