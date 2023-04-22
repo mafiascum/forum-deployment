@@ -35,11 +35,9 @@ toggle_upstreams() {
     set -e
 
     if [[ $is_to_alternate == true ]]; then
-        perl -pi -e "s/172.40.0.11:8080;/172.40.0.11:8080 down;/g" nginx/nginx.conf
-        perl -pi -e "s/172.40.0.12:8080 down;/172.40.0.12:8080;/g" nginx/nginx.conf
+        perl -pi -e "s/172.40.0.11:8080;/172.40.0.12:8080;/g" nginx/nginx.conf
     else
-        perl -pi -e "s/172.40.0.12:8080;/172.40.0.12:8080 down;/g" nginx/nginx.conf
-        perl -pi -e "s/172.40.0.11:8080 down;/172.40.0.11:8080;/g" nginx/nginx.conf
+        perl -pi -e "s/172.40.0.12:8080;/172.40.0.11:8080;/g" nginx/nginx.conf
     fi
 
     docker-compose exec nginx service nginx restart
