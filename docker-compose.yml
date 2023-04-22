@@ -99,15 +99,6 @@ services:
     networks:
       backend:
         ipv4_address: 172.40.0.2
-    
-  postfix:
-    image: boky/postfix
-    env_file:
-      - .env
-    restart: always
-    networks:
-        backend:
-          ipv4_address: 172.40.0.15
 
   social-games:
     build:
