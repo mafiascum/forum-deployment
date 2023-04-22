@@ -10,7 +10,7 @@ services:
         env_file:
             - .env
         volumes:
-            - ./nginx-dev/nginx.conf:/etc/nginx.conf
+            - ./nginx-dev/nginx.conf:/etc/nginx/nginx.conf
             - ./nginx-dev/cert:/etc/nginx/certs
             - ./nginx-dev/sites:/etc/nginx/templates
         networks:
