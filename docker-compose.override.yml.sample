@@ -44,7 +44,7 @@ services:
             context: ./web
             args:
                 PHP_INI_DEVELOPMENT: true
-        restart: always
+        restart: no
         depends_on:
             - database
         env_file:

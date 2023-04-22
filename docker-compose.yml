@@ -35,7 +35,7 @@ services:
   web-alt:
     build:
       context: ./web
-    restart: never
+    restart: no
     depends_on:
       - database
     env_file:
