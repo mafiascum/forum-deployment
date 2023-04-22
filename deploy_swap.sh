@@ -35,9 +35,9 @@ toggle_upstreams() {
     set -e
 
     if [[ $is_to_alternate == true ]]; then
-        perl -pi -e "s/172.40.0.11:8080;/172.40.0.12:8080;/g" nginx/nginx.conf
+        docker-compose exec nginx sh -c 'cp /etc/nginx/nginx-green.conf /etc/nginx/nginx.conf'
     else
-        perl -pi -e "s/172.40.0.12:8080;/172.40.0.11:8080;/g" nginx/nginx.conf
+        docker-compose exec nginx sh -c 'cp /etc/nginx/nginx-blue.conf /etc/nginx/nginx.conf'
     fi
 
     docker-compose exec nginx sh -c "nginx -s reload"
