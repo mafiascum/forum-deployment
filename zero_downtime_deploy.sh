@@ -9,11 +9,11 @@ swap_containers() {
     if [[ $is_to_alternate == true ]]; then
         new_container_dc="web-alt"
         old_container_dc="web"
-        new_container_name="forum-deployment-web-alt-1"
+        new_container_name="forum-deployment_web-alt_1"
     else
         new_container_dc="web"
         old_container_dc="web-alt"
-        new_container_name="forum-deployment-web-1"
+        new_container_name="forum-deployment_web_1"
     fi
 
     git checkout main
@@ -28,9 +28,9 @@ swap_containers() {
     docker-compose rm -f "$old_container_dc"
 }
 
-blue_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' forum-deployment-web-1)
+blue_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' forum-deployment_web_1)
 blue_exists=$?
-green_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' forum-deployment-web-alt-1)
+green_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' forum-deployment_web-alt_1)
 green_exists=$?
 
 if [[ blue_exists -eq 0 && green_exists -ne 0 ]]; then
