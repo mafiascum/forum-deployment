@@ -26,37 +26,43 @@ swap_containers() {
 
     docker-compose stop "$old_container_dc"
     docker-compose rm -f "$old_container_dc"
+
+    set +e
 }
 
-blue_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' forum-deployment_web_1)
-blue_exists=$?
-green_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' forum-deployment_web-alt_1)
-green_exists=$?
+toggle_upstreams() {
+    is_to_alternate=$1
+    set -e
 
-if [[ blue_exists -eq 0 && green_exists -ne 0 ]]; then
-    blue_response=$(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r')
-    if [[ "$blue_response" == "200" ]]; then
-        echo "Blue (main) container is serving connections."
-        echo "Green (alternate) container coming up to replace it."
-        swap_containers true
+    if [[ $is_to_alternate == true ]]; then
+        perl -pi -e "s/172.40.0.11:8080;/172.40.0.11:8080 down;/g" nginx/nginx.conf
+        perl -pi -e "s/172.40.0.12:8080 down;/172.40.0.12:8080;/g" nginx/nginx.conf
+    else
+        perl -pi -e "s/172.40.0.12:8080;/172.40.0.12:8080 down;/g" nginx/nginx.conf
+        perl -pi -e "s/172.40.0.11:8080 down;/172.40.0.11:8080;/g" nginx/nginx.conf
+    fi
 
-    else
-        echo "No connectivity on blue (main) container. Not acting."
-        exit 1
-    fi
-elif [[ blue_exists -ne 0 && green_exists -eq 0 ]]; then
-    green_response=$(docker-compose exec web-alt sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r')
-    if [[ "$green_response" == "200" ]]; then
-        echo "Green (alternate) container is serving connections."
-        echo "Blue (main) container coming up to replace it."
-        swap_containers false
-    else
-        echo "No connectivity on green (alternate) container. Not acting."
-        exit 1
-    fi
-elif [[ blue_exists -eq 0 && green_exists -eq 0 ]]; then
+    docker-compose exec nginx service nginx restart
+
+    set +e
+}
+
+blue_response=$(docker-compose exec web sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r')
+green_response=$(docker-compose exec web-alt sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r')
+
+if [[ "$blue_response" == "200" && "$green_response" != "200" ]]; then
+    echo "Blue (main) container is serving connections."
+    echo "Green (alternate) container coming up to replace it."
+    swap_containers true
+    toggle_upstreams true
+elif [[ "$blue_response" != "200" && "$green_response" == "200" ]]; then
+    echo "Green (alternate) container is serving connections."
+    echo "Blue (main) container coming up to replace it."
+    swap_containers false
+    toggle_upstreams false
+elif [[ "$blue_response" == "200" && "$green_response" == "200" ]]; then
     echo "Both containers currently up. Unsure what to do. Kill one of them to continue."
     exit 1
 else
-    echo "Neither container is up. Cannot do a zero downtime deploy when already down."
+    echo "Neither container is up. Cannot do a zero downtime deploy when already down. Start a web container."
 fi
