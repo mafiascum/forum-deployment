@@ -74,11 +74,11 @@
      transform="translate(0,-152.36218)"
      id="layer1">
     <a
-       xlink:href="http://mafiascum.net/"
+       xlink:href="https://www.mafiascum.net/"
        transform="matrix(1.3549788,0,0,1.3549788,-7.4122941,-469.06307)"
        id="a4350">
       <image
-         xlink:href="http://mafiascum.net/howto/logosmall.png"
+         xlink:href="https://www.mafiascum.net/title.png"
          x="9.1334887"
          y="461.81769"
          width="135.09535"
@@ -86,28 +86,28 @@
          id="image3048" />
     </a>
     <image
-       xlink:href="http://mafiascum.net/howto/queue.png"
+       xlink:href="https://www.mafiascum.net/howto/queue.png"
        x="245.21344"
        y="227.9184"
        width="232"
        height="129"
        id="image3097" />
     <image
-       xlink:href="http://mafiascum.net/howto/threads.png"
+       xlink:href="https://www.mafiascum.net/howto/threads.png"
        x="245.21344"
        y="394.04016"
        width="344"
        height="357"
        id="image5066" />
     <image
-       xlink:href="http://mafiascum.net/howto/s1.png"
+       xlink:href="https://www.mafiascum.net/howto/s1.png"
        x="245.21344"
        y="791.54327"
        width="207"
        height="59"
        id="image5107" />
     <image
-       xlink:href="http://mafiascum.net/howto/s2.png"
+       xlink:href="https://www.mafiascum.net/howto/s2.png"
        x="475.45395"
        y="821.29871"
        width="116"
@@ -115,14 +115,14 @@
        id="image5184"
        style="display:inline" />
     <image
-       xlink:href="http://mafiascum.net/howto/s3.png"
+       xlink:href="https://www.mafiascum.net/howto/s3.png"
        x="658.89252"
        y="888.05408"
        width="112"
        height="49"
        id="image5199" />
     <image
-       xlink:href="http://mafiascum.net/howto/inbox.png"
+       xlink:href="https://www.mafiascum.net/howto/inbox.png"
        x="245.21344"
        y="548.06091"
        width="213"
@@ -388,7 +388,7 @@
      id="layer3"
      style="display:inline">
     <a
-       xlink:href="http://forum.mafiascum.net/viewforum.php?f=4"
+       xlink:href="https://forum.mafiascum.net/viewforum.php?f=4"
        transform="translate(21.754431,-300.21546)"
        id="a4353">
       <path
@@ -447,7 +447,7 @@
        id="path4400-4-9-8"
        style="fill:#ed1c24;fill-opacity:0.83529412;stroke:#ed1c24;stroke-width:0.70000005;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:0.83529412;stroke-dasharray:none;marker-start:none;marker-mid:none;marker-end:none;display:inline" />
     <a
-       xlink:href="http://forum.mafiascum.net/ucp.php?i=pm&amp;folder=inbox"
+       xlink:href="https://forum.mafiascum.net/ucp.php?i=pm&amp;folder=inbox"
        id="a3223">
       <path
          d="m 360.42154,170.726 a 47.42389,22.482435 0 1 1 -94.84778,0 47.42389,22.482435 0 1 1 94.84778,0 z"
