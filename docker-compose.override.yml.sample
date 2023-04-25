@@ -10,9 +10,12 @@ services:
         env_file:
             - .env
         volumes:
-            - ./nginx.conf:/etc/nginx.conf
+            - ./nginx-dev/nginx.conf:/etc/nginx/nginx.conf
             - ./nginx-dev/cert:/etc/nginx/certs
             - ./nginx-dev/sites:/etc/nginx/templates
+        networks:
+            backend:
+                ipv4_address: 172.40.0.2
     web:
         build: 
             context: ./web
@@ -32,3 +35,29 @@ services:
             - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
             - ./web/extensions:/mafiascum/extensions
             - ./web/styles:/mafiascum/styles
+        networks:
+            backend:
+                ipv4_address: 172.40.0.11
+
+    web-alt:
+        build: 
+            context: ./web
+            args:
+                PHP_INI_DEVELOPMENT: true
+        restart: no
+        depends_on:
+            - database
+        env_file:
+            - .env
+        volumes:
+            - wiki_data:/data/wiki
+            - phpbb_data:/data/forum
+            - access_logs:/etc/apache2/logs
+            - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
+            - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
+            - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
+            - ./web/extensions:/mafiascum/extensions
+            - ./web/styles:/mafiascum/styles
+        networks:
+            backend:
+                ipv4_address: 172.40.0.12
