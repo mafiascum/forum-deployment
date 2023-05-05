@@ -47,6 +47,13 @@ class main_listener implements EventSubscriberInterface
         );
     }
 
+	protected $tag_name_to_image_attribute_map = Array(
+		'IMG' => 'src',
+		'BGIMG' => 'bgimg',
+		'HOVERIMG' => 'content',
+		'THUMB' => 'content'
+	);
+
     /**
      * Constructor
      *
@@ -125,6 +132,13 @@ class main_listener implements EventSubscriberInterface
 		$event['quote_attributes'] = $quote_attributes;
 	}
 
+	private function create_image_tag_xpath_query() {
+		$xpath_tag_names = array_keys($this->tag_name_to_image_attribute_map);
+		return implode(" | ", array_map(function ($tag_name) use ($xpath_tag_names) {
+		  return "//" . $tag_name;
+		}, $xpath_tag_names));
+	}
+
 	public function text_formatter_s9e_parse_after($event) {
 		global $topic_id;
 
@@ -139,6 +153,38 @@ class main_listener implements EventSubscriberInterface
 			$quote_topic_id = $this->get_topic_id_from_post_id($post_id);
 			$post_num = $this->get_post_number($quote_topic_id, $post_id);
 			$el->setAttribute("post_num", $post_num);
+		}
+
+		/***
+		 *
+		 * Scan tags that embed images on the page, looking to see if they're on an unreliable host.
+		 * If we find such images, we'll download them, push them to our own hosting, and replace
+		 * the image URL in the tag.
+		 *
+		 * Examples:
+		 *  [img]https://i.imgur.com/PpfOklK.png[/img]
+		 *  [bgimg=https://i.imgur.com/PpfOklK.png]Test,red,637,265[/bgimg]
+		 *  [hoverimg=title]https://i.imgur.com/PpfOklK.png[/hoverimg]
+		 *  [thumb=500]https://i.imgur.com/PpfOklK.png[/thumb]
+		 */
+		$result = $xpath->query($this->create_image_tag_xpath_query());
+		foreach($result as $tag_element) {
+			$tag_name = $tag_element->nodeName;
+			$attribute_name = $this->tag_name_to_image_attribute_map[$tag_name];
+			$image_url = $tag_element->attributes->getNamedItem($attribute_name)->value;
+
+			if(strpos($image_url, 'https://i.imgur.com') === 0) {
+
+				$image_binary = file_get_contents($image_url);
+				$image_size = strlen($image_binary);
+
+				// TODO: Push the image to S3
+
+				// TODO: Get the new image URL
+				$new_image_url = '';
+
+				$tag_element->setAttribute($attribute_name, $new_image_url);
+			}
 		}
 
 		// COUNTDOWN
