@@ -181,10 +181,10 @@ class main_listener implements EventSubscriberInterface
 			$root_needs_rich_text_tag = false;
 			foreach($result as $textNode) {
 				$event['parser']->enable_bbcodes();
-				if (preg_match('/(?:\[post\]|\[post=(?!#)(\d+)\])(.*?)\[\/post\]/', $textNode->nodeValue)) {
+				if (preg_match('/(?:\[post\]|\[post=(?!#)(\d+)\])(.*?)\[\/post\]/i', $textNode->nodeValue)) {
 					$root_needs_rich_text_tag = ($dom->documentElement->tagName == 't');
 					$newText = preg_replace_callback(
-						'/(?:\[post\]|\[post=(?!#)(\d+)\])(.*?)\[\/post\]/',
+						'/(?:\[post\]|\[post=(?!#)(\d+)\])(.*?)\[\/post\]/i',
 						function($matches) {
 							return($this->bbcode_post($matches[1], $matches[2]));
 						},
