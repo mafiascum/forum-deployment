@@ -3,7 +3,7 @@
     "type": "phpbb-extension",
     "description": "Mafiascum Custom BBCodes",
     "homepage": "https://github.com/mafiascum/bbcodes",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "time": "2018-03-04",
     "license": "GPL-2.0",
     "authors": [{
@@ -13,14 +13,20 @@
 	"role": "Omerta"
     }],
     "require": {
-        "composer/installers": "~1.0",
-        "phpbb/phpbb": "^3.3",
-        "php": ">=7.1.3"
+        "aws/aws-sdk-php": "^3.269",
+        "guzzlehttp/guzzle": "~6.3"
     },
     "extra": {
         "display-name": "Custom BBCodes",
         "soft-require": {
-            "phpbb/phpbb": "^3.3"
+            "phpbb/phpbb": "^3.3",
+            "composer/installers": "~1.0",
+            "php": ">=7.1.3"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
         }
     }
 }

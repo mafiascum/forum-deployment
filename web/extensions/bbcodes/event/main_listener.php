@@ -14,6 +14,9 @@ namespace mafiascum\bbcodes\event;
  */
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use s9e\TextFormatter\Configurator\Items\UnsafeTemplate;
+use Aws\S3\S3Client;
+use Aws\S3\MultipartUploader;
+
 use \Datetime;
 /**
  * Event listener
@@ -32,6 +35,8 @@ class main_listener implements EventSubscriberInterface
 
     /* @var \phpbb\db\driver\driver */
     protected $db;
+
+	protected $s3;
 
     static public function getSubscribedEvents()
     {
@@ -67,6 +72,12 @@ class main_listener implements EventSubscriberInterface
         $this->template = $template;
         $this->request = $request;
 		$this->db = $db;
+
+		$this->s3 = new S3Client([
+			'version' => 'latest',
+			'region' => 'us-east-1'
+		]);
+		
 	}
 
 	static private function changeTagName($node, $name) {
@@ -174,16 +185,25 @@ class main_listener implements EventSubscriberInterface
 			$image_url = $tag_element->attributes->getNamedItem($attribute_name)->value;
 
 			if(strpos($image_url, 'https://i.imgur.com') === 0) {
+				$static_bucket = getenv('AWS_STATIC_BUCKET');
 
-				$image_binary = file_get_contents($image_url);
-				$image_size = strlen($image_binary);
+				$parsed = parse_url($image_url);
+				$filepath = $parsed["path"];
 
-				// TODO: Push the image to S3
+				if (!empty($static_bucket)) {
+					$new_image_key = 'forum/img-tags/' . uniqid(mt_rand(), true) . "$filepath";
 
-				// TODO: Get the new image URL
-				$new_image_url = '';
+					$uploader = new MultipartUploader($this->s3, $image_url, [
+						'bucket' => $static_bucket,
+						'key' => $new_image_key
+					]);
+					$uploader->upload();
 
-				$tag_element->setAttribute($attribute_name, $new_image_url);
+					$new_image_url ='https://' . $static_bucket . '.s3.amazonaws.com/' . $new_image_key;
+
+					$tag_element->setAttribute($attribute_name, $new_image_url);
+					$tag_element->nodeValue = str_replace($image_url, $new_image_url, $tag_element->nodeValue);
+				}
 			}
 		}
 
