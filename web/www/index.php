@@ -13,19 +13,22 @@
 		<link type="image/x-icon" href="/favicon.ico" rel="shortcut icon">
 		<link rel='stylesheet' href='css.css'>
 		<link rel="stylesheet" href="fontawesome/font-awesome.min.css">
-		<script type="text/javascript">
-		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-31225517-1']);
-		  _gaq.push(['_setDomainName', 'mafiascum.net']);
-		  _gaq.push(['_trackPageview']);
-
-		  (function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
-
-		</script>
+<?php
+			$google_measurement_id = getenv('GOOGLE_MEASUREMENT_ID');
+			if (isset($google_measurement_id) && !empty($google_measurement_id)) {
+?>
+				<!-- Google tag (gtag.js) -->
+				<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo($google_measurement_id); ?>"></script>
+				<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+		
+				gtag('config', '<?php echo($google_measurement_id); ?>');
+				</script>
+<?php
+			}
+?>
 	</head>
 	<body>
 		<div id='bg'>
