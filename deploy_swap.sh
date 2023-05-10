@@ -9,16 +9,15 @@ swap_containers() {
     if [[ $is_to_alternate == true ]]; then
         new_container_dc="web-alt"
         old_container_dc="web"
-        new_container_name="forum-deployment_web-alt_1"
+        new_container_ip="172.40.0.12"
     else
         new_container_dc="web"
         old_container_dc="web-alt"
-        new_container_name="forum-deployment_web_1"
+        new_container_ip="172.40.0.11"
     fi
 
     docker-compose build "$new_container_dc"
     docker-compose up -d "$new_container_dc"
-    new_container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $new_container_name)
 
     until [[ $(docker-compose exec $new_container_dc sh -c 'curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" http://127.0.0.1:8080' | tr -d '\r') == "200" ]]; do sleep 5; done
 
