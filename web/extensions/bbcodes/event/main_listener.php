@@ -192,17 +192,19 @@ class main_listener implements EventSubscriberInterface
 
 				if (!empty($static_bucket)) {
 					$new_image_key = 'forum/img-tags/' . uniqid(mt_rand(), true) . "$filepath";
+					try {
+						$uploader = new MultipartUploader($this->s3, $image_url, [
+							'bucket' => $static_bucket,
+							'key' => $new_image_key
+						]);
+						$uploader->upload();
+						$new_image_url ='https://' . $static_bucket . '.s3.amazonaws.com/' . $new_image_key;
 
-					$uploader = new MultipartUploader($this->s3, $image_url, [
-						'bucket' => $static_bucket,
-						'key' => $new_image_key
-					]);
-					$uploader->upload();
-
-					$new_image_url ='https://' . $static_bucket . '.s3.amazonaws.com/' . $new_image_key;
-
-					$tag_element->setAttribute($attribute_name, $new_image_url);
-					$tag_element->nodeValue = str_replace($image_url, $new_image_url, $tag_element->nodeValue);
+						$tag_element->setAttribute($attribute_name, $new_image_url);
+						$tag_element->nodeValue = str_replace($image_url, $new_image_url, $tag_element->nodeValue);
+					} catch (Exception $e) {
+						// abort reparse
+					}
 				}
 			}
 		}
