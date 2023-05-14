@@ -202,7 +202,7 @@ class main_listener implements EventSubscriberInterface
 
 						$tag_element->setAttribute($attribute_name, $new_image_url);
 						$tag_element->nodeValue = str_replace($image_url, $new_image_url, $tag_element->nodeValue);
-					} catch (Exception $e) {
+					} catch (\Exception $e) {
 						// abort reparse
 					}
 				}
