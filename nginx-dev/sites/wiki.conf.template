@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name ${WIKI_FQDN};
+
+    return 301 https://${WIKI_FQDN}$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name ${WIKI_FQDN};
+    ssl_certificate /etc/nginx/certs/wiki.dev.mafiascum.net.cert.pem;
+    ssl_certificate_key /etc/nginx/certs/wiki.dev.mafiascum.net.key.pem;
+
+    location / {
+        proxy_set_header HOST $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_pass http://web-cluster;
+    }
+}
