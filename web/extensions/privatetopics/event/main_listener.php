@@ -676,9 +676,10 @@ class main_listener implements EventSubscriberInterface
             $post_row['U_QUOTE'] = append_sid("{$this->phpbb_root_path}posting.$this->php_ext", "mode=quote&amp;p={$row['post_id']}");
         }
 
-        if ($this->is_private_topic_forum($forum_id)) {
-            $post_row['U_REPORT'] = '';
-        }
+        // per anix - backing this change out for now
+        // if ($this->is_private_topic_forum($forum_id)) {
+        //     $post_row['U_REPORT'] = '';
+        // }
 
         $event['post_row'] = $post_row;
     }
