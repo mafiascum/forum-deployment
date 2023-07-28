@@ -199,6 +199,8 @@ $wgAuth_Config['PathToPHPBB']    = '../forum/';         // Path from this file t
 $wgAuth_Config['LoginMessage']   = '<b>You need a phpBB account to login.</b><br /><a href="http://forum.mafiascum.net/ucp.php?mode=register">Click here to create an account.</a>'; // Localize this message.
 $wgAuth_Config['NoWikiError']    = 'You are not a member of the required phpBB group.'; // Localize this message.
 
+$wgAuth_Config['UseCanonicalCase'] = true; // Use the native case of the forum side username. This probably will not work for every user.
+
 $wgNoFollowDomainExceptions = array( 
         getenv('ROOT_FQDN'),
         getenv('WWW_FQDN'),
