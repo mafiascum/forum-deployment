@@ -33,7 +33,10 @@ RUN pip3 install mariadb
 
 # add scripts
 COPY scripts /opt/mafiascum/scripts
-RUN chmod +x /opt/mafiascum/scripts/*
+RUN chmod +x /opt/mafiascum/scripts/
+
+# # set up ftp environment
+RUN useradd -u 1010 -g 0 ftp_user
 
 # php environment
 RUN /opt/mafiascum/scripts/ms_env_php.sh

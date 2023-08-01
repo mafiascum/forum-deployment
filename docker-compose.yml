@@ -113,6 +113,19 @@ services:
       backend:
         ipv4_address: 172.40.0.16
 
+  ftp:
+    image: atmoz/sftp
+    env_file:
+      - .env
+    volumes:
+      - ftp_keys_data:/home/ftp_user/.ssh/keys
+      - phpbb_data:/home/ftp_user/phpbb
+      - /etc/ssh/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key
+      - /etc/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
+    ports:
+      - "2222:22"
+    command: "ftp_user::1010:0"
+
 volumes:
   mariadb_data:
     driver: local
@@ -127,6 +140,8 @@ volumes:
   access_logs:
     driver: local
   social_games_www:
+    driver: local
+  ftp_keys_data:
     driver: local
 
 networks:
