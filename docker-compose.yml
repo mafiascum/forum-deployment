@@ -141,8 +141,6 @@ volumes:
     driver: local
   social_games_www:
     driver: local
-  ftp_keys_data:
-    driver: local
 
 networks:
   backend:
