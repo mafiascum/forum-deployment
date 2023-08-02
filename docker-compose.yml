@@ -118,7 +118,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ftp_keys_data:/home/ftp_user/.ssh/keys
+      - /opt/mafiascum/config/ftp_keys:/home/ftp_user/.ssh/keys
       - phpbb_data:/home/ftp_user/phpbb
       - /etc/ssh/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key
       - /etc/ssh/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key
