@@ -61,3 +61,12 @@ services:
         networks:
             backend:
                 ipv4_address: 172.40.0.12
+    ftp:
+        image: atmoz/sftp
+        env_file:
+            - .env
+        volumes:
+            - phpbb_data:/home/ftp_user/phpbb
+        ports:
+            - "2222:22"
+        command: "ftp_user:pass:1010:0"
