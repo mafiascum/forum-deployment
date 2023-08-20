@@ -1,5 +1,4 @@
 User-agent: *
-Crawl-delay: 30
 Disallow: /adm
 Disallow: /bin
 Disallow: /cache
