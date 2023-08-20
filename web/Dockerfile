@@ -84,5 +84,8 @@ COPY styles/ /opt/mafiascum/forum/styles/
 COPY external-extensions.json /opt/mafiascum/forum
 RUN /opt/mafiascum/scripts/ms_install_extensions_external.sh
 
+# add robots.txt
+COPY robots.txt /opt/mafiascum/forum
+
 ENTRYPOINT [ "/opt/mafiascum/scripts/entrypoint.sh" ]
 CMD ["apache2-foreground"]
