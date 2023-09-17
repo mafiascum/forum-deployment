@@ -125,6 +125,9 @@ services:
     ports:
       - "2222:22"
     command: "ftp_user::1010:0"
+    networks:
+      backend:
+        ipv4_address: 172.40.0.17
 
 volumes:
   mariadb_data:
