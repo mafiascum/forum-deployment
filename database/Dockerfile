@@ -21,4 +21,4 @@ RUN chmod +x /opt/mafiascum/scripts/*
 COPY cron.d /etc/cron.d/
 
 ENTRYPOINT ["dockerize", "-template", "/etc/mysql/my.cnf.template:/etc/mysql/my.cnf", "/opt/mafiascum/scripts/entrypoint.sh"]
-CMD ["mysqld"]
+CMD ["mariadbd"]
