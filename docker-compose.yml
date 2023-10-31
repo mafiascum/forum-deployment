@@ -81,7 +81,7 @@ services:
         ipv4_address: 172.40.0.14
 
   nginx:
-    image: staticfloat/nginx-certbot
+    image: jonasal/nginx-certbot
     restart: always
     ports:
       - 80:80
