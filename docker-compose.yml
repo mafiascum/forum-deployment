@@ -3,6 +3,8 @@ services:
   database:
     build: ./database
     restart: always
+    ports:
+      - "127.0.0.1:3302:3306"
     env_file:
       - .env
     volumes:
