@@ -1,2 +1,2 @@
 * * * * * root indexer --rotate --config /etc/sphinxsearch/sphinx.conf index_phpbb_${SPHINX_ID}_delta >> /var/log/sphinxsearch/indexer.log 2>&1 &
-0 3 * * * root indexer --rotate --config /etc/sphinxsearch/sphinx.conf index_phpbb_${SPHINX_ID}_main >> /var/log/sphinxsearch/indexer.log 2>&1 &
+0 10 * * * root indexer --rotate --config /etc/sphinxsearch/sphinx.conf index_phpbb_${SPHINX_ID}_main >> /var/log/sphinxsearch/indexer.log 2>&1 &
