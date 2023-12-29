@@ -39,6 +39,8 @@ class main_listener implements EventSubscriberInterface
 
 	protected $post_id_to_post_number_map;
 
+	protected $special_marathon_forum_id = 24;
+
     static public function getSubscribedEvents()
     {
         return array(
@@ -87,13 +89,17 @@ class main_listener implements EventSubscriberInterface
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$forum_parents = unserialize($row['forum_parents']);
-			foreach($forum_parents as $parent_forum_id => $parent_forum)
-			{
-				if($parent_forum_id == $config['mafia_forums_id'])
+			if ($forum_parents) {
+				foreach($forum_parents as $parent_forum_id => $parent_forum)
 				{
-					$is_mafia_forum = true;
-					break;
+					if($parent_forum_id == $config['mafia_forums_id'])
+					{
+						$is_mafia_forum = true;
+						break;
+					}
 				}
+			} else if ($forum_id == $this->special_marathon_forum_id) {
+				$is_mafia_forum = true;
 			}
 		}
 
