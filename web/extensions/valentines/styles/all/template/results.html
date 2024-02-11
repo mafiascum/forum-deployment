@@ -1,0 +1,48 @@
+<html>
+<head>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>
+    <link rel="stylesheet" href="/ext/mafiascum/valentines/styles/all/theme/css/valentines_results.css">
+</head>
+<body>
+    <h1>{{ lang('RESULTS_HEADER') }}</h1>
+    <div id='mainbody'>
+        <div id='subbody'>
+            <h2>{{ lang('RESULTS_NORMAL')}} </h2>
+            {% for user,percent in FINAL_RESULTS_TOP_FIVE %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+
+            <h2>{{ lang('RESULTS_IMPORTANT')}} </h2>
+            {% for user,percent in FINAL_RESULTS_TOP_FIVE_IMPORTANT_OVERALL %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+            
+            <h2>{{ lang('RESULTS_NORMAL_U2T')}} </h2>
+            {% for user,percent in FINAL_RESULTS_TOP_FIVE_YOU_TO_THEM %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+
+            <h2>{{ lang('RESULTS_NORMAL_T2U')}} </h2>
+            {% for user,percent in FINAL_RESULTS_TOP_FIVE_THEM_TO_YOU %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+
+            <h2>{{ lang('RESULTS_IMPORTANT_U2T')}} </h2>
+            {% for user,percent in FINAL_RESULTS_TOP_FIVE_IMPORTANT_YOU_TO_THEM %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+
+            <h2>{{ lang('RESULTS_IMPORTANT_T2U')}} </h2>
+            {% for user,percent in FINAL_RESULTS_TOP_FIVE_IMPORTANT_THEM_TO_YOU %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+
+            <h2>{{ lang('RESULTS_WORST')}}</h2>
+            {% for user,percent in FINAL_RESULTS_TOP_ONE_WORST %}
+            <span class="username">{{ USER_ARRAY_NAMES[user] }}</span> {{ percent }}%<br />
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+    

@@ -1,0 +1,64 @@
+<html>
+<head>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>
+    <link rel="stylesheet" href="/ext/mafiascum/valentines/styles/all/theme/css/valentines_questions.css">
+    <title>{{ lang("QUIZ_TITLE") }}</title>
+</head>
+<body>
+<form action="quiz" method="post">
+<h1>{{ lang("QUIZ_HEADER") }}</h1>
+	<div id="loggedinas"><p>{{ LOGGED_IN_AS }}</p></div>
+	<div id="mainbody">
+	<div id="subbody">
+    {% if not QUESTION_DATA %}
+        {{ lang("THANKS") }}
+    {% else %}
+        <input type="hidden" value="{{ QUESTION_ID }}" name="question_id"/>
+        <div id="question">
+            {{ QUESTION_HEADER }}
+        </div>
+        <div id="youranswer">
+            <h2>{{ lang("YOUR_ANSWER") }}</h2>
+            <div class="inner">
+                {% for answer in ANSWERS %}
+                    <input type="radio" id="youranswer{{ loop.index }}" name="youranswer" value="{{ loop.index }}">
+                    <label for="youranswer{{ loop.index }}" class="radiolabel">
+                        {{ answer }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="preferedanswer">
+            <h2>{{ lang("DESIRED_ANSWER") }}</h2>
+            <div class="inner">
+                {% for answer in ANSWERS %}
+                    <input type="radio" id="prefanswer{{ loop.index }}" name="prefanswer" value="{{ loop.index }}">
+                    <label for="prefanswer{{ loop.index }}" class="radiolabel">
+                        {{ answer }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="weight">
+            <h2>{{ lang("RANK") }}</h2>
+            <div class="inner">
+                <input id="weight1" type="radio" name="weight" value="4"><label for="weight1" class="radiolabel">{{ lang("RANK_WEIGHT_1") }}</label>
+                <input id="weight2" type="radio" name="weight" value="3"><label for="weight2" class="radiolabel">{{ lang("RANK_WEIGHT_2") }}</label>
+                <input id="weight3" type="radio" name="weight" value="2"><label for="weight3" class="radiolabel">{{ lang("RANK_WEIGHT_3") }}</label>
+                <input id="weight4" type="radio" name="weight" value="1"><label for="weight4" class="radiolabel">{{ lang("RANK_WEIGHT_4") }}</label>
+                <input id="weight5" type="radio" name="weight" value="0"><label for="weight5" class="radiolabel">{{ lang("RANK_WEIGHT_5") }}</label>
+            </div>
+        </div>
+        <div id="submit_buttons">
+            <input id="submit" name="submit" value="submit" type="submit"/>
+            <label for="submit" class="heart"><span class="button">{{ lang("ANSWER") }}</span></label>
+            
+            <input id="pass" name="pass" value="pass" type="submit"/>
+            <label for="pass" class="heart"><span class="button">{{ lang("SKIP") }}</span></label>
+        </div>
+    {% endif %}
+	</div>
+	</div>
+</form>
+</body>
+</html>

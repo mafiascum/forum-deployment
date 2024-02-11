@@ -1,0 +1,6 @@
+quiz:
+    path: /quiz
+    defaults: { _controller: mafiascum.valentines.quiz:handle }
+results:
+    path: /results
+    defaults: { _controller: mafiascum.valentines.results:handle }

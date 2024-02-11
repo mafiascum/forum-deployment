@@ -1,0 +1,89 @@
+.username{
+    display: inline-block;
+    width: 200px;
+}
+#loggedinas{
+	float: right;
+	display: inline-block;
+	color: white;
+	text-shadow: 1px 1px #000000;
+}
+h1 {
+	text-align: center;
+	color: #FFA3C2;
+	text-shadow: 2px 2px #000000;
+}
+body{
+	background-image:url('./valentines_bg.png');
+	background-position:center center;
+	background-repeat:no-repeat;
+	background-color:#820000;
+}
+#mainbody {
+	margin: 5% 25%;
+	background-color:rgba(255,255,255,0.7);
+	border-radius: 5px;
+	border-style: solid; 
+	border-width: 101px 101px 98px 100px;
+	-moz-border-image: url(./heart_border.png) 101 101 98 100 round;
+	-webkit-border-image: url(./heart_border.png) 101 101 98 100 round;
+	-o-border-image: url(./heart_border.png) 101 101 98 100 round;
+	border-image: url(./heart_border.png) 101 101 98 100 round;
+	border-image-outset: 40px;
+}
+#question{
+	font-weight:bold;
+	font-size: 20px;
+	text-align: center;
+	padding-bottom: 10px;
+}
+h2{
+	font-size: 18px;
+}
+.inner{
+	padding-left: 15px;
+}
+.radiolabel{
+	position: relative; 
+	display:inline-block;
+	cursor: pointer;
+	position: relative;
+	padding: 8px 0px;
+	padding-left: 25px;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	min-width: 100%;
+	border-color: #777777;
+}
+.radiolabel:last-of-type{
+	border-width: 0px;
+}
+input[type=radio]{
+	display: none;
+}
+input[type=submit]{
+	display: none;
+}
+input[type=radio] + label::before {
+    content: url('./radio.png');
+	width: 16px;  
+    height: 16px;
+	margin-right: 10px;  
+    position: absolute;  
+    left: 0;
+	top: 11px;
+}
+
+input[type=radio]:checked + label::before {
+    content: url('./radio_checked.png');
+	width: 16px;  
+    height: 16px;
+	margin-right: 10px;  
+    position: absolute;  
+    left: 0;
+}
+.heart { cursor: pointer; position: relative; width: 100px; height: 90px; z-index:2; margin-right: 10px;} .heart:before, .heart:after { position: absolute; content: ""; left: 50px; top: 0; width: 50px; height: 80px; z-index:-1; background: red; -moz-border-radius: 50px 50px 0 0; border-radius: 50px 50px 0 0; -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); -webkit-transform-origin: 0 100%; -moz-transform-origin: 0 100%; -ms-transform-origin: 0 100%; -o-transform-origin: 0 100%; transform-origin: 0 100%; } .heart:after {z-index:-1; left: 0; -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); -o-transform: rotate(45deg); transform: rotate(45deg); -webkit-transform-origin: 100% 100%; -moz-transform-origin: 100% 100%; -ms-transform-origin: 100% 100%; -o-transform-origin: 100% 100%; transform-origin :100% 100%; }
+.button{ display: inline-block; position:relative; top:20px; width:100px; cursor: pointer; text-align: center; color: white; font-weight: bold;}
+#submit_buttons{
+	margin-top: 20px;
+}

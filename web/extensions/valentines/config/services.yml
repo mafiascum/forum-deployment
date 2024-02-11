@@ -1,0 +1,23 @@
+services:
+    mafiascum.valentines.listener:
+        class: mafiascum\valentines\event\main_listener
+        tags:
+            - { name: event.listener }
+    mafiascum.valentines.quiz:
+        class: mafiascum\valentines\controller\quiz
+        arguments:
+            - '@controller.helper'
+            - '@language'
+            - '@template'
+            - '@request'
+            - '@user'
+            - '@dbal.conn'
+    mafiascum.valentines.results:
+        class: mafiascum\valentines\controller\results
+        arguments:
+            - '@controller.helper'
+            - '@language'
+            - '@template'
+            - '@request'
+            - '@user'
+            - '@dbal.conn'
