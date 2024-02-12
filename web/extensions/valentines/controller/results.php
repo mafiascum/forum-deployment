@@ -83,7 +83,7 @@ class results
             $their_total_weight[$their_id] = 0;
             $their_score[$their_id] = 0;
             $question_match = 0;
-            while ($row = $db->sql_fetchrow($result)){
+            while ($row = $this->db->sql_fetchrow($result)){
                 $question_id=$row['question_id'];
                 $their_pref_answer[$question_id] = $row['prefanswer'];
                 $their_answer[$question_id] = $row['answer'];
