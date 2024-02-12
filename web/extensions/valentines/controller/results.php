@@ -68,7 +68,15 @@ class results
         $their_total_weight = array();
 
         $weighted_question_id = 1;
+        $weight = array(0,10,25,50,200);
         $final_results = array();
+        while ($row = $this->db->sql_fetchrow($result)){
+            $question_id = $row['question_id'];
+            $my_question_id_set[] = $question_id;
+            $my_pref_answer[$question_id] = $row['prefanswer'];
+            $my_answer[$question_id] = $row['answer'];
+            $my_weight[$question_id] = $row['weight'];
+        }
 
         for ($i=0; $i<sizeOf($user_array); $i++) {
             $their_id = $user_array[$i];
@@ -92,7 +100,7 @@ class results
             for ($k=0;$k<sizeOf($my_question_id_set);$k++){
                 $question_id = $my_question_id_set[$k];
                 if ($question_id != $weighted_question_id){
-                    if ($their_pref_answer[$question_id]){
+                    if (array_key_exists($question_id, $their_pref_answer)){
                         $question_match++;
                         $temp_weight = $their_weight[$question_id];
                         $their_total_weight[$their_id] += $weight[$temp_weight];
@@ -107,7 +115,7 @@ class results
                         }
                     }
                 } else {
-                    if ($their_pref_answer[$weighted_question_id]){
+                    if (array_key_exists($weighted_question_id, $their_pref_answer)){
                         $their_important_score[$their_id] = 0;
                         $my_important_score[$their_id] = 0;
                         if ($their_pref_answer[$weighted_question_id] == $my_answer[$weighted_question_id] || $their_weight[$question_id] == 0){
@@ -129,7 +137,7 @@ class results
             }
         }
             
-        $unweighted_results = array_merge($final_results);
+        $unweighted_results = $final_results;
         arsort($unweighted_results);
         $worst = array();
         
@@ -146,11 +154,11 @@ class results
         $important_you_to_them = array();
         $important_them_to_you = array();
         foreach ($unweighted_results as $user => $percent) {
-            $important_results[$user] = $percent * $my_gender_score[$user] * $their_gender_score[$user];
+            $important_results[$user] = $percent * $my_important_score[$user] * $their_important_score[$user];
             $unweighted_you_to_them[$user] = ($my_score[$user]/$my_total_weight[$user]);
             $unweighted_them_to_you[$user] = ($their_score[$user]/$their_total_weight[$user]);
-            $important_you_to_them[$user] = ($my_score[$user]/$my_total_weight[$user]) * $my_gender_score[$user];
-            $important_them_to_you[$user] = ($their_score[$user]/$their_total_weight[$user]) * $their_gender_score[$user];
+            $important_you_to_them[$user] = ($my_score[$user]/$my_total_weight[$user]) * $my_important_score[$user];
+            $important_them_to_you[$user] = ($their_score[$user]/$their_total_weight[$user]) * $their_important_score[$user];
         }
         arsort($important_results);
         arsort($unweighted_you_to_them);
@@ -159,13 +167,13 @@ class results
         arsort($important_them_to_you);
 
         $this->template->assign_vars(array(
-            'FINAL_RESULTS_TOP_FIVE' => array_slice($unweighted_results, 0, 5),
-            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_OVERALL' => array_slice($important_results, 0, 5),
-            'FINAL_RESULTS_TOP_FIVE_YOU_TO_THEM' => array_slice($unweighted_you_to_them, 0, 5),
-            'FINAL_RESULTS_TOP_FIVE_THEM_TO_YOU' => array_slice($unweighted_them_to_you, 0, 5),
-            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_YOU_TO_THEM' => array_slice($important_you_to_them, 0, 5),
-            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_THEM_TO_YOU' => array_slice($important_them_to_you, 0, 5),
-            'FINAL_RESULTS_TOP_ONE_WORST' => array_slice($worst, 0, 1),
+            'FINAL_RESULTS_TOP_FIVE' => array_slice($unweighted_results, 0, 5, true),
+            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_OVERALL' => array_slice($important_results, 0, 5, true),
+            'FINAL_RESULTS_TOP_FIVE_YOU_TO_THEM' => array_slice($unweighted_you_to_them, 0, 5, true),
+            'FINAL_RESULTS_TOP_FIVE_THEM_TO_YOU' => array_slice($unweighted_them_to_you, 0, 5, true),
+            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_YOU_TO_THEM' => array_slice($important_you_to_them, 0, 5, true),
+            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_THEM_TO_YOU' => array_slice($important_them_to_you, 0, 5, true),
+            'FINAL_RESULTS_TOP_ONE_WORST' => array_slice($worst, 0, 1, true),
             'USER_ARRAY_NAMES' => $user_array_names,
         ));
 
