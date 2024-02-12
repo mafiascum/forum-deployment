@@ -153,6 +153,11 @@ class results
         $unweighted_them_to_you = array();
         $important_you_to_them = array();
         $important_them_to_you = array();
+
+        $percentize = function ($val) {
+            return ((int)($val * 10000)/100.0);
+        };
+
         foreach ($unweighted_results as $user => $percent) {
             $important_results[$user] = $percent * $my_important_score[$user] * $their_important_score[$user];
             $unweighted_you_to_them[$user] = ($my_score[$user]/$my_total_weight[$user]);
@@ -167,13 +172,13 @@ class results
         arsort($important_them_to_you);
 
         $this->template->assign_vars(array(
-            'FINAL_RESULTS_TOP_FIVE' => array_slice($unweighted_results, 0, 5, true),
-            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_OVERALL' => array_slice($important_results, 0, 5, true),
-            'FINAL_RESULTS_TOP_FIVE_YOU_TO_THEM' => array_slice($unweighted_you_to_them, 0, 5, true),
-            'FINAL_RESULTS_TOP_FIVE_THEM_TO_YOU' => array_slice($unweighted_them_to_you, 0, 5, true),
-            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_YOU_TO_THEM' => array_slice($important_you_to_them, 0, 5, true),
-            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_THEM_TO_YOU' => array_slice($important_them_to_you, 0, 5, true),
-            'FINAL_RESULTS_TOP_ONE_WORST' => array_slice($worst, 0, 1, true),
+            'FINAL_RESULTS_TOP_FIVE' => array_map($percentize, array_slice($unweighted_results, 0, 5, true)),
+            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_OVERALL' => array_map($percentize, array_slice($important_results, 0, 5, true)),
+            'FINAL_RESULTS_TOP_FIVE_YOU_TO_THEM' => array_map($percentize, array_slice($unweighted_you_to_them, 0, 5, true)),
+            'FINAL_RESULTS_TOP_FIVE_THEM_TO_YOU' => array_map($percentize, array_slice($unweighted_them_to_you, 0, 5, true)),
+            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_YOU_TO_THEM' => array_map($percentize, array_slice($important_you_to_them, 0, 5, true)),
+            'FINAL_RESULTS_TOP_FIVE_IMPORTANT_THEM_TO_YOU' => array_map($percentize, array_slice($important_them_to_you, 0, 5, true)),
+            'FINAL_RESULTS_TOP_ONE_WORST' => array_map($percentize, array_slice($worst, 0, 1, true)),
             'USER_ARRAY_NAMES' => $user_array_names,
         ));
 
