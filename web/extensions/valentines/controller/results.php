@@ -115,9 +115,9 @@ class results
                         }
                     }
                 } else {
+                    $their_important_score[$their_id] = 0;
+                    $my_important_score[$their_id] = 0;
                     if (array_key_exists($weighted_question_id, $their_pref_answer)){
-                        $their_important_score[$their_id] = 0;
-                        $my_important_score[$their_id] = 0;
                         if ($their_pref_answer[$weighted_question_id] == $my_answer[$weighted_question_id] || $their_weight[$question_id] == 0){
                             $their_important_score[$their_id] = 1;
                         }
