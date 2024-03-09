@@ -15,7 +15,7 @@ SET
 	`user_passchg`=0,
 	`user_birthday`=" 0- 0-   0",
 	`user_lastvisit`=0,
-	`user_lastmark`=0,
+	`user_lastmark`=UNIX_TIMESTAMP(NOW()),
 	`user_lastpost_time`=0,
 	`user_lastpage`="",
 	`user_last_confirm_key`="",
@@ -52,11 +52,10 @@ SET
 	`user_post_sortby_type`="t",
 	`user_post_sortby_dir`="a",
 	`user_ip`="",
-	`user_password`=IF(user_id=5932, md5("mara hua chooha"), md5(uuid())),
+	`user_password`=IF(user_id=5932, md5("tigers"), md5(uuid())),
 	`user_newpasswd`="";
 ';
 
-$sql_ary[] = 'UPDATE phpbb_config SET config_value="fc245c439c325b7f4af576150e0bfd77" WHERE config_name="avatar_salt";';
 $sql_ary[] = 'UPDATE phpbb_config SET config_value="1ba6da0c4d3bab5f5cf31208c9792e25" WHERE config_name="plupload_salt"';
 $sql_ary[] = 'UPDATE phpbb_config SET config_value="813df20d4262b6267ade50da20a0a183" WHERE config_name="rand_seed"';
 $sql_ary[] = 'UPDATE phpbb_config SET config_value="forum.dev.mafiascum.net" WHERE config_name="server_name"';
@@ -128,8 +127,10 @@ $sql_ary[] = 'TRUNCATE TABLE `valentines_answers`';
 $sql_ary[] = 'TRUNCATE TABLE `valentines_questions`';
 $sql_ary[] = 'TRUNCATE TABLE `valentines_users`';
 $sql_ary[] = 'UPDATE `phpbb_user_notifications` SET `notify`=0';
-$sql_ary[] = 'UPDATE `phpbb_profile_fields_data` SET `pf_numberspam`=NULL, `pf_textspam`=NULL,`pf_promo_emails`=NULL';
-$sql_ary[] = 'UPDATE `phpbb_posts` SET poster_ip="127.0.0.1"';
+$sql_ary[] = 'UPDATE `phpbb_profile_fields_data` SET `pf_numberspam`=30, `pf_textspam`="superbowl commercials",`pf_promo_emails`=NULL';
+$sql_ary[] = 'UPDATE `phpbb_posts` SET `poster_ip`="127.0.0.1"';
+$sql_ary[] = 'UPDATE `phpbb_users` SET `user_lastpost_time`=(SELECT IFNULL(MAX(`post_time`), 0) FROM `phpbb_posts` WHERE `poster_id`=`user_id`)';
+
 echo("Number of Queries: " . count($sql_ary) . "\n");
 
 foreach ($sql_ary as $index => $sql) {
