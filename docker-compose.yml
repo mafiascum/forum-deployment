@@ -28,6 +28,7 @@ services:
       - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
       - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
       - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
+      - ./web/apache/rewriterules.conf:/etc/apache2/conf-enabled/rewriterules.conf
     networks:
       backend:
         ipv4_address: 172.40.0.11
@@ -47,6 +48,7 @@ services:
       - ./web/apache/httpd.conf:/etc/apache2/conf-enabled/httpd.conf
       - ./web/apache/usertrack.conf:/etc/apache2/conf-enabled/usertrack.conf
       - ./web/apache/remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf
+      - ./web/apache/rewriterules.conf:/etc/apache2/conf-enabled/rewriterules.conf
     networks:
       backend:
         ipv4_address: 172.40.0.12

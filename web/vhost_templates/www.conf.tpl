@@ -10,6 +10,8 @@
             Require all granted
     </Directory>
 
+    IncludeOptional /etc/apache2/conf-enabled/rewriterules.conf
+
     ErrorLog /etc/apache2/logs/error/error.log
 
     # Possible values include: debug, info, notice, warn, error, crit, alert, emerg.

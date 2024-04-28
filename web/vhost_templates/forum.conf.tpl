@@ -19,6 +19,8 @@
 		Require all granted
 		DirectoryIndex index.html index.php
 	</Directory>
+
+	IncludeOptional /etc/apache2/conf-enabled/rewriterules.conf
 	
 	ErrorLog /etc/apache2/logs/error/error.log
 
