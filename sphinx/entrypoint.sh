@@ -124,7 +124,7 @@ fi
 # default behaviour is to launch Sphinx search
 if [[ -z ${1} ]]; then
   echo "Starting Sphinx search demon..."
-  exec $(which searchd) --config ${SPHINX_CONF} --nodetach ${EXTRA_OPTS}
+  exec $(which searchd) --config ${SPHINX_CONF} --datadir ${SPHINX_DATA_DIR} --nodetach ${EXTRA_OPTS}
 else
   exec "$@"
 fi

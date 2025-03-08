@@ -69,3 +69,19 @@ services:
         ports:
             - "2222:22"
         command: "ftp_user:pass:1010:0"
+    
+    sphinx:
+        build: ./sphinx
+        platform: linux/arm64
+        restart: always
+        depends_on:
+        - database
+        env_file:
+        - .env
+        volumes:
+        - sphinx_data:/var/lib/sphinxsearch/data
+        - ./sphinx/config/sphinx.conf:/etc/sphinxsearch/sphinx.conf.template
+        - ./sphinx/cron.d:/etc/cron.d.template
+        networks:
+        backend:
+            ipv4_address: 172.40.0.14
