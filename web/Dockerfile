@@ -1,11 +1,11 @@
-FROM php:8.1.14-apache
+FROM php:8.1.31-apache
 
 ARG PHP_INI_DEVELOPMENT
 ENV PHP_INI_DEVELOPMENT=$PHP_INI_DEVELOPMENT
 
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev mariadb-client python3-pip gcc g++ cmake logrotate nano libicu-dev
+RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev mariadb-client python3-pip gcc g++ cmake logrotate nano libicu-dev python3-mysqldb
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 RUN docker-php-ext-install intl && docker-php-ext-enable intl
 
@@ -27,9 +27,6 @@ RUN echo "alias ll='ls -lA'" >> /etc/bash.bashrc
 
 # logrotate
 COPY logrotate.d/apache2 /etc/logrotate.d/apache2
-
-# python 3 environment
-RUN pip3 install mariadb
 
 # add scripts
 COPY scripts /opt/mafiascum/scripts
