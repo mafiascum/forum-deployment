@@ -17,7 +17,7 @@ ARG TARGETPLATFORM
 
 RUN echo "$TARGETPLATFORM"
 
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then wget http://sphinxsearch.com/files/sphinx-${SPHINX_VERSION}-linux-amd64-musl.tar.gz -O /tmp/sphinxsearch.tar.gz; else wget http://sphinxsearch.com/files/sphinx-${SPHINX_VERSION}-linux-aarch64.tar.gz  -O /tmp/sphinxsearch.tar.gz; fi
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then wget http://sphinxsearch.com/files/sphinx-${SPHINX_VERSION}-linux-aarch64.tar.gz -O /tmp/sphinxsearch.tar.gz; else wget http://sphinxsearch.com/files/sphinx-${SPHINX_VERSION}-linux-amd64-musl.tar.gz  -O /tmp/sphinxsearch.tar.gz; fi
 RUN cd /opt/sphinx && tar -xf /tmp/sphinxsearch.tar.gz 
 RUN rm /tmp/sphinxsearch.tar.gz
 

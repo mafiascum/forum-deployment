@@ -1,4 +1,17 @@
 services:
+    database:
+        build: ./database
+        platform: linux/arm64
+        restart: always
+        ports:
+            - "127.0.0.1:3306:3306"
+        env_file:
+            - .env
+        volumes:
+            - mariadb_data:/var/lib/mysql
+        networks:
+            backend:
+                ipv4_address: 172.40.0.10
     nginx:
         image: nginx
         ports:
