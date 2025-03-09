@@ -15,13 +15,11 @@ RUN mkdir -pv /opt/sphinx
 
 ARG TARGETPLATFORM
 
-RUN echo "$TARGETPLATFORM"
-
 RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then wget http://sphinxsearch.com/files/sphinx-${SPHINX_VERSION}-linux-aarch64.tar.gz -O /tmp/sphinxsearch.tar.gz; else wget http://sphinxsearch.com/files/sphinx-${SPHINX_VERSION}-linux-amd64-musl.tar.gz  -O /tmp/sphinxsearch.tar.gz; fi
 RUN cd /opt/sphinx && tar -xf /tmp/sphinxsearch.tar.gz 
 RUN rm /tmp/sphinxsearch.tar.gz
 
-ENV PATH="${PATH}:/opt/sphinx/sphinx-3.7.1/bin"
+ENV PATH="$PATH:/opt/sphinx/sphinx-3.7.1/bin"
 RUN indexer -v
 
 RUN rm -rf /var/lib/apt/lists/*
