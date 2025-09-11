@@ -1,3 +1,5 @@
+limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+
 server {
     listen 443 ssl;
     server_name ${FORUM_FQDN};
@@ -6,6 +8,8 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${FORUM_FQDN}/privkey.pem;
 
     location / {
+        limit_req zone=one burst=5 nodelay;
+
         proxy_set_header HOST $host;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Real-IP $remote_addr;
