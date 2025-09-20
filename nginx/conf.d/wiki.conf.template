@@ -1,4 +1,4 @@
-limit_req_zone $binary_remote_addr zone=two:10m rate=1r/s;
+limit_req_zone $binary_remote_addr zone=wiki_limit:10m rate=1r/s;
 
 server {
     listen 443 ssl;
@@ -8,7 +8,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${WIKI_FQDN}/privkey.pem;
 
     location / {
-        limit_req zone=two burst=20 nodelay;
+        limit_req zone=wiki_limit burst=50 nodelay;
 
         proxy_set_header HOST $host;
         proxy_set_header X-Forwarded-Proto $scheme;

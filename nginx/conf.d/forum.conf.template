@@ -1,4 +1,4 @@
-limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+limit_req_zone $binary_remote_addr zone=phpbb_limit:10m rate=1r/s;
 
 server {
     listen 443 ssl;
@@ -7,14 +7,39 @@ server {
     ssl_certificate /etc/letsencrypt/live/${FORUM_FQDN}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${FORUM_FQDN}/privkey.pem;
 
+    proxy_set_header HOST $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    # --- Static assets: NO rate limiting ---
+    location ^~ /styles/ {
+        proxy_pass http://web-cluster;
+    }
+    location ^~ /images/ {
+        proxy_pass http://web-cluster;
+    }
+    location ^~ /download/ {   # attachments, avatars
+        proxy_pass http://web-cluster;
+    }
+    location ~* \.(?:css|js|png|jpg|jpeg|gif|ico|svg|webp)$ {
+        proxy_pass http://web-cluster;
+    }
+
+    # --- Dynamic pages: WITH rate limiting ---
+    location ~ ^/(viewtopic\.php|viewforum\.php|search\.php|ucp\.php|mcp\.php|posting\.php) {
+        limit_req zone=phpbb_limit burst=50 nodelay;
+        proxy_pass http://web-cluster;
+    }
+
+    # Catch-all PHP
+    location ~ \.php$ {
+        limit_req zone=phpbb_limit burst=50 nodelay;
+        proxy_pass http://web-cluster;
+    }
+
+    # Fallback for everything else
     location / {
-        limit_req zone=one burst=20 nodelay;
-
-        proxy_set_header HOST $host;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
         proxy_pass http://web-cluster;
     }
 }
