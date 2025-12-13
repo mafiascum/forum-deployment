@@ -78,7 +78,7 @@ $wgDBport           = getenv("PHPBB_DATABASE_PORT_NUMBER");
 $wgDBmysql5 = true;
 
 ## Shared memory settings
-$wgMainCacheType = CACHE_NONE;
+$wgMainCacheType = CACHE_ACCEL;
 $wgMemCachedServers = array();
 
 # Enable subpages in the main namespace.  Turned on by -JEEP 4 MAR 2007
