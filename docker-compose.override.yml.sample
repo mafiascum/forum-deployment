@@ -96,5 +96,5 @@ services:
         - ./sphinx/config/sphinx.conf:/etc/sphinxsearch/sphinx.conf.template
         - ./sphinx/cron.d:/etc/cron.d.template
         networks:
-        backend:
-            ipv4_address: 172.40.0.14
+            backend:
+                ipv4_address: 172.40.0.14
