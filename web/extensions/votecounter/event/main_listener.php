@@ -15,16 +15,12 @@ class main_listener implements EventSubscriberInterface
     /** @var \phpbb\db\driver\driver */
     protected $db;
 
-    /** @var \phpbb\auth\auth */
-    //protected $auth;
-
     public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix)
     {
         $this->template = $template;
         $this->user = $user;
         $this->db = $db;
         $this->table_prefix = $table_prefix;
-        //$this->auth = $auth;
     }
 
 
@@ -35,9 +31,7 @@ class main_listener implements EventSubscriberInterface
         );
     }
 
-    public function do_nothing($event): void {}
-
-    private function can_access($topic_id)
+    private function is_permitted($topic_id)
     {
         $current_user_id = (int) $this->user->data['user_id'];
 
@@ -63,7 +57,7 @@ class main_listener implements EventSubscriberInterface
         $this->user->add_lang_ext('mafiascum/votecounter', 'votecounter');
 
         $topic_id = (int) $event['topic_id'] ?? 0;
-        $show_panel = $this->can_access($topic_id);
+        $show_panel = $this->is_permitted($topic_id);
 
         $this->template->assign_vars([
             'S_VOTECOUNTER_PANEL' => $show_panel,
