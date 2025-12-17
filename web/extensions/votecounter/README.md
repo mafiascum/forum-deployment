@@ -1,0 +1,2 @@
+# MafiaScum Vote Counter
+
