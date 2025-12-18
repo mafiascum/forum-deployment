@@ -1,11 +1,16 @@
 services:
-    mafiascum.votecounter.listener:
-        class: mafiascum\votecounter\event\main_listener
-        arguments:
-            - '@template'
-            - '@user'
-            - '@dbal.conn'
-            - '%core.table_prefix%'
-        tags:
-            - { name: event.listener }
+  mafiascum.votecounter.listener:
+    class: mafiascum\votecounter\event\main_listener
+    arguments:
+      - "@template"
+      - "@user"
+      - "@dbal.conn"
+      - "%core.table_prefix%"
+    tags:
+      - { name: event.listener }
 
+  mafiascum.votecounter.verifyUsernameController:
+    class: mafiascum\votecounter\controller\verifyUsername
+    arguments:
+      - "@request"
+      - "@user_loader"

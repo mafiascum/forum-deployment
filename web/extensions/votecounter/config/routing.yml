@@ -1,0 +1,4 @@
+verify_username_route:
+  path: /verify_username
+  defaults:
+    { _controller: mafiascum.votecounter.verifyUsernameController:handle }

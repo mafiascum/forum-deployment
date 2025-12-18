@@ -15,8 +15,12 @@ class main_listener implements EventSubscriberInterface
     /** @var \phpbb\db\driver\driver */
     protected $db;
 
-    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix)
-    {
+    public function __construct(
+        \phpbb\template\template $template,
+        \phpbb\user $user,
+        \phpbb\db\driver\driver_interface $db,
+        $table_prefix
+    ) {
         $this->template = $template;
         $this->user = $user;
         $this->db = $db;
@@ -27,12 +31,25 @@ class main_listener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            'core.posting_modify_template_vars' => 'add_votecounter_panel'
+            'core.posting_modify_template_vars' => 'add_votecounter_panel',
+            'core.page_footer' => 'add_js'
+        );
+    }
+
+    public function add_js($event)
+    {
+        $this->template->assign_var(
+            'SCRIPTS',
+            '@mafiascum_votecounter/votecounter_settings.js'
         );
     }
 
     private function is_permitted($topic_id)
     {
+        if (!$topic_id) {
+            return false;
+        }
+
         $current_user_id = (int) $this->user->data['user_id'];
 
         $sql = 'SELECT topic_poster FROM ' . $this->table_prefix . 'topics WHERE topic_id = ' . $topic_id;

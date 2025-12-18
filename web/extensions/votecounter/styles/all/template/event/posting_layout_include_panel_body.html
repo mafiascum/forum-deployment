@@ -1,22 +1,36 @@
-<!-- IF S_VOTECOUNTER_PANEL -->
+{% if S_VOTECOUNTER_PANEL %}
 <div class="panel bg3" id="votecounter-panel">
     <div class="inner">
         <div class="content">
-            <fieldset class="fields2">
-                <legend>{{lang("TEST")}}</legend>
-                <dl>
-                    <dt>
-                        <label for="votecounter">
-                            {{lang("TEST")}}
-                        </label>
-                    </dt>
+            <fieldset class="fields2" id="vc-subpanel-players">
+                <legend>{{ lang("PLAYER_LIST") }}</legend>
+                <input
+                    type="text"
+                    name="votecounter_add_user"
+                    id="votecounter_add_user"
+                    class="inputbox autowidth"
+                    maxlength="255"
+                    data-endpoint="{{ ROOT_PATH }}app.php/verify_username"
+                    required
+                />
+                <input
+                    type="button"
+                    class="button2"
+                    value="{{ lang('ADD_USER') }}"
+                    onclick="verify_username('votecounter_add_user')" 
+                />
+            </fieldset>
 
-                    <dd>
-                        <input type="text" name="votecounter" id="votecounter" />
-                    </dd>
-                </dl>
+            <hr class="dashed"/>
+
+            <fieldset class="fields2">
+                <legend>{{ lang("PHASE_LIST") }}</legend>
+                <div>TBD</div>
             </fieldset>
         </div>
     </div>
 </div>
-<!-- ENDIF -->
+
+{% INCLUDEJS './ext/mafiascum/votecounter/styles/all/template/js/votecount_settings.js' %}
+
+{% endif %}
