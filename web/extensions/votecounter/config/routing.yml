@@ -1,4 +1,12 @@
-verify_username_route:
-  path: /verify_username
+add_user_as_slot_route:
+  path: /add_user_as_slot
   defaults:
-    { _controller: mafiascum.votecounter.verifyUsernameController:handle }
+    {
+      _controller: mafiascum.votecounter.votecountSettingsController:add_user_as_slot,
+    }
+remove_slot_route:
+  path: /remove_slot
+  defaults:
+    {
+      _controller: mafiascum.votecounter.votecountSettingsController:remove_slot,
+    }

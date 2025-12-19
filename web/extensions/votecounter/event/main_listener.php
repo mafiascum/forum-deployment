@@ -15,16 +15,23 @@ class main_listener implements EventSubscriberInterface
     /** @var \phpbb\db\driver\driver */
     protected $db;
 
+    /* @var \phpbb\user_loader */
+    protected $user_loader;
+
+    protected $table_prefix;
+
     public function __construct(
         \phpbb\template\template $template,
         \phpbb\user $user,
         \phpbb\db\driver\driver_interface $db,
+        \phpbb\user_loader $user_loader,
         $table_prefix
     ) {
         $this->template = $template;
         $this->user = $user;
         $this->db = $db;
         $this->table_prefix = $table_prefix;
+        $this->user_loader = $user_loader;
     }
 
 
@@ -69,6 +76,34 @@ class main_listener implements EventSubscriberInterface
         return $current_user_id === $topic_poster || in_array($current_user_id, $topic_mods);
     }
 
+    private function get_votecount_slots($topic_id)
+    {
+        if (!$topic_id) {
+            return [];
+        }
+
+        $sql = 'SELECT u.user_id, u.username, u.user_type, u.user_colour 
+            FROM ' . $this->table_prefix . 'votecount_slots vs
+            JOIN ' . $this->table_prefix . 'users u ON u.user_id = vs.user_id
+            WHERE vs.topic_id = ' . (int) $topic_id;
+        $result = $this->db->sql_query($sql);
+
+        $user_list = [];
+        while ($row = $this->db->sql_fetchrow($result)) {
+            $profile_url = './../memberlist.php?mode=viewprofile&u=' . $row['user_id'];
+            $username = htmlspecialchars($row['username']); // sanitize
+            $user_list[] = [
+                'user_id'  => (int) $row['user_id'],
+                'username' => $username,
+                'profile'  => $profile_url,
+            ];
+        }
+
+        $this->db->sql_freeresult($result);
+
+        return $user_list;
+    }
+
     public function add_votecounter_panel($event)
     {
         $this->user->add_lang_ext('mafiascum/votecounter', 'votecounter');
@@ -76,8 +111,15 @@ class main_listener implements EventSubscriberInterface
         $topic_id = (int) $event['topic_id'] ?? 0;
         $show_panel = $this->is_permitted($topic_id);
 
-        $this->template->assign_vars([
-            'S_VOTECOUNTER_PANEL' => $show_panel,
-        ]);
+        if (!$show_panel) {
+            $this->template->assign_vars([]);
+        } else {
+            $slot_list = $this->get_votecount_slots($topic_id);
+            $this->template->assign_vars([
+                'S_VOTECOUNTER_PANEL' => $show_panel,
+                'S_SLOT_LIST' => $slot_list,
+                'TOPIC_ID' => $topic_id
+            ]);
+        }
     }
 }

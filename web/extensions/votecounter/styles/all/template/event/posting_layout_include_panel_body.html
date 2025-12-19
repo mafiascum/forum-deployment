@@ -4,20 +4,26 @@
         <div class="content">
             <fieldset class="fields2" id="vc-subpanel-players">
                 <legend>{{ lang("PLAYER_LIST") }}</legend>
+                <ul id="vc_slot_list">
+                    {% if S_SLOT_LIST %}
+                        {% INCLUDE '@mafiascum_votecounter/partials/vc_slot_list_item.html' %}
+                    {% endif %}
+                </ul>
+
                 <input
                     type="text"
                     name="votecounter_add_user"
                     id="votecounter_add_user"
                     class="inputbox autowidth"
                     maxlength="255"
-                    data-endpoint="{{ ROOT_PATH }}app.php/verify_username"
+                    data-endpoint="{{ ROOT_PATH }}app.php/add_user_as_slot"
                     required
                 />
                 <input
                     type="button"
                     class="button2"
                     value="{{ lang('ADD_USER') }}"
-                    onclick="verify_username('votecounter_add_user')" 
+                    onclick="add_user_as_slot('votecounter_add_user', {{ TOPIC_ID | default(0) }})" 
                 />
             </fieldset>
 
@@ -31,6 +37,7 @@
     </div>
 </div>
 
+{% INCLUDECSS './ext/mafiascum/votecounter/styles/all/template/css/votecount_settings.css' %}
 {% INCLUDEJS './ext/mafiascum/votecounter/styles/all/template/js/votecount_settings.js' %}
 
 {% endif %}

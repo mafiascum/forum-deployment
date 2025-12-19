@@ -1,0 +1,19 @@
+{% for user in S_SLOT_LIST %}
+<li>
+    <input
+        type="button"
+        class="button2"
+        value="x"
+        data-user-id="{{ user.user_id }}"
+        data-endpoint="{{ ROOT_PATH }}app.php/remove_slot"
+        onclick="remove_slot(this, {{ TOPIC_ID }})"
+    >
+    <input
+        type="button"
+        class="button2"
+        value="✎"
+        onclick="alert('Hi!')"
+    />
+    <a href="{{ user.profile }}" target="_blank">{{ user.username }}</a>
+</li>
+{% endfor %}

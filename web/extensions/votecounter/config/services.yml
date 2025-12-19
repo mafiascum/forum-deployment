@@ -5,12 +5,18 @@ services:
       - "@template"
       - "@user"
       - "@dbal.conn"
+      - "@user_loader"
       - "%core.table_prefix%"
     tags:
       - { name: event.listener }
 
-  mafiascum.votecounter.verifyUsernameController:
-    class: mafiascum\votecounter\controller\verifyUsername
+  mafiascum.votecounter.votecountSettingsController:
+    class: mafiascum\votecounter\controller\votecountSettings
     arguments:
+      - "@controller.helper"
+      - "@template"
       - "@request"
       - "@user_loader"
+      - "@dbal.conn"
+      - "@user"
+      - "%core.table_prefix%"
