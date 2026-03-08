@@ -6,8 +6,6 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${WIKI_FQDN}/privkey.pem;
 
     location / {
-        limit_req zone=wiki_limit burst=50 nodelay;
-
         proxy_set_header HOST $host;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Real-IP $remote_addr;
