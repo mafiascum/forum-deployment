@@ -1,24 +1,25 @@
 function showHide(elem) {
     if (elem.selectedIndex !== 0) {
-	//unhide the selected div
-	document.getElementById('alt_dd').style.display = 'block';
-	document.getElementById('alt_dt').style.display = 'block';
-	document.getElementById('alt_password_dd').style.display = 'block';
-	document.getElementById('alt_password_dt').style.display = 'block';
+        //unhide the selected div
+        document.getElementById('alt_dd').style.display = 'block';
+        document.getElementById('alt_dt').style.display = 'block';
+        document.getElementById('alt_password_dd').style.display = 'block';
+        document.getElementById('alt_password_dt').style.display = 'block';
     } else {
-	document.getElementById('alt_dd').style.display = 'none';
-	document.getElementById('alt_dt').style.display = 'none';
-	document.getElementById('alt_password_dd').style.display = 'none';
-	document.getElementById('alt_password_dt').style.display = 'none';
+        document.getElementById('alt_dd').style.display = 'none';
+        document.getElementById('alt_dt').style.display = 'none';
+        document.getElementById('alt_password_dd').style.display = 'none';
+        document.getElementById('alt_password_dt').style.display = 'none';
     }
 }
 
 function verify_username(rootPath, inputElemId, outputElemId, formElemName) {
-	
+
     const inputElem = $(`#${inputElemId}`);
     const outputElem = $(`#${outputElemId}`);
+    const encodedInput = encodeURIComponent(inputElem.val());
 
-    fetch(`${rootPath}app.php/verify_username?q=${inputElem.val()}`)
+    fetch(`${rootPath}app.php/verify_username?q=${encodedInput}`)
         .then(response => response.json())
         .then(data => {
             if (data.length) {
