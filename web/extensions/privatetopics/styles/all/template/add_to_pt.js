@@ -1,9 +1,10 @@
 function verify_username(inputElemId, outputElemId, formElemName) {
     const inputElem = $(`#${inputElemId}`);
-	const outputElem = $(`#${outputElemId}`);
-	
-	var endpoint = inputElem.attr('data-endpoint') + '?q=' + inputElem.val();
-	
+    const outputElem = $(`#${outputElemId}`);
+
+    const encodedInput = encodeURIComponent(inputElem.val());
+    var endpoint = inputElem.attr('data-endpoint') + '?q=' + encodedInput;
+
     fetch(endpoint)
         .then(response => response.json())
         .then(data => {
