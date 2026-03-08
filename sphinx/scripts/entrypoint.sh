@@ -8,10 +8,10 @@ ${PHPBB_DATABASE_PASSWORD}
 ${PHPBB_DATABASE_NAME}
 ${PHPBB_DATABASE_PORT_NUMBER}
 ${SPHINX_ID}
-${SPHINX_HOST}' < /etc/sphinxsearch/sphinx.conf.template > /etc/sphinxsearch/sphinx.conf
+${SPHINX_HOST}' < /opt/sphinx/sphinx-3.7.1/etc/sphinx.conf.template > /opt/sphinx/sphinx-3.7.1/etc/sphinx.conf
 
-if [[ $MAFIASCUM_ENVIRONMENT == 'development' ]] || [[ $MAFIASCUM_ENVIRONMENT == 'dev' ]] || [[ $MAFIASCUM_ENVIRONMENT == 'local' ]]; then
-    indexer --config ${SPHINX_CONF} --all
+if ! [[ -f "/opt/sphinx/sphinx-3.7.1/data/indexes/index_phpbb_${SPHINX_ID}_main/index_phpbb_${SPHINX_ID}_main.sph" ]]; then
+    indexer --config ${SPHINX_CONF} --datadir ${SPHINX_DATA_DIR} --all
 fi
 
 service cron start

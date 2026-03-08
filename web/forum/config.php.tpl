@@ -8,7 +8,7 @@ $dbname = '${PHPBB_DATABASE_NAME}';
 $dbuser = '${PHPBB_DATABASE_USER}';
 $dbpasswd = '${PHPBB_DATABASE_PASSWORD}';
 $table_prefix = 'phpbb_';
-$acm_type = 'file';
+$acm_type = 'apcu';
 $load_extensions = '';
 
 $siteChatUrl = '${MAFIASCUM_SITE_CHAT_URL}';

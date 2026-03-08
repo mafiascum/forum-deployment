@@ -1,0 +1,17 @@
+1. Install new docker compose v2
+2. Change OPTIMIZER_SWITCH vars to remove engine_condition_pushdown from it
+3. Stop services (docker-compose stop all but db)
+4. Stop database (docker-compose stop db)
+5. Rm database container
+6. Git pull main to get fix to dockerize
+7. Docker compose build database
+8. Recreate database container
+9. Stop database
+10. Check database logs to ensure exit 0, not exit 255
+11.  Rm database container
+12.  Rm other containers
+13. Remove sphinx volume permanently - docker volume rm forum-deployment_sphinx_data
+14. Git checkout sphinx-v3
+15. Docker compose build
+16. Start services in proper order with docker compose
+17. Remove old docker-compose

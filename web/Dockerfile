@@ -1,20 +1,71 @@
-FROM php:8.1.14-apache
+FROM php:8.1.31-apache
 
 ARG PHP_INI_DEVELOPMENT
 ENV PHP_INI_DEVELOPMENT=$PHP_INI_DEVELOPMENT
 
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN apt-get install -y zip unzip awscli rsync jq cron apache2-dev libmariadb3 libmariadb-dev mariadb-client python3-pip gcc g++ cmake logrotate nano libicu-dev
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
-RUN docker-php-ext-install intl && docker-php-ext-enable intl
+# Install system dependencies and PHP development libraries
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
+    zip \
+    unzip \
+    awscli \
+    rsync \
+    jq \
+    cron \
+    apache2-dev \
+    libmariadb3 \
+    libmariadb-dev \
+    mariadb-client \
+    python3-pip \
+    gcc \
+    g++ \
+    cmake \
+    logrotate \
+    nano \
+    libicu-dev \
+    python3-mysqldb \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        mysqli \
+        intl \
+        opcache \
+        zip \
+    && docker-php-ext-enable mysqli intl opcache
+
+# Install APCu from PECL
+RUN pecl install apcu \
+    && docker-php-ext-enable apcu
+
+# Configure opcache
+RUN { \
+        echo 'opcache.enable=1'; \
+        echo 'opcache.memory_consumption=256'; \
+        echo 'opcache.interned_strings_buffer=16'; \
+        echo 'opcache.max_accelerated_files=10000'; \
+        echo 'opcache.revalidate_freq=2'; \
+        echo 'opcache.fast_shutdown=1'; \
+    } > /usr/local/etc/php/conf.d/opcache.ini
+
+# Configure APCu
+RUN { \
+        echo 'apc.enabled=1'; \
+        echo 'apc.shm_size=256M'; \
+        echo 'apc.enable_cli=0'; \
+    } > /usr/local/etc/php/conf.d/apcu.ini
 
 RUN mkdir -p /opt/mafiascum/scripts
 
 # Change this to change the version
 ENV PHPBB_MAJOR_VERSION=3
 ENV PHPBB_MINOR_VERSION=3
-ENV PHPBB_PATCH_VERSION=11
+ENV PHPBB_PATCH_VERSION=14
 
 # copy legacy sites
 COPY www /opt/mafiascum/www
@@ -27,9 +78,6 @@ RUN echo "alias ll='ls -lA'" >> /etc/bash.bashrc
 
 # logrotate
 COPY logrotate.d/apache2 /etc/logrotate.d/apache2
-
-# python 3 environment
-RUN pip3 install mariadb
 
 # add scripts
 COPY scripts /opt/mafiascum/scripts

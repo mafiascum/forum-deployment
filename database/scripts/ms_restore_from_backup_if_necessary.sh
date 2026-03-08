@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 DB_LATEST_TAR_FILE_NAME="mafiascum.backup.$MAFIASCUM_ENVIRONMENT.db.latest.7z"
 # check volumes, if volumes missing, grab from S3 and pump it in. otherwise, do nothing.
 if [ ! -d /var/lib/mysql/mysql ] 

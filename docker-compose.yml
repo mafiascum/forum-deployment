@@ -1,4 +1,3 @@
-version: '3.3'
 services:
   database:
     build: ./database
@@ -73,8 +72,8 @@ services:
     env_file:
       - .env
     volumes:
-      - sphinx_data:/var/lib/sphinxsearch/data
-      - ./sphinx/config/sphinx.conf:/etc/sphinxsearch/sphinx.conf.template
+      - sphinx_data:/opt/sphinx/sphinx-3.7.1/data
+      - ./sphinx/config/sphinx.conf:/opt/sphinx/sphinx-3.7.1/etc/sphinx.conf.template
       - ./sphinx/cron.d:/etc/cron.d.template
     networks:
       backend:
