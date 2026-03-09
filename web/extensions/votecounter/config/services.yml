@@ -1,0 +1,10 @@
+services:
+  mafiascum.votecounter.listener:
+    class: mafiascum\votecounter\event\main_listener
+    arguments:
+      - "@template"
+      - "@user"
+      - "@dbal.conn"
+      - "%core.table_prefix%"
+    tags:
+      - { name: event.listener }

@@ -11,7 +11,7 @@ services:
     networks:
       backend:
         ipv4_address: 172.40.0.10
-      
+
   web:
     build:
       context: ./web
@@ -51,7 +51,6 @@ services:
     networks:
       backend:
         ipv4_address: 172.40.0.12
-
 
   sitechat:
     image: mafiascum/site-chat-server
