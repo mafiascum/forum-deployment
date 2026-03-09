@@ -6,5 +6,6 @@ services:
       - "@user"
       - "@dbal.conn"
       - "%core.table_prefix%"
+      - "@auth"
     tags:
       - { name: event.listener }

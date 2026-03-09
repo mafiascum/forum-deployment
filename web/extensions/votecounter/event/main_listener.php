@@ -16,15 +16,15 @@ class main_listener implements EventSubscriberInterface
     protected $db;
 
     /** @var \phpbb\auth\auth */
-    //protected $auth;
+    protected $auth;
 
-    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix)
+    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix, \phpbb\auth\auth $auth)
     {
         $this->template = $template;
         $this->user = $user;
         $this->db = $db;
         $this->table_prefix = $table_prefix;
-        //$this->auth = $auth;
+        $this->auth = $auth;
     }
 
 
@@ -37,12 +37,22 @@ class main_listener implements EventSubscriberInterface
 
     public function add_votecounter_panel($event)
     {
-
         $this->user->add_lang_ext('mafiascum/votecounter', 'votecounter');
-        $topic_id = (int) $event['topic_id'] ?? 0;
 
+        $event_data = $event->get_data();
+        $forum_id = $event_data['forum_id'];
+        $topic_id = $event_data['topic_id'];
+
+        if (!$forum_id) {
+            $this->template->assign_vars([
+                'S_VOTECOUNTER_PANEL' => false,
+            ]);
+            return;
+        }
+
+        $has_auth = $this->auth->acl_get('m_edit', $forum_id);
         $this->template->assign_vars([
-            'S_VOTECOUNTER_PANEL' => true,
+            'S_VOTECOUNTER_PANEL' => $has_auth,
         ]);
     }
 }
