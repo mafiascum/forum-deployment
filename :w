@@ -1,0 +1,96 @@
+<?php
+
+namespace mafiascum\votecounter\controller;
+
+class BotController
+{
+    protected $request;
+    protected $user;
+    protected $auth;
+    protected $db;
+    protected $user_loader;
+
+    public function __construct(
+        \phpbb\request\request $request,
+        \phpbb\user $user,
+        \phpbb\auth\auth $auth,
+        \phpbb\db\driver\driver_interface $db,
+        \phpbb\user_loader $user_loader
+    ) {
+        $this->request = $request;
+        $this->user = $user;
+        $this->auth = $auth;
+        $this->db = $db;
+        $this->user_loader = $user_loader;
+    }
+
+    public function post(
+        $author_user_id,
+        $forum_id,
+        $topic_id,
+        $message,
+        $topic_title
+    ) {
+        global $phpbb_root_path, $phpEx;
+        if (!function_exists('submit_post')) {
+            include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+        }
+
+        if (!function_exists('generate_text_for_storage')) {
+            include_once($phpbb_root_path . 'includes/functions_content.' . $phpEx);
+        }
+
+        $this->user_loader->load_users([$author_user_id]);
+        $author_user = $this->user_loader->get_user($author_user_id);
+        if (!$author_user) {
+            return false;
+        }
+
+        $poll = [];
+        $uid = $bitfield = $options = '';
+
+        generate_text_for_storage(
+            $message,
+            $uid,
+            $bitfield,
+            $options,
+            true,
+            true,
+            true
+        );
+
+        $post_data = [
+            'forum_id'        => $forum_id,
+            'topic_id'        => $topic_id,
+            'poster_id'       => $author_user_id,
+            'icon_id'         => 0,
+            'enable_bbcode'   => true,
+            'enable_smilies'  => true,
+            'enable_urls'     => true,
+            'enable_sig'      => false,
+            'message'         => $message,
+            'message_md5'     => md5($message),
+            'bbcode_bitfield' => $bitfield,
+            'bbcode_uid'      => $uid,
+            'post_edit_locked' => 0,
+            'topic_title'     => $topic_title,
+        ];
+
+        $original_user_data = $this->user->data;
+        $this->user->data['user_id']        = $author_user['user_id'];
+        $this->user->data['username']       = $author_user['username'];
+        $this->user->data['username_clean'] = $author_user['username_clean'];
+        $this->user->data['user_colour']    = $author_user['user_colour'];
+
+        submit_post(
+            'reply',
+            $topic_title,
+            $author_user['username'],
+            POST_NORMAL,
+            $poll,
+            $post_data
+        );
+
+        $this->user->data = $original_user_data;
+    }
+}

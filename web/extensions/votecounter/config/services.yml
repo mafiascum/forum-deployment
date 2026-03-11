@@ -11,14 +11,6 @@ services:
     tags:
       - { name: event.listener }
 
-  mafiascum.votecounter.controller.postToTopicController:
-    class: mafiascum\votecounter\controller\postToTopic
-    arguments:
-      - "@request"
-      - "@user"
-      - "@auth"
-      - "@dbal.conn"
-
   mafiascum.votecounter.votecountSettingsController:
     class: mafiascum\votecounter\controller\votecountSettings
     arguments:

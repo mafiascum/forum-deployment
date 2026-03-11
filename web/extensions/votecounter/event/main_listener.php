@@ -2,7 +2,10 @@
 
 namespace mafiascum\votecounter\event;
 
+require_once(dirname(__FILE__) . "/../utils/bot.php");
+
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use mafiascum\votecounter\utils\BotPoster;
 
 class main_listener implements EventSubscriberInterface
 {
@@ -87,62 +90,30 @@ class main_listener implements EventSubscriberInterface
 
         $data = $event['data'];
 
-        $topic_id = $data['topic_id'];
-        $forum_id = $data['forum_id'];
-        $poster_id = $data['poster_id'];
+        $topic_id = (int) $data['topic_id'];
+        $forum_id = (int) $data['forum_id'];
+        $poster_id = (int) $data['poster_id'];
         $bot_user_id = 3467;
 
         if ($poster_id == $bot_user_id) {
             return;
         }
 
+        $topic_title = (string) $data['topic_title'];
+        $message = '[b][u]Test[/u][/b]';
 
-        $message = "Bot response.";
-
-        $poll = [];
-        $uid = $bitfield = $options = '';
-
-        generate_text_for_storage(
-            $message,
-            $uid,
-            $bitfield,
-            $options,
-            true,
-            true,
-            true
-        );
-
-
-        $bot_user = $this->user_loader->get_user($bot_user_id);
-        if (!$bot_user) {
+        if (!$topic_title) {
             return;
         }
 
-        $bot_post_data = [
-            'forum_id'        => $forum_id,
-            'topic_id'        => $topic_id,
-            'poster_id'       => $bot_user_id,
-            'icon_id'         => 0,
-            'enable_bbcode'   => true,
-            'enable_smilies'  => true,
-            'enable_urls'     => true,
-            'enable_sig'      => false,
-            'message'         => $message,
-            'message_md5'     => md5($message),
-            'bbcode_bitfield' => $bitfield,
-            'bbcode_uid'      => $uid,
-            'post_edit_locked' => 0,
-            'topic_title'     => $data['topic_title'],
-        ];
-
-
-        submit_post(
-            'reply',
-            $data['topic_title'],
-            '',
-            POST_NORMAL,
-            $poll,
-            $bot_post_data
+        BotPoster::postMessage(
+            $bot_user_id,
+            $forum_id,
+            $topic_id,
+            $message,
+            $topic_title,
+            $this->user,
+            $this->user_loader
         );
     }
 }
