@@ -93,7 +93,7 @@ class main_listener implements EventSubscriberInterface
         $topic_id = (int) $data['topic_id'];
         $forum_id = (int) $data['forum_id'];
         $poster_id = (int) $data['poster_id'];
-        $bot_user_id = 3467;
+        $bot_user_id = 35786;
 
         if ($poster_id == $bot_user_id) {
             return;
