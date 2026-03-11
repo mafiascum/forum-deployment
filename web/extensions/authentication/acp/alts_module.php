@@ -106,6 +106,12 @@ class alts_module
                     while ($index < count($alts)) {
                         $alt_user_id = $alts[$index];
                         $row = $userAltData->getAltUserData($alt_user_id);
+
+                        if (!$row) {
+                            ++$index;
+                            continue;
+                        }
+
                         if ($user_id == $row['user_id']) {
                             $username = $row['username'];
                         }
