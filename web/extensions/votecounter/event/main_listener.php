@@ -64,19 +64,6 @@ class main_listener implements EventSubscriberInterface
         ]);
     }
 
-    public function submit_post_before($event)
-    {
-        $post_data = $event['post_data'];
-        $data = $event['data'];
-        $post_mode = $event['mode'];
-
-        if ($post_mode == 'post') {
-            $post_data['text'] = 'Overridden';
-        }
-
-        $event['post_data'] = $post_data;
-    }
-
     public function submit_post_end($event)
     {
         global $phpbb_root_path, $phpEx;
