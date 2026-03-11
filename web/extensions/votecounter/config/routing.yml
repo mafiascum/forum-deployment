@@ -1,0 +1,11 @@
+post_to_topic:
+  path: /post_to_topic
+  defaults:
+    {
+      _controller: mafiascum.votecounter.controller.post_to_topic_controller::handle,
+    }
+
+handle_vc:
+  path: /votecounter/handle_vc
+  defaults:
+    { _controller: mafiascum.votecounter.votecountSettingsController:handle }

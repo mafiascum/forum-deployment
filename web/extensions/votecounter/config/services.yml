@@ -7,5 +7,25 @@ services:
       - "@dbal.conn"
       - "%core.table_prefix%"
       - "@auth"
+      - "@user_loader"
     tags:
       - { name: event.listener }
+
+  mafiascum.votecounter.controller.postToTopicController:
+    class: mafiascum\votecounter\controller\postToTopic
+    arguments:
+      - "@request"
+      - "@user"
+      - "@auth"
+      - "@dbal.conn"
+
+  mafiascum.votecounter.votecountSettingsController:
+    class: mafiascum\votecounter\controller\votecountSettings
+    arguments:
+      - "@controller.helper"
+      - "@template"
+      - "@request"
+      - "@user_loader"
+      - "@dbal.conn"
+      - "@user"
+      - "%core.table_prefix%"
