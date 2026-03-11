@@ -1,0 +1,23 @@
+{% INCLUDE 'overall_header.html' %}
+
+<h1>{{ lang('SETTINGS') }}</h1>
+
+
+<form id="acp_vc" method="post" action="{{ U_ACTION }}">
+    <fieldset>
+        <dl>
+            <dt>
+                <label for="vc_bot_user_id">{{ lang('ACP_VC_BOT_USER_ID') }}</label>
+            </dt>
+            <dd>
+                <input type="text" id="vc_bot_user_id" name="vc_bot_user_id" value="{{ VC_BOT_USER_ID }}" />
+            </dd>
+        </dl>
+        <p class="submit-buttons">
+            <input class="button1" type="submit" name="submit" value="{{ lang('SUBMIT') }}" />
+        </p>
+        {{ S_FORM_TOKEN }}
+    </fieldset>
+</form>
+
+{% INCLUDE 'overall_footer.html' %}

@@ -23,7 +23,9 @@ class main_listener implements EventSubscriberInterface
 
     protected $user_loader;
 
-    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix, \phpbb\auth\auth $auth, \phpbb\user_loader $user_loader)
+    protected $config;
+
+    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix, \phpbb\auth\auth $auth, \phpbb\user_loader $user_loader, \phpbb\config\config $config)
     {
         $this->template = $template;
         $this->user = $user;
@@ -31,6 +33,7 @@ class main_listener implements EventSubscriberInterface
         $this->table_prefix = $table_prefix;
         $this->auth = $auth;
         $this->user_loader = $user_loader;
+        $this->config = $config;
     }
 
 
@@ -78,7 +81,7 @@ class main_listener implements EventSubscriberInterface
         $data = $event['data'];
         $topic_id = (int) $data['topic_id'];
         $forum_id = (int) $data['forum_id'];
-        $bot_user_id = 35786;
+        $bot_user_id = (int) $this->config['votecounter_bot_user_id'] ?? 35786;
 
         $sql = 'SELECT COUNT(post_id) AS topic_post_number FROM ' . $this->table_prefix . 'posts WHERE topic_id = ' . (int) $topic_id . ' AND post_id <= ' . (int) $data['post_id'];
         $result = $this->db->sql_query($sql);
