@@ -80,7 +80,10 @@ class main_listener implements EventSubscriberInterface
         $forum_id = (int) $data['forum_id'];
         $bot_user_id = 35786;
 
-        $post_number = $data['post_id'] - $data['topic_first_post_id'] + 1;
+        $sql = 'SELECT COUNT(post_id) AS topic_post_number FROM ' . $this->table_prefix . 'posts WHERE topic_id = ' . (int) $topic_id . ' AND post_id <= ' . (int) $data['post_id'];
+        $result = $this->db->sql_query($sql);
+        $post_number = (int) $this->db->sql_fetchfield('topic_post_number');
+        $this->db->sql_freeresult($result);
         if ($post_number % 25 !== 0) {
             return;
         }
