@@ -60,6 +60,23 @@ class main_listener implements EventSubscriberInterface
             return;
         }
 
+        $is_whitelisted = false;
+        $sql = 'SELECT COUNT(*) AS cnt FROM ' . $this->table_prefix . 'votecounter_topics WHERE topic_id = ' . $topic_id;
+        $result = $this->db->sql_query($sql);
+        if (!$result) {
+            return;
+        }
+        $count = (int) $this->db->sql_fetchfield('cnt');
+        $this->db->sql_freeresult($result);
+        $is_whitelisted = $count > 0;
+
+        if (!$is_whitelisted) {
+            $this->template->assign_vars([
+                'S_VOTECOUNTER_PANEL' => false,
+            ]);
+            return;
+        }
+
         $has_auth = $this->auth->acl_get('m_edit', $forum_id);
         $this->template->assign_vars([
             'S_VOTECOUNTER_PANEL' => $has_auth,
@@ -69,31 +86,67 @@ class main_listener implements EventSubscriberInterface
 
     public function submit_post_end($event)
     {
+
         global $phpbb_root_path, $phpEx;
+
+        $raw = $event->get_data();
+        $data = $raw['data'] ?? [];
+
+        if (!$data) {
+            return;
+        }
+
+        $bot_user_id = 35786;
+
+        if (($data['poster_id'] ?? 0) == $bot_user_id) {
+            return;
+        }
+
+        $topic_id = (int) ($data['topic_id'] ?? 0);
+        $forum_id = (int) ($data['forum_id'] ?? 0);
+        $post_id = (int) ($data['post_id'] ?? 0);
+        $topic_title = (string) ($data['topic_title'] ?? '');
+
+        if (!$topic_id || !$forum_id || !$post_id || !$topic_title) {
+            return;
+        }
+
+        $is_whitelisted = false;
+        $sql = 'SELECT COUNT(*) AS cnt FROM ' . $this->table_prefix . 'votecounter_topics WHERE topic_id = ' . $topic_id;
+        $result = $this->db->sql_query($sql);
+        if (!$result) {
+            return;
+        }
+        $count = (int) $this->db->sql_fetchfield('cnt');
+        $this->db->sql_freeresult($result);
+        $is_whitelisted = $count > 0;
+        if (!$is_whitelisted) {
+            return;
+        }
+
+        $sql = 'SELECT COUNT(post_id) AS topic_post_number
+                FROM ' . $this->table_prefix . 'posts
+                WHERE topic_id = ' . $topic_id . '
+                AND post_id <= ' . $post_id;
+
+        $result = $this->db->sql_query($sql);
+        if (!$result) {
+            return;
+        }
+        $post_number = (int) $this->db->sql_fetchfield('topic_post_number');
+        $this->db->sql_freeresult($result);
+
+        $posts_per_page = (int) $this->config['posts_per_page'] ?? 25;
+        if ($post_number % $posts_per_page !== 0) {
+            // return;
+        }
+
         if (!function_exists('submit_post')) {
             include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
         }
 
         if (!function_exists('generate_text_for_storage')) {
             include_once($phpbb_root_path . 'includes/functions_content.' . $phpEx);
-        }
-
-        $data = $event['data'];
-        $topic_id = (int) $data['topic_id'];
-        $forum_id = (int) $data['forum_id'];
-        $bot_user_id = (int) $this->config['votecounter_bot_user_id'] ?? 35786;
-
-        $sql = 'SELECT COUNT(post_id) AS topic_post_number FROM ' . $this->table_prefix . 'posts WHERE topic_id = ' . (int) $topic_id . ' AND post_id <= ' . (int) $data['post_id'];
-        $result = $this->db->sql_query($sql);
-        $post_number = (int) $this->db->sql_fetchfield('topic_post_number');
-        $this->db->sql_freeresult($result);
-        if ($post_number % 25 !== 0) {
-            return;
-        }
-
-        $topic_title = (string) $data['topic_title'];
-        if (!$topic_title) {
-            return;
         }
 
         $message = "Data dump:\n[code]" . print_r($data, true) . "[/code]";
