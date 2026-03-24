@@ -16,4 +16,5 @@
 
 .manage-game-tabs ul > li {
     padding: 5px;
+    width: 100%;
 }

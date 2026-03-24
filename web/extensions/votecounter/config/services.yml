@@ -9,6 +9,7 @@ services:
       - "@auth"
       - "@user_loader"
       - "@config"
+      - "@controller.helper"
     tags:
       - { name: event.listener }
 

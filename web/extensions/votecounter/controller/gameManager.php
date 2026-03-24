@@ -35,6 +35,12 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
+        $permitted = $this->auth->acl_get('m_edit', $topic_id);
+        if (!$permitted) {
+            trigger_error('NO_PERMISSION');
+            return;
+        }
+
         $active_tab = $this->request->variable('tab', 'players');
 
         $this->template->assign_vars([
@@ -56,6 +62,12 @@ class gameManager
 
         if (!$topic_id) {
             trigger_error('NO_TOPIC');
+        }
+
+        $permitted = $this->auth->acl_get('m_edit', $topic_id);
+        if (!$permitted) {
+            trigger_error('NO_PERMISSION');
+            return;
         }
 
         $tab_templates = [

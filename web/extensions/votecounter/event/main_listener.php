@@ -25,7 +25,9 @@ class main_listener implements EventSubscriberInterface
 
     protected $config;
 
-    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix, \phpbb\auth\auth $auth, \phpbb\user_loader $user_loader, \phpbb\config\config $config)
+    protected $helper;
+
+    public function __construct(\phpbb\template\template $template, \phpbb\user $user, \phpbb\db\driver\driver_interface $db, $table_prefix, \phpbb\auth\auth $auth, \phpbb\user_loader $user_loader, \phpbb\config\config $config, \phpbb\controller\helper $helper)
     {
         $this->template = $template;
         $this->user = $user;
@@ -34,6 +36,7 @@ class main_listener implements EventSubscriberInterface
         $this->auth = $auth;
         $this->user_loader = $user_loader;
         $this->config = $config;
+        $this->helper = $helper;
     }
 
 
@@ -41,7 +44,8 @@ class main_listener implements EventSubscriberInterface
     {
         return array(
             'core.posting_modify_template_vars' => 'add_votecounter_panel',
-            'core.submit_post_end' => 'submit_post_end'
+            'core.submit_post_end' => 'submit_post_end',
+            'core.viewtopic_assign_template_vars_before' => 'inject_template_vars',
         );
     }
 
@@ -160,5 +164,14 @@ class main_listener implements EventSubscriberInterface
             $this->user,
             $this->user_loader
         );
+    }
+
+    public function inject_template_vars($event)
+    {
+        $topic_id = $event['topic_id'];
+
+        $this->template->assign_vars([
+            'U_MANAGE_GAME' => $this->helper->route('game_manager_router', ['topic_id' => $topic_id])
+        ]);
     }
 }
