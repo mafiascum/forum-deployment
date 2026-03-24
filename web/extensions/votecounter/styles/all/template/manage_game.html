@@ -1,0 +1,25 @@
+{% include 'overall_header.html' %}
+
+<div class="manage-game-wrapper">
+    <div class="manage-game-tabs">
+        <ul>
+          <li class="row {% if ACTIVE_TAB == 'players' %}activetab{% endif %}">
+                <a href="#" class="manage-tab" data-url="{{ U_TAB_PLAYERS }}">{{ lang('PLAYERS') }}</a>
+            </li>
+            <li class="row {% if ACTIVE_TAB == 'days' %}activetab{% endif %}">
+                <a href="#" class="manage-tab" data-url="{{ U_TAB_DAYS }}">{{ lang('DAYS') }}</a>
+            </li>
+            <li class="row {% if ACTIVE_TAB == 'settings' %}activetab{% endif %}">
+                <a href="#" class="manage-tab" data-url="{{ U_TAB_SETTINGS }}">{{ lang('MISC_SETTINGS') }}</a>
+            </li>
+        </ul>
+    </div>
+    <div id="manage-game-content">
+        {% include 'forms/players.html' %}
+    </div>
+</div>
+
+
+{% INCLUDECSS './ext/mafiascum/votecounter/styles/all/template/styles/manage_game.css' %}
+{% INCLUDEJS './ext/mafiascum/votecounter/styles/all/template/scripts/manage_game.js' %}
+{% include 'overall_footer.html' %}

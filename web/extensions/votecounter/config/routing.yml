@@ -1,4 +1,12 @@
-handle_vc:
-  path: /votecounter/handle_vc
-  defaults:
-    { _controller: mafiascum.votecounter.votecountSettingsController:handle }
+game_manager_router:
+  path: /manage_game/{topic_id}
+  defaults: { _controller: mafiascum.votecounter.gameManager:handle }
+  requirements:
+    topic_id: \d+
+
+game_manage_tab:
+  path: /game/manage/{topic_id}/tab/{tab}
+  defaults: { _controller: mafiascum.votecounter.gameManager:tab }
+  requirements:
+    topic_id: \d+
+    tab: '\w+'

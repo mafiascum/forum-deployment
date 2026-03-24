@@ -1,0 +1,19 @@
+.manage-game-wrapper {
+	display: flex;
+
+    padding: 20px;
+	gap: 20px;
+}
+
+.manage-game-tabs {
+    display: flex;
+    flex-direction: column;
+}
+
+.manage-game-tabs ul {
+    list-style: none;
+}
+
+.manage-game-tabs ul > li {
+    padding: 5px;
+}

@@ -6,7 +6,6 @@ class whitelist_topics_for_vc extends \phpbb\db\migration\migration
 {
     public function effectively_installed()
     {
-        return false;
         return $this->db_tools->sql_table_exists(
             $this->table_prefix . 'votecounter_topics'
         );

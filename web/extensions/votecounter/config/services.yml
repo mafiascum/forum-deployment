@@ -12,13 +12,16 @@ services:
     tags:
       - { name: event.listener }
 
-  mafiascum.votecounter.votecountSettingsController:
-    class: mafiascum\votecounter\controller\votecountSettings
+  mafiascum.votecounter.gameManager:
+    class: mafiascum\votecounter\controller\gameManager
     arguments:
+      - "@config"
       - "@controller.helper"
+      - "@language"
       - "@template"
-      - "@request"
-      - "@user_loader"
       - "@dbal.conn"
       - "@user"
-      - "%core.table_prefix%"
+      - "@auth"
+      - "@request"
+    tags:
+      - { name: controller.service_arguments }

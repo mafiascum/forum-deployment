@@ -20,10 +20,10 @@ class main
     protected $template;
 
     /* @var \phpbb\db\driver\driver */
-	protected $db;
+    protected $db;
 
     /* @var \phpbb\user */
-	protected $user;
+    protected $user;
 
     /* @var \phpbb\auth\auth */
     protected $auth;
@@ -43,7 +43,7 @@ class main
      * @param \phpbb\auth\auth          $auth
      * @param \phpbb\request\request    $request
      */
-    public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\language\language $language, \phpbb\template\template $template,	\phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\auth\auth $auth, \phpbb\request\request $request)
+    public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\language\language $language, \phpbb\template\template $template,    \phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\auth\auth $auth, \phpbb\request\request $request)
     {
         $this->config   = $config;
         $this->helper   = $helper;
@@ -62,35 +62,39 @@ class main
         );
     }
 
-    private static function is_user_vla($vlaStartField, $vlaEndField) {
+    private static function is_user_vla($vlaStartField, $vlaEndField)
+    {
         $vlaStartTime = self::get_vla_start_time($vlaStartField);
         $vlaEndTime = self::get_vla_end_time($vlaEndField);
-        
-        if(is_null($vlaStartTime) || is_null($vlaEndTime))
+
+        if (is_null($vlaStartTime) || is_null($vlaEndTime))
             return false;
-        
+
         $currentTime = time();
-        
+
         return ($currentTime >= $vlaStartTime && $currentTime <= $vlaEndTime);
     }
 
-    private static function get_vla_start_time($vlaStartField){
+    private static function get_vla_start_time($vlaStartField)
+    {
         $vlaStartDateArray = explode('-', $vlaStartField);
         return count($vlaStartDateArray) < 3 ? NULL : mktime(0, 0, 0, $vlaStartDateArray[1], $vlaStartDateArray[0], $vlaStartDateArray[2]);
     }
 
-    private static function get_vla_end_time($vlaEndField) {
+    private static function get_vla_end_time($vlaEndField)
+    {
         $vlaEndDateArray = explode('-', $vlaEndField);
         return count($vlaEndDateArray) < 3 ? NULL : mktime(23, 59, 59, $vlaEndDateArray[1], $vlaEndDateArray[0], $vlaEndDateArray[2]);
     }
 
-    private static function format_username_with_gender($row) {
+    private static function format_username_with_gender($row)
+    {
         return get_username_string('full', $row['poster_id'], '<span class="iso-username">' . $row['username'] . '</span><span class="iso-pronoun">' . ($row['pronoun'] == '' ? '' : (" (" . $row['pronoun'] . ")")) . '</span>', $row['user_colour']);
     }
 
     public function assign_template_for_topic_post_count($topic_id, $sort_type_sql, $sort_order_sql)
     {
-		global $phpbb_root_path, $phpEx;
+        global $phpbb_root_path, $phpEx;
         $sql = "SELECT 
                     count(*) count,
                     p.poster_id,
@@ -100,23 +104,22 @@ class main
                     min(p.post_time) first_post_time,
                     max(p.post_time) last_post_time,
                     u.user_vla_start, u.user_vla_till"
-               . " FROM " . POSTS_TABLE . " p"
-               . " JOIN " . USERS_TABLE . " u"
-               . " ON p.poster_id = u.user_id"
-               . " LEFT JOIN " . PROFILE_FIELDS_DATA_TABLE . " ppfd ON(u.user_id = ppfd.user_id)"
-               . " WHERE p.topic_id = " . $topic_id
-               . " GROUP BY p.poster_id, u.username"
-               . " ORDER BY " . $sort_type_sql . " " . $sort_order_sql;
+            . " FROM " . POSTS_TABLE . " p"
+            . " JOIN " . USERS_TABLE . " u"
+            . " ON p.poster_id = u.user_id"
+            . " LEFT JOIN " . PROFILE_FIELDS_DATA_TABLE . " ppfd ON(u.user_id = ppfd.user_id)"
+            . " WHERE p.topic_id = " . $topic_id
+            . " GROUP BY p.poster_id, u.username"
+            . " ORDER BY " . $sort_type_sql . " " . $sort_order_sql;
 
         $result = $this->db->sql_query($sql);
-		
-        while ($row = $this->db->sql_fetchrow($result))
-        {
+
+        while ($row = $this->db->sql_fetchrow($result)) {
             $daysSince = (int) ((time() - $row['last_post_time']) / 60 / 60 / 24);
             $hoursSince = (int) ((time() - $row['last_post_time']) / 60 / 60) % 24;
-			$idleTime = "$daysSince day" . ($daysSince==1?"":"s") . " $hoursSince hour" . ($hoursSince==1?"":"s");
-			$poster_id = $row['poster_id'];
-			$isoUrl = append_sid("{$phpbb_root_path}viewtopic.{$phpEx}", "t={$topic_id}&user_select%5B%5D={$poster_id}");
+            $idleTime = "$daysSince day" . ($daysSince == 1 ? "" : "s") . " $hoursSince hour" . ($hoursSince == 1 ? "" : "s");
+            $poster_id = $row['poster_id'];
+            $isoUrl = append_sid("{$phpbb_root_path}viewtopic.{$phpEx}", "t={$topic_id}&user_select%5B%5D={$poster_id}");
             $is_vla = self::is_user_vla($row['user_vla_start'], $row['user_vla_till']);
             $vlaEndTimeStr = $is_vla ? strftime("%B %d %Y", self::get_vla_end_time($row['user_vla_till'])) : "";
 
@@ -126,15 +129,17 @@ class main
                 'USERNAME' => self::format_username_with_gender($row),
                 'FIRST_POST_TIME' => $this->user->format_date($row['first_post_time']),
                 'LAST_POST_TIME' => $this->user->format_date($row['last_post_time']),
-				'IDLE_TIME' => $idleTime,
-				'ISO_URL' => $isoUrl,
-                'VLA_END'	 => $vlaEndTimeStr,
+                'IDLE_TIME' => $idleTime,
+                'ISO_URL' => $isoUrl,
+                'VLA_END'     => $vlaEndTimeStr,
+                'ACTIVE_TAB' => 'players',
             ));
         }
         $this->db->sql_freeresult($result);
     }
 
-    public function determine_sort_order($current_sort_type, $current_sort_order, $new_sort_type) {
+    public function determine_sort_order($current_sort_type, $current_sort_order, $new_sort_type)
+    {
         if ($current_sort_type != $new_sort_type) {
             return $current_sort_order;
         } else {
@@ -153,7 +158,7 @@ class main
     public function handle($topic_id)
     {
         global $table_prefix;
-        
+
         $sort_type = $this->request->variable('sort_type', 'pt');
         $sort_order = $this->request->variable('sort_order', 'd');
 
