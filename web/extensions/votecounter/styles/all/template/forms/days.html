@@ -1,5 +1,62 @@
-<div>
-Days
-</div>
+<h3>Days</h3>
+{% if WARN_NO_CURRENT_DAY %}
+    <p class="vc-warning">Warning: There is no current day (no day without an end post).</p>
+{% endif %}
+{% if WARN_MULTIPLE_ONGOING %}
+    <p class="vc-warning">Warning: More than one day has no end post.</p>
+{% endif %}
+{% if WARN_OVERLAPPING_DAYS %}
+    <p class="vc-warning">Warning: Some days have overlapping post ranges.</p>
+{% endif %}
+{% if loops.days|length %}
+    <table class="table1">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Start Post</th>
+            <th>End Post</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for day in loops.days %}
+        <tr>
+            <td>{{ day.DAY_NUMBER }}</td>
+            <td>{{ day.START_POST_NUMBER }}</td>
+            <td>{% if day.END_POST_NUMBER %}{{ day.END_POST_NUMBER }}{% else %}Ongoing{% endif %}</td>
+            <td>
+                <input type="button" class="button button-secondary" value="Edit" onclick="editDay('{{ day.U_EDIT }}')" />
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% else %}
+    <p>No days added yet.</p>
+{% endif %}
 
+<h3>Add Day</h3>
+<form id="add-day-form" onsubmit="return false;">
+    <fieldset>
+        <dl>
+            <dt><label for="day-number">Day #:</label></dt>
+            <dd><input type="number" id="day-number" name="day_number" class="inputbox" min="1" required /></dd>
+        </dl>
+        <dl>
+            <dt><label for="day-start-post">Start Post #:</label></dt>
+            <dd><input type="number" id="day-start-post" name="start_post_number" class="inputbox" min="1" required /></dd>
+        </dl>
+        <dl>
+            <dt><label for="day-end-post">End Post # <em>(leave blank if ongoing)</em>:</label></dt>
+            <dd><input type="number" id="day-end-post" name="end_post_number" class="inputbox" min="1" /></dd>
+        </dl>
 
+        <p class="submit-buttons">
+            <input
+                type="button"
+                class="button1"
+                value="Add Day"
+                onclick="addDay('{{ U_ADD_DAY }}')" />
+        </p>
+    </fieldset>
+</form>

@@ -1,4 +1,35 @@
-<div>
-Individual day
-</div>
+<h3>Edit Day</h3>
+<form id="edit-day-form" onsubmit="return false;">
+    <fieldset>
+        <dl>
+            <dt><label for="edit-day-number">Day #:</label></dt>
+            <dd><input type="number" id="edit-day-number" name="day_number" class="inputbox" value="{{ DAY_NUMBER }}" min="1" required /></dd>
+        </dl>
+        <dl>
+            <dt><label for="edit-start-post">Start Post #:</label></dt>
+            <dd><input type="number" id="edit-start-post" name="start_post_number" class="inputbox" value="{{ START_POST_NUMBER }}" min="1" required /></dd>
+        </dl>
+        <dl>
+            <dt><label for="edit-end-post">End Post # <em>(leave blank if ongoing)</em>:</label></dt>
+            <dd><input type="number" id="edit-end-post" name="end_post_number" class="inputbox" value="{{ END_POST_NUMBER }}" min="1" /></dd>
+        </dl>
 
+        <p class="submit-buttons">
+            <input
+                type="button"
+                class="button button-secondary"
+                value="Back"
+                onclick="loadDayTab('{{ U_DAYS }}')" />
+            <input
+                type="button"
+                class="button1"
+                value="Save"
+                onclick="updateDay('{{ U_UPDATE }}')" />
+            <input
+                type="button"
+                class="button button-secondary vc-delete-btn"
+                value="Delete Day"
+                onclick="deleteDay('{{ U_DELETE }}', {{ DAY_NUMBER }})" />
+        </p>
+    </fieldset>
+</form>

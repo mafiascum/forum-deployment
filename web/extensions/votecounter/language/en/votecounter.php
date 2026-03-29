@@ -6,11 +6,14 @@ if (!defined('IN_PHPBB')) {
 
 
 $lang = array_merge($lang, [
-    'VOTECOUNTER' => 'Vote Counter',
+    'VOTECOUNTER'        => 'Vote Counter',
+    'CREATE_VOTECOUNTER' => 'Create Vote Counter',
 
     'ACP_VC_TITLE' => 'Vote Counter',
-    'ACP_VC' => 'Vote Counter',
-    'VC_BOT_USER_ID' => "Vote Counter Bot User ID",
+    'ACP_VC'       => 'Vote Counter',
 
-    'MANAGE_GAME' => 'Manage Game',
+    'MANAGE_GAME'   => 'Manage Game',
+    'PLAYERS'       => 'Players',
+    'DAYS'          => 'Days',
+    'MISC_SETTINGS' => 'Misc',
 ]);

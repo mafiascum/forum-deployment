@@ -1,22 +1,30 @@
 {% include 'overall_header.html' %}
 
+
+<div class="manage-game-disclaimer">
+    <div><strong>Beta:</strong> The vote counter is still in development. UI and individual features may be incomplete or inaccurate, and behavior may change without notice. Use with caution.</div>
+</div> 
+
 <div class="manage-game-wrapper">
     <div class="manage-game-tabs">
         <ul>
-          <li class="row {% if ACTIVE_TAB == 'players' %}activetab{% endif %}">
+          <li class="row {% if ACTIVE_TAB == 'players' %}activetab{% endif %} {% if not VOTECOUNTER_EXISTS %}disabled-tab{% endif %}">
                 <a href="#" class="manage-tab" data-url="{{ U_TAB_PLAYERS }}">{{ lang('PLAYERS') }}</a>
             </li>
-            <li class="row {% if ACTIVE_TAB == 'days' %}activetab{% endif %}">
+            <li class="row {% if ACTIVE_TAB == 'days' %}activetab{% endif %} {% if not VOTECOUNTER_EXISTS %}disabled-tab{% endif %}">
                 <a href="#" class="manage-tab" data-url="{{ U_TAB_DAYS }}">{{ lang('DAYS') }}</a>
             </li>
-            <li class="row {% if ACTIVE_TAB == 'settings' %}activetab{% endif %}">
+            <li class="row {% if ACTIVE_TAB == 'settings' %}activetab{% endif %} {% if not VOTECOUNTER_EXISTS %}disabled-tab{% endif %}">
                 <a href="#" class="manage-tab" data-url="{{ U_TAB_SETTINGS }}">{{ lang('MISC_SETTINGS') }}</a>
             </li>
-            <li class="row"><a href="#">{{ PERMITTED }}</a></li>
         </ul>
     </div>
     <div id="manage-game-content">
-        {% include 'forms/players.html' %}
+        {% if VOTECOUNTER_EXISTS %}
+            {% include 'forms/players.html' %}
+        {% else %}
+            {% include 'forms/init.html' %}
+        {% endif %}
     </div>
 </div>
 

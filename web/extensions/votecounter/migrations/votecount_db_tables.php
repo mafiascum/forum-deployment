@@ -35,6 +35,7 @@ class votecount_db_tables extends \phpbb\db\migration\migration
                         'id' => ['UINT', null, 'auto_increment'],
                         'game_id' => ['UINT', 0],
                         'user_id' => ['UINT', 0],
+                        'died_at' => ['UINT', null],
                         'created_at' => ['TIMESTAMP', 0],
                     ],
                     'PRIMARY_KEY' => 'id',
@@ -46,7 +47,7 @@ class votecount_db_tables extends \phpbb\db\migration\migration
                     ],
                 ],
 
-                $this->table_prefix . 'game_day' => [
+                $this->table_prefix . 'game_days' => [
                     'COLUMNS' => [
                         'id' => ['UINT', null, 'auto_increment'],
                         'game_id' => ['UINT', 0],
@@ -57,11 +58,11 @@ class votecount_db_tables extends \phpbb\db\migration\migration
                     'PRIMARY_KEY' => 'id',
                     'KEYS' => [
                         'game_idx' => ['INDEX', 'game_id'],
-                        'game_day_idx' => ['INDEX', ['game_id', 'day_number']],
+                        'game_days_idx' => ['INDEX', ['game_id', 'day_number']],
                     ],
                 ],
 
-                $this->table_prefix . 'game_vote' => [
+                $this->table_prefix . 'game_votes' => [
                     'COLUMNS' => [
                         'id' => ['UINT', null, 'auto_increment'],
                         'game_id' => ['UINT', 0],
@@ -84,8 +85,8 @@ class votecount_db_tables extends \phpbb\db\migration\migration
     {
         return [
             'drop_tables' => [
-                $this->table_prefix . 'game_vote',
-                $this->table_prefix . 'game_day',
+                $this->table_prefix . 'game_votes',
+                $this->table_prefix . 'game_days',
                 $this->table_prefix . 'players',
                 $this->table_prefix . 'games',
             ],

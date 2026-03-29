@@ -7,6 +7,7 @@ services:
       - "@dbal.conn"
       - "%core.table_prefix%"
       - "@auth"
+      - "@request"
       - "@user_loader"
       - "@config"
       - "@controller.helper"
@@ -16,12 +17,10 @@ services:
   mafiascum.votecounter.gameManager:
     class: mafiascum\votecounter\controller\gameManager
     arguments:
-      - "@config"
       - "@controller.helper"
       - "@language"
       - "@template"
       - "@dbal.conn"
-      - "@user"
       - "@auth"
       - "@request"
     tags:
