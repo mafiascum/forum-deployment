@@ -10,6 +10,7 @@ class gameManager
     protected $language;
     protected $template;
     protected $db;
+    protected $user;
     protected $auth;
     protected $request;
 
@@ -18,6 +19,7 @@ class gameManager
         \phpbb\language\language $language,
         \phpbb\template\template $template,
         \phpbb\db\driver\driver_interface $db,
+        \phpbb\user $user,
         \phpbb\auth\auth $auth,
         \phpbb\request\request $request
     ) {
@@ -25,6 +27,7 @@ class gameManager
         $this->language = $language;
         $this->template = $template;
         $this->db       = $db;
+        $this->user     = $user;
         $this->auth     = $auth;
         $this->request  = $request;
 
@@ -39,11 +42,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        $permitted = $this->auth->acl_get('m_edit', $topic_id);
-        if (!$permitted) {
-            trigger_error('NO_PERMISSION');
-            return;
-        }
+        $this->requirePermission($topic_id);
 
         $is_whitelisted = false;
         $sql = 'SELECT COUNT(*) AS cnt 
@@ -91,11 +90,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        $permitted = $this->auth->acl_get('m_edit', $topic_id);
-        if (!$permitted) {
-            trigger_error('NO_PERMISSION');
-            return;
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -122,9 +117,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $sql = 'SELECT COUNT(*) AS cnt FROM ' . $table_prefix . 'votecounter_topics WHERE topic_id = ' . (int) $topic_id;
         $result = $this->db->sql_query($sql);
@@ -155,9 +148,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -202,9 +193,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $sql = 'SELECT p.*, u.username
                 FROM ' . $table_prefix . 'players p
@@ -241,9 +230,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -287,9 +274,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -309,9 +294,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -350,9 +333,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $sql = 'SELECT gd.*
                 FROM ' . $table_prefix . 'game_days gd
@@ -389,9 +370,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -427,9 +406,7 @@ class gameManager
             trigger_error('NO_TOPIC');
         }
 
-        if (!$this->auth->acl_get('m_edit', $topic_id)) {
-            trigger_error('NO_PERMISSION');
-        }
+        $this->requirePermission($topic_id);
 
         $game = $this->fetchGame($topic_id);
         if (!$game) {
@@ -543,6 +520,33 @@ class gameManager
         $this->template->assign_vars([
             'U_ADD_PLAYER' => $this->helper->route('player_create', ['topic_id' => $topic_id]),
         ]);
+    }
+
+    private function requirePermission(int $topic_id): void
+    {
+        global $table_prefix;
+
+        $sql = 'SELECT forum_id FROM ' . TOPICS_TABLE . ' WHERE topic_id = ' . $topic_id;
+        $result = $this->db->sql_query_limit($sql, 1);
+        $row = $this->db->sql_fetchrow($result);
+        $this->db->sql_freeresult($result);
+        $forum_id = $row ? (int) $row['forum_id'] : 0;
+
+        if ($forum_id && $this->auth->acl_get('m_edit', $forum_id)) {
+            return;
+        }
+
+        $user_id = (int) $this->user->data['user_id'];
+        $sql = 'SELECT 1 FROM ' . $table_prefix . 'topic_mod
+                WHERE topic_id = ' . $topic_id . '
+                AND user_id = ' . $user_id;
+        $result = $this->db->sql_query_limit($sql, 1);
+        $is_topic_mod = (bool) $this->db->sql_fetchrow($result);
+        $this->db->sql_freeresult($result);
+
+        if (!$is_topic_mod) {
+            trigger_error('NO_PERMISSION');
+        }
     }
 
     private function fetchGame($topic_id)

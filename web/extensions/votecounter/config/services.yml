@@ -21,6 +21,7 @@ services:
       - "@language"
       - "@template"
       - "@dbal.conn"
+      - "@user"
       - "@auth"
       - "@request"
     tags:

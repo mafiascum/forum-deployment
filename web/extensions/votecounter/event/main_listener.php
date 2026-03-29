@@ -86,6 +86,15 @@ class main_listener implements EventSubscriberInterface
         }
 
         $has_auth = $this->auth->acl_get('m_edit', $forum_id);
+        if (!$has_auth) {
+            $user_id = (int) $this->user->data['user_id'];
+            $sql = 'SELECT 1 FROM ' . $this->table_prefix . 'topic_mod
+                    WHERE topic_id = ' . $topic_id . '
+                    AND user_id = ' . $user_id;
+            $result = $this->db->sql_query_limit($sql, 1);
+            $has_auth = (bool) $this->db->sql_fetchrow($result);
+            $this->db->sql_freeresult($result);
+        }
         $this->template->assign_vars([
             'S_VOTECOUNTER_PANEL' => $has_auth,
             'VC_TOPIC_ID' => $topic_id,
@@ -390,8 +399,19 @@ class main_listener implements EventSubscriberInterface
     {
         $topic_id = (int) $event['topic_id'];
         $forum_id = (int) $event['forum_id'];
+        $user_id  = (int) $this->user->data['user_id'];
 
-        if (!$this->auth->acl_get('m_edit', $forum_id)) {
+        $has_permission = $this->auth->acl_get('m_edit', $forum_id);
+        if (!$has_permission) {
+            $sql = 'SELECT 1 FROM ' . $this->table_prefix . 'topic_mod
+                    WHERE topic_id = ' . $topic_id . '
+                    AND user_id = ' . $user_id;
+            $result = $this->db->sql_query_limit($sql, 1);
+            $has_permission = (bool) $this->db->sql_fetchrow($result);
+            $this->db->sql_freeresult($result);
+        }
+
+        if (!$has_permission) {
             return;
         }
 
