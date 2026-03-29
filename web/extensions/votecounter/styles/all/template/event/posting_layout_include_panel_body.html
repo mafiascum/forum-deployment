@@ -1,0 +1,37 @@
+<!-- IF S_VOTECOUNTER_PANEL -->
+<div class="panel bg3" id="votecounter-panel">
+    <div class="inner">
+        <div class="content">
+            <fieldset class="fields2">
+                <legend>{{lang("VOTECOUNTER")}}</legend>
+                <dl>
+                    <dt>
+                        <label for="votecounter">
+                            {{lang("VOTECOUNTER")}}
+                        </label>
+                    </dt>
+
+                    <dd>
+                        <input type="text" name="votecounter" id="votecounter" />
+                    </dd>
+
+                    <dd>
+                        <input
+                            id="vc-post-test"
+                            type="button"
+                            class="button2"
+                            value="Post"
+                            data-endpoint="{{ ROOT_PATH }}app.php/votecounter/post_to_topic"
+                            data-topic-id="{{ VC_TOPIC_ID }}"
+                            onclick="post_to_topic(this)"
+                            />
+                     </dd>
+                </dl>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+{% INCLUDEJS './ext/mafiascum/votecounter/styles/all/template/scripts/post_to_topic.js' %}
+
+<!-- ENDIF -->

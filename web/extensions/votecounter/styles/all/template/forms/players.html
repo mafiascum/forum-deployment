@@ -1,0 +1,48 @@
+<h3>Players</h3>
+{% if loops.players|length %}
+    <table class="table1">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in loops.players %}
+        <tr>
+            <td>{{ player.USERNAME }}</td>
+            <td>{% if player.DIED_AT %}Died at {{ player.DIED_AT }}{% else %}Alive{% endif %}</td>
+            <td>
+                <input type="button" class="button button-secondary" value="Edit" onclick="editPlayer('{{ player.U_EDIT }}')" />
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% else %}
+    <p>No players added yet.</p>
+{% endif %}
+
+<h3>Add Player</h3>
+<form id="add-player-to-game" onsubmit="return false;">
+    <fieldset>
+        <dl>
+            <dt>
+                <label for="username">Username:</label>
+            </dt>
+            <dd>
+                <input type="text" id="username" name="username" class="inputbox" required/>
+            </dd>
+        </dl>
+
+        <p class="submit-buttons">
+            <input
+                type="button"
+                class="button1"
+                value="Add Player"
+                onclick="addPlayer('{{ U_ADD_PLAYER }}')" />
+            </p>
+    </fieldset>
+</form>
+

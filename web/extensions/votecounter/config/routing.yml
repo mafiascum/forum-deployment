@@ -1,0 +1,73 @@
+game_manager_router:
+  path: /manage_game/{topic_id}
+  defaults: { _controller: mafiascum.votecounter.gameManager:handle }
+  requirements:
+    topic_id: \d+
+
+game_manage_tab:
+  path: /game/manage/{topic_id}/tab/{tab}
+  defaults: { _controller: mafiascum.votecounter.gameManager:tab }
+  requirements:
+    topic_id: \d+
+    tab: '\w+'
+
+game_create:
+  path: /game/manage/{topic_id}/create
+  defaults:
+    { _controller: mafiascum.votecounter.gameManager:create_votecounter }
+  requirements:
+    topic_id: \d+
+
+player_create:
+  path: /game/manage/{topic_id}/player_create
+  defaults: { _controller: mafiascum.votecounter.gameManager:create_player }
+  requirements:
+    topic_id: \d+
+
+player_edit:
+  path: /game/manage/{topic_id}/player/{player_id}/edit
+  defaults: { _controller: mafiascum.votecounter.gameManager:edit_player }
+  requirements:
+    topic_id: \d+
+    player_id: \d+
+
+player_update:
+  path: /game/manage/{topic_id}/player/{player_id}/update
+  defaults: { _controller: mafiascum.votecounter.gameManager:update_player }
+  requirements:
+    topic_id: \d+
+    player_id: \d+
+
+player_delete:
+  path: /game/manage/{topic_id}/player/{player_id}/delete
+  defaults: { _controller: mafiascum.votecounter.gameManager:delete_player }
+  requirements:
+    topic_id: \d+
+    player_id: \d+
+
+day_create:
+  path: /game/manage/{topic_id}/create_day
+  defaults: { _controller: mafiascum.votecounter.gameManager:create_day }
+  requirements:
+    topic_id: \d+
+
+day_edit:
+  path: /game/manage/{topic_id}/day/{day_id}/edit
+  defaults: { _controller: mafiascum.votecounter.gameManager:edit_day }
+  requirements:
+    topic_id: \d+
+    day_id: \d+
+
+day_update:
+  path: /game/manage/{topic_id}/day/{day_id}/update
+  defaults: { _controller: mafiascum.votecounter.gameManager:update_day }
+  requirements:
+    topic_id: \d+
+    day_id: \d+
+
+day_delete:
+  path: /game/manage/{topic_id}/day/{day_id}/delete
+  defaults: { _controller: mafiascum.votecounter.gameManager:delete_day }
+  requirements:
+    topic_id: \d+
+    day_id: \d+

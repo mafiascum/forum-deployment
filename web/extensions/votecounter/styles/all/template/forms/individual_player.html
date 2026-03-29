@@ -1,0 +1,39 @@
+<h3>Edit Player</h3>
+<form id="edit-player-form" onsubmit="return false;">
+    <fieldset>
+        <dl>
+            <dt>
+                <label for="edit-username">Username:</label>
+            </dt>
+            <dd>
+                <input type="text" id="edit-username" name="username" class="inputbox" value="{{ USERNAME }}" required />
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <label for="edit-died-at">Died at post # <em>(leave blank if alive)</em>:</label>
+            </dt>
+            <dd>
+                <input type="number" id="edit-died-at" name="died_at" class="inputbox" value="{{ DIED_AT }}" min="1" />
+            </dd>
+        </dl>
+
+        <p class="submit-buttons">
+            <input
+                type="button"
+                class="button button-secondary"
+                value="Back"
+                onclick="loadPlayerTab('{{ U_PLAYERS }}')" />
+            <input
+                type="button"
+                class="button1"
+                value="Save"
+                onclick="updatePlayer('{{ U_UPDATE }}')" />
+            <input
+                type="button"
+                class="button button-secondary vc-delete-btn"
+                value="Remove Player"
+                onclick="deletePlayer('{{ U_DELETE }}', '{{ USERNAME }}')" />
+        </p>
+    </fieldset>
+</form>

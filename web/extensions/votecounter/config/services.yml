@@ -1,0 +1,27 @@
+services:
+  mafiascum.votecounter.listener:
+    class: mafiascum\votecounter\event\main_listener
+    arguments:
+      - "@template"
+      - "@user"
+      - "@dbal.conn"
+      - "%core.table_prefix%"
+      - "@auth"
+      - "@request"
+      - "@user_loader"
+      - "@config"
+      - "@controller.helper"
+    tags:
+      - { name: event.listener }
+
+  mafiascum.votecounter.gameManager:
+    class: mafiascum\votecounter\controller\gameManager
+    arguments:
+      - "@controller.helper"
+      - "@language"
+      - "@template"
+      - "@dbal.conn"
+      - "@auth"
+      - "@request"
+    tags:
+      - { name: controller.service_arguments }
