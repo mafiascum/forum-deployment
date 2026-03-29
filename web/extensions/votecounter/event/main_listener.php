@@ -259,7 +259,7 @@ class main_listener implements EventSubscriberInterface
         $majority    = (int) floor($alive_count / 2) + 1;
 
         $end_cond = $end_post !== null ? ' AND gv.post_number <= ' . $end_post : '';
-        $sql = 'SELECT gv.voter_player_id, gv.target_player_id, gv.post_number, gv.post_id,
+        $sql = 'SELECT gv.voter_player_id, gv.target_player_id, gv.post_number,
                        tu.username AS target_name
                 FROM ' . $this->table_prefix . 'game_votes gv
                 LEFT JOIN ' . $this->table_prefix . 'players tp ON gv.target_player_id = tp.id
@@ -286,7 +286,6 @@ class main_listener implements EventSubscriberInterface
                     'target_id'   => (int) $row['target_player_id'],
                     'target_name' => $row['target_name'],
                     'post_number' => (int) $row['post_number'],
-                    'post_id'     => (int) $row['post_id'],
                 ];
             }
 
@@ -319,7 +318,6 @@ class main_listener implements EventSubscriberInterface
                 $votes_by_target[$tid]['voters'][] = [
                     'name'        => $pname,
                     'post_number' => $v['post_number'],
-                    'post_id'     => $v['post_id'],
                 ];
             }
         }
