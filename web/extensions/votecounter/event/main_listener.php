@@ -46,59 +46,10 @@ class main_listener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            'core.posting_modify_template_vars' => 'add_votecounter_panel',
             'core.posting_modify_submission_errors' => 'validate_vote',
             'core.submit_post_end' => 'submit_post_end',
             'core.viewtopic_assign_template_vars_before' => 'inject_template_vars',
         );
-    }
-
-    public function add_votecounter_panel($event)
-    {
-        $this->user->add_lang_ext('mafiascum/votecounter', 'votecounter');
-
-        $event_data = $event->get_data();
-        $forum_id = $event_data['forum_id'];
-        $topic_id = $event_data['topic_id'];
-
-        if (!$forum_id) {
-            $this->template->assign_vars([
-                'S_VOTECOUNTER_PANEL' => false,
-            ]);
-            return;
-        }
-
-        $is_whitelisted = false;
-        $sql = 'SELECT COUNT(*) AS cnt FROM ' . $this->table_prefix . 'votecounter_topics WHERE topic_id = ' . $topic_id;
-        $result = $this->db->sql_query($sql);
-        if (!$result) {
-            return;
-        }
-        $count = (int) $this->db->sql_fetchfield('cnt');
-        $this->db->sql_freeresult($result);
-        $is_whitelisted = $count > 0;
-
-        if (!$is_whitelisted) {
-            $this->template->assign_vars([
-                'S_VOTECOUNTER_PANEL' => false,
-            ]);
-            return;
-        }
-
-        $has_auth = $this->auth->acl_get('m_edit', $forum_id);
-        if (!$has_auth) {
-            $user_id = (int) $this->user->data['user_id'];
-            $sql = 'SELECT 1 FROM ' . $this->table_prefix . 'topic_mod
-                    WHERE topic_id = ' . $topic_id . '
-                    AND user_id = ' . $user_id;
-            $result = $this->db->sql_query_limit($sql, 1);
-            $has_auth = (bool) $this->db->sql_fetchrow($result);
-            $this->db->sql_freeresult($result);
-        }
-        $this->template->assign_vars([
-            'S_VOTECOUNTER_PANEL' => $has_auth,
-            'VC_TOPIC_ID' => $topic_id,
-        ]);
     }
 
     public function validate_vote($event)
