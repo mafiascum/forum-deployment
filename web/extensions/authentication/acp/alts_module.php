@@ -95,7 +95,7 @@ class alts_module
                             $db->sql_query($sql);
                         }
                     }
-                    //User alt table
+
                     $userAltData = \mafiascum\authentication\includes\AltManager::getAlts($table_prefix, $user_row['user_id']);
                     $alts = $userAltData->getAllAlts();
 
@@ -134,25 +134,51 @@ class alts_module
                         'U_USER_ID'            => $user_row['user_id'],
                         'U_USERNAME'    => $username
                     ));
-                    //Create all necessary regex for IP and email matching.
-                    $ip_set = explode('.', $user_row['user_ip']);
-                    $ip_exp = ($user_row['user_ip'] == '') ? '^$' : '^' . $ip_set[0] . '.' . $ip_set[1] . '.' . $ip_set[2] . '.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$';
+
                     $email_set = explode('@', $user_row['user_email']);
                     $email_exp = '^' . $email_set[0] . '@';
-                    // Get other users who've posted under this IP or Email
+
+                    $user_ip = $user_row['user_ip'];
+                    $is_ipv6 = strpos($user_ip, ':') !== false;
+                    $ip_condition = 'FALSE';
+                    $ip_exp = '^$';
+                    $ipv6_prefix_binary = null;
+
+                    if ($user_ip !== '') {
+                        if ($is_ipv6) {
+                            $binary = inet_pton($user_ip);
+                            if ($binary !== false) {
+                                $ipv6_prefix_binary = substr($binary, 0, 8);
+                                $prefix_start = $db->sql_escape(inet_ntop($ipv6_prefix_binary . str_repeat("\0", 8)));
+                                $prefix_end = $db->sql_escape(inet_ntop($ipv6_prefix_binary . str_repeat("\xff", 8)));
+                                $ip_condition = 'user_ip LIKE "%:%" AND INET6_ATON(user_ip) BETWEEN INET6_ATON("' . $prefix_start . '") AND INET6_ATON("' . $prefix_end . '")';
+                            }
+                        } else {
+                            $ip_set = explode('.', $user_ip);
+                            if (count($ip_set) >= 4) {
+                                $ip_exp = '^' . $ip_set[0] . '.' . $ip_set[1] . '.' . $ip_set[2] . '.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$';
+                                $ip_condition = 'user_ip REGEXP "' . $ip_exp . '"';
+                            }
+                        }
+                    }
+
                     $sql = 'SELECT user_id, user_email, username, user_ip
 						FROM ' . USERS_TABLE . '
-						WHERE (user_ip != "" AND user_ip REGEXP "' . $ip_exp . '")
+						WHERE (user_ip != "" AND (' . $ip_condition . '))
 						OR user_email REGEXP "' . $email_exp . '"';
                     $result = $db->sql_query($sql);
-                    //Create table of associated accounts.
                     while ($row = $db->sql_fetchrow($result)) {
-                        //Make sure the master isn't associated with itself.
                         if ($row['user_id'] != $user_row['user_id']) {
+                            if ($is_ipv6 && $ipv6_prefix_binary !== null) {
+                                $row_binary = inet_pton($row['user_ip']);
+                                $ip_match = $row_binary !== false && substr($row_binary, 0, 8) === $ipv6_prefix_binary;
+                            } else {
+                                $ip_match = (bool) preg_match('/' . $ip_exp . '/', $row['user_ip']);
+                            }
                             $template->assign_block_vars('userrow', array(
                                 'USERNAME'        => ($row['user_id'] == ANONYMOUS) ? $user->lang['GUEST'] : $row['username'],
                                 'EMAIL'        => (preg_match('/' . $email_exp . '/', $row['user_email'])) ? '<span style="color:red;">' . $row['user_email'] . '</span>' : $row['user_email'],
-                                'IP'            => (preg_match('/' . $ip_exp . '/', $row['user_ip'])) ? '<span style="color:red;">' . $row['user_ip'] . '</span>' : $row['user_ip'],
+                                'IP'            => $ip_match ? '<span style="color:red;">' . $row['user_ip'] . '</span>' : $row['user_ip'],
                                 'U_PROFILE'        => append_sid("{$phpbb_admin_path}index.$phpEx", "i=users&amp;mode=overview&amp;u={$row['user_id']}")
                             ));
                         }
@@ -167,4 +193,3 @@ class alts_module
         }
     }
 }
-
