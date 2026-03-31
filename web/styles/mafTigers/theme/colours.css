@@ -843,10 +843,14 @@ ul.cplist {
 	color: #3a2200;
 	background-color: #fe8218;
 	background-image: url("./images/bg_menu.png");
+	background-repeat: repeat-y;
+	background-size: 100% 4px;
 }
 
 .rtl .navigation a {
 	background-image: url("./images/bg_menu_rtl.png");
+	background-repeat: repeat-y;
+	background-size: 100% 4px;
 	background-position: 0 100%;
 }
 
