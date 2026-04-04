@@ -3,9 +3,11 @@
 namespace mafiascum\votecounter\event;
 
 require_once(dirname(__FILE__) . "/../utils/bot.php");
+require_once(dirname(__FILE__) . "/../utils/VoteCounter.php");
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use mafiascum\votecounter\utils\BotPoster;
+use mafiascum\votecounter\utils\VoteCounter;
 
 class main_listener implements EventSubscriberInterface
 {
@@ -255,9 +257,6 @@ class main_listener implements EventSubscriberInterface
         }
         $this->db->sql_freeresult($result);
 
-        $alive_count = count($players);
-        $majority    = (int) floor($alive_count / 2) + 1;
-
         $end_cond = $end_post !== null ? ' AND gv.post_number <= ' . $end_post : '';
         $sql = 'SELECT gv.voter_player_id, gv.target_player_id, gv.post_number,
                        tu.username AS target_name
@@ -275,73 +274,7 @@ class main_listener implements EventSubscriberInterface
         }
         $this->db->sql_freeresult($result);
 
-        $current_votes = [];
-        foreach ($vote_rows as $row) {
-            $voter_id = (int) $row['voter_player_id'];
-
-            if ($row['target_player_id'] === null) {
-                $current_votes[$voter_id] = null;
-            } else {
-                $current_votes[$voter_id] = [
-                    'target_id'   => (int) $row['target_player_id'],
-                    'target_name' => $row['target_name'],
-                    'post_number' => (int) $row['post_number'],
-                ];
-            }
-
-            $tally = [];
-            foreach ($players as $pid => $_) {
-                $v = $current_votes[$pid] ?? null;
-                if ($v !== null) {
-                    $tally[$v['target_id']] = ($tally[$v['target_id']] ?? 0) + 1;
-                }
-            }
-            foreach ($tally as $count) {
-                if ($count >= $majority) {
-                    break 2;
-                }
-            }
-        }
-
-        $votes_by_target = [];
-        $not_voting      = [];
-
-        foreach ($players as $pid => $pname) {
-            $v = $current_votes[$pid] ?? null;
-            if ($v === null) {
-                $not_voting[] = $pname;
-            } else {
-                $tid = $v['target_id'];
-                if (!isset($votes_by_target[$tid])) {
-                    $votes_by_target[$tid] = ['name' => $v['target_name'], 'voters' => []];
-                }
-                $votes_by_target[$tid]['voters'][] = [
-                    'name'        => $pname,
-                    'post_number' => $v['post_number'],
-                ];
-            }
-        }
-
-        uasort($votes_by_target, function ($a, $b) {
-            return count($b['voters']) - count($a['voters']);
-        });
-
-        $lines = [];
-        foreach ($votes_by_target as $entry) {
-            $count        = count($entry['voters']);
-            $voter_parts  = [];
-            foreach ($entry['voters'] as $v) {
-                $voter_parts[] = $v['name'] . ' ([post]' . $v['post_number'] . '[/post])';
-            }
-            $lines[] = '[b]' . $entry['name'] . ' (' . $count . '/' . $alive_count . ')[/b] -> ' . implode(', ', $voter_parts);
-        }
-
-        if (!empty($not_voting)) {
-            $lines[] = '';
-            $lines[] = '[b]Not Voting (' . count($not_voting) . ')[/b] -> ' . implode(', ', $not_voting);
-        }
-
-        return '[area=Current Votes]' . implode("\n", $lines) . '[/area]';
+        return VoteCounter::buildMessage($players, $vote_rows);
     }
 
     public function inject_template_vars($event)
@@ -355,6 +288,14 @@ class main_listener implements EventSubscriberInterface
             $sql = 'SELECT 1 FROM ' . $this->table_prefix . 'topic_mod
                     WHERE topic_id = ' . $topic_id . '
                     AND user_id = ' . $user_id;
+            $result = $this->db->sql_query_limit($sql, 1);
+            $has_permission = (bool) $this->db->sql_fetchrow($result);
+            $this->db->sql_freeresult($result);
+        }
+        if (!$has_permission) {
+            $sql = 'SELECT 1 FROM ' . TOPICS_TABLE . '
+                    WHERE topic_id = ' . $topic_id . '
+                    AND topic_poster = ' . $user_id;
             $result = $this->db->sql_query_limit($sql, 1);
             $has_permission = (bool) $this->db->sql_fetchrow($result);
             $this->db->sql_freeresult($result);
