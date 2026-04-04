@@ -544,7 +544,18 @@ class gameManager
         $is_topic_mod = (bool) $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
 
-        if (!$is_topic_mod) {
+        if ($is_topic_mod) {
+            return;
+        }
+
+        $sql = 'SELECT 1 FROM ' . TOPICS_TABLE . '
+                WHERE topic_id = ' . $topic_id . '
+                AND topic_poster = ' . $user_id;
+        $result = $this->db->sql_query_limit($sql, 1);
+        $is_topic_poster = (bool) $this->db->sql_fetchrow($result);
+        $this->db->sql_freeresult($result);
+
+        if (!$is_topic_poster) {
             trigger_error('NO_PERMISSION');
         }
     }
