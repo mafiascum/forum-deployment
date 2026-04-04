@@ -3,7 +3,7 @@
 namespace mafiascum\votecounter\event;
 
 require_once(dirname(__FILE__) . "/../utils/bot.php");
-require_once(dirname(__FILE__) . "/../utils/VoteCounter.php");
+require_once(dirname(__FILE__) . "/../utils/voteCounter.php");
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use mafiascum\votecounter\utils\BotPoster;
