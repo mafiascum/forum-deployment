@@ -67,7 +67,7 @@ class VoteCounter
             foreach ($entry['voters'] as $v) {
                 $voter_parts[] = $v['name'] . ' ([post]' . $v['post_number'] . '[/post])';
             }
-            $lines[] = '[b]' . $entry['name'] . ' (' . $count . '/' . $alive_count . ')[/b] -> ' . implode(', ', $voter_parts);
+            $lines[] = '[b]' . $entry['name'] . ' (' . $count . '/' . $majority . ')[/b] -> ' . implode(', ', $voter_parts);
         }
 
         if (!empty($not_voting)) {
