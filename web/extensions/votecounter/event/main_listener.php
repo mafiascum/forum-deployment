@@ -80,7 +80,7 @@ class main_listener implements EventSubscriberInterface
         }
 
         $message = $this->stripIgnoredSections($this->request->variable('message', '', true));
-        if (!preg_match_all('/\[(?:vote|v)\](.*?)\[\/(?:vote|v)\]/i', $message, $matches)) {
+        if (!preg_match_all('/\[(?:vote|v)\](.*?)(?:\[\/(?:vote|v)\]|$)/im', $message, $matches)) {
             return;
         }
 
@@ -178,7 +178,7 @@ class main_listener implements EventSubscriberInterface
                 $this->db->sql_query($sql);
             }
 
-            if (preg_match_all('/\[(?:vote|v)\](.*?)\[\/(?:vote|v)\]/i', $message, $matches)) {
+            if (preg_match_all('/\[(?:vote|v)\](.*?)(?:\[\/(?:vote|v)\]|$)/im', $message, $matches)) {
                 $sql = 'SELECT p.id, u.username_clean
                         FROM ' . $this->table_prefix . 'players p
                         JOIN ' . USERS_TABLE . ' u ON p.user_id = u.user_id
