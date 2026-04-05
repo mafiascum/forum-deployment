@@ -79,7 +79,7 @@ class main_listener implements EventSubscriberInterface
             return;
         }
 
-        $message = $this->request->variable('message', '', true);
+        $message = $this->stripIgnoredSections($this->request->variable('message', '', true));
         if (!preg_match_all('/\[(?:vote|v)\](.*?)\[\/(?:vote|v)\]/i', $message, $matches)) {
             return;
         }
@@ -123,7 +123,8 @@ class main_listener implements EventSubscriberInterface
         $poster_id  = (int) ($data['poster_id'] ?? 0);
         $topic_title = (string) ($data['topic_title'] ?? '');
 
-        if (!$topic_id || !$forum_id || !$post_id || !$poster_id) {
+        $bot_user_id = 35786;
+        if (!$topic_id || !$forum_id || !$post_id || !$poster_id || $poster_id === $bot_user_id) {
             return;
         }
 
@@ -158,7 +159,7 @@ class main_listener implements EventSubscriberInterface
         $this->db->sql_freeresult($result);
 
         $game_id = (int) $game['id'];
-        $message = $this->request->variable('message', '', true);
+        $message = $this->stripIgnoredSections($this->request->variable('message', '', true));
 
         $sql = 'SELECT id FROM ' . $this->table_prefix . 'players
                 WHERE game_id = ' . $game_id . '
@@ -202,9 +203,9 @@ class main_listener implements EventSubscriberInterface
             }
         }
 
+        $is_local = (getenv('MAFIASCUM_ENVIRONMENT') === 'local');
         $posts_per_page = max(1, (int) ($this->config['posts_per_page'] ?? 25));
-        if ($post_number % $posts_per_page === 0) {
-            $bot_user_id = 35786;
+        if ($is_local || $post_number % $posts_per_page === 0) {
             $vc_message = $this->buildVoteCountMessage($game_id, $post_number);
             BotPoster::postMessage(
                 $bot_user_id,
@@ -216,6 +217,13 @@ class main_listener implements EventSubscriberInterface
                 $this->user_loader
             );
         }
+    }
+
+    private function stripIgnoredSections(string $message): string
+    {
+        $message = preg_replace('/\[quote[^\]]*\](?:.*?\[\/quote\]|.*\z)/is', '', $message);
+        $message = preg_replace('/\[spoiler=[^\]]*\](?:.*?\[\/spoiler\]|.*\z)/is', '', $message);
+        return $message;
     }
 
     private function buildVoteCountMessage(int $game_id, int $post_number): string
