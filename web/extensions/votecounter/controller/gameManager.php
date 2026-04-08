@@ -438,8 +438,6 @@ class gameManager
 
     public function generate_votecount($topic_id)
     {
-        global $table_prefix;
-
         if (!$topic_id) {
             trigger_error('NO_TOPIC');
         }
@@ -451,11 +449,11 @@ class gameManager
             trigger_error('GAME_NOT_FOUND');
         }
 
-        $data = json_decode(file_get_contents('php://input'), true);
-        $post_number = isset($data['post_number']) && $data['post_number'] !== '' ? (int) $data['post_number'] : null;
+        $input = json_decode(file_get_contents('php://input'), true);
+        $as_at = isset($input['as_at']) && $input['as_at'] !== '' ? (int) $input['as_at'] : null;
 
-        $data = VoteCounter::calculateVoteCount((int) $game['id'], $post_number);
-        $formatted = VoteCounter::formatVoteCount($data);
+        $votecount = VoteCounter::calculateVoteCount((int) $game['id'], $as_at);
+        $formatted = VoteCounter::formatVoteCount($votecount);
 
         return new Response(json_encode(['votecount' => $formatted]), 200, ['Content-Type' => 'application/json']);
     }
