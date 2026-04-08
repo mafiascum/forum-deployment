@@ -3,6 +3,7 @@
 namespace mafiascum\votecounter\controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use mafiascum\votecounter\utils\VoteCounter;
 
 class gameManager
 {
@@ -79,6 +80,7 @@ class gameManager
             'U_TAB_PLAYERS' => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'players']),
             'U_TAB_DAYS'    => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'days']),
             'U_TAB_SETTINGS' => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'settings']),
+            'U_TAB_VOTECOUNT' => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'votecount']),
         ]);
 
         return $this->helper->render('@mafiascum_votecounter/manage_game.html', $this->language->lang('MANAGE_GAME'));
@@ -104,6 +106,8 @@ class gameManager
                 return $this->renderDayTab($topic_id, $game);
             case 'settings':
                 return $this->renderSettingsTab();
+            case 'votecount':
+                return $this->renderVotecountTab($topic_id, $game);
         }
 
         return new Response('', 200);
@@ -418,7 +422,56 @@ class gameManager
         return $this->renderDayTab($topic_id, $game);
     }
 
+    public function votecount($thread_id)
+    {
+        $as_at = $this->request->is_set('as_at') ? (int) $this->request->variable('as_at', 0) : null;
+
+        $game = $this->fetchGame($thread_id);
+        if (!$game) {
+            trigger_error('GAME_NOT_FOUND');
+        }
+
+        $result = VoteCounter::calculateVoteCount((int) $game['id'], $as_at);
+
+        return new Response(json_encode($result), 200, ['Content-Type' => 'application/json']);
+    }
+
+    public function generate_votecount($topic_id)
+    {
+        global $table_prefix;
+
+        if (!$topic_id) {
+            trigger_error('NO_TOPIC');
+        }
+
+        $this->requirePermission($topic_id);
+
+        $game = $this->fetchGame($topic_id);
+        if (!$game) {
+            trigger_error('GAME_NOT_FOUND');
+        }
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        $post_number = isset($data['post_number']) && $data['post_number'] !== '' ? (int) $data['post_number'] : null;
+
+        $data = VoteCounter::calculateVoteCount((int) $game['id'], $post_number);
+        $formatted = VoteCounter::formatVoteCount($data);
+
+        return new Response(json_encode(['votecount' => $formatted]), 200, ['Content-Type' => 'application/json']);
+    }
+
     // PARTIALS
+    private function renderVotecountTab($topic_id, $game)
+    {
+        $this->template->assign_vars([
+            'U_GENERATE_VOTECOUNT' => $this->helper->route('votecount_generate', ['topic_id' => $topic_id]),
+        ]);
+
+        $this->template->set_filenames(['votecount_tab' => '@mafiascum_votecounter/forms/votecount.html']);
+        $content = $this->template->assign_display('votecount_tab', '', true);
+        return new Response($content, 200);
+    }
+
     private function renderSettingsTab()
     {
         $this->template->set_filenames(['settings_tab' => '@mafiascum_votecounter/forms/misc.html']);

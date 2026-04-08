@@ -1,0 +1,43 @@
+<form id="votecount-form" onsubmit="return false;">
+    <fieldset>
+        <dl>
+            <dt>
+                <label for="votecount-post-number">Post # <em>(leave blank for latest)</em>:</label>
+            </dt>
+            <dd>
+                <input type="number" id="votecount-post-number" name="post_number" class="inputbox" min="1" />
+            </dd>
+        </dl>
+        <p class="submit-buttons">
+            <input type="button" class="button1" value="Generate" onclick="generateVotecount('{{ U_GENERATE_VOTECOUNT }}')" />
+        </p>
+    </fieldset>
+</form>
+
+<textarea id="votecount-output" class="inputbox" rows="15" style="width:100%;margin-top:1em;font-family:monospace;" readonly></textarea>
+
+<script>
+function generateVotecount(url) {
+    var postNumber = document.getElementById('votecount-post-number').value;
+    var body = {};
+    if (postNumber !== '') {
+        body.post_number = postNumber;
+    }
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(body)
+    })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            document.getElementById('votecount-output').value = data.votecount;
+        })
+        .catch(function(err) {
+            console.error('Failed to generate vote count', err);
+        });
+}
+</script>

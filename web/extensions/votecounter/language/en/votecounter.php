@@ -16,4 +16,5 @@ $lang = array_merge($lang, [
     'PLAYERS'       => 'Players',
     'DAYS'          => 'Days',
     'MISC_SETTINGS' => 'Misc',
+    'TAB_VOTECOUNT' => 'Vote Count',
 ]);

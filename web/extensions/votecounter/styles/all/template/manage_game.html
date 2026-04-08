@@ -17,6 +17,9 @@
             <li class="row {% if ACTIVE_TAB == 'settings' %}activetab{% endif %} {% if not VOTECOUNTER_EXISTS %}disabled-tab{% endif %}">
                 <a href="#" class="manage-tab" data-url="{{ U_TAB_SETTINGS }}">{{ lang('MISC_SETTINGS') }}</a>
             </li>
+            <li class="row {% if ACTIVE_TAB == 'votecount' %}activetab{% endif %} {% if not VOTECOUNTER_EXISTS %}disabled-tab{% endif %}">
+                <a href="#" class="manage-tab" data-url="{{ U_TAB_VOTECOUNT }}">{{ lang('TAB_VOTECOUNT') }}</a>
+            </li>
         </ul>
     </div>
     <div id="manage-game-content">
