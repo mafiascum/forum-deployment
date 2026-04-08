@@ -155,7 +155,7 @@ class main_listener implements EventSubscriberInterface
         if (!$result) {
             return;
         }
-        $post_number = (int) $this->db->sql_fetchfield('topic_post_number');
+        $post_number = (int) $this->db->sql_fetchfield('topic_post_number') - 1;
         $this->db->sql_freeresult($result);
 
         $game_id = (int) $game['id'];
