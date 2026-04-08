@@ -221,8 +221,12 @@ class main_listener implements EventSubscriberInterface
 
     private function stripIgnoredSections(string $message): string
     {
-        $message = preg_replace('/\[quote[^\]]*\](?:.*?\[\/quote\]|.*\z)/is', '', $message);
-        $message = preg_replace('/\[spoiler=[^\]]*\](?:.*?\[\/spoiler\]|.*\z)/is', '', $message);
+        $prev = null;
+        while ($message !== $prev) {
+            $prev = $message;
+            $message = preg_replace('/\[quote[^\]]*\](?:(?!\[quote)[\s\S])*?\[\/quote\]/is', '', $message);
+            $message = preg_replace('/\[spoiler=[^\]]*\](?:(?!\[spoiler)[\s\S])*?\[\/spoiler\]/is', '', $message);
+        }
         return $message;
     }
 
