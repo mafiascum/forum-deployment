@@ -28,6 +28,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function generateVotecount(url) {
+    const asAt = document.getElementById('votecount-as-at').value;
+    const body = {};
+    if (asAt !== '') {
+        body.as_at = asAt;
+    }
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(body)
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('votecount-output').value = data.votecount;
+        })
+        .catch(err => console.error('Failed to generate vote count', err));
+}
+
 function createVoteCounter(url) {
     const contentContainer = document.querySelector(manageGameContentSelector);
 

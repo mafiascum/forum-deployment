@@ -71,3 +71,15 @@ day_delete:
   requirements:
     topic_id: \d+
     day_id: \d+
+
+votecount_generate:
+  path: /game/manage/{topic_id}/votecount/generate
+  defaults: { _controller: mafiascum.votecounter.gameManager:generate_votecount }
+  requirements:
+    topic_id: \d+
+
+votecount:
+  path: /votecount/{thread_id}
+  defaults: { _controller: mafiascum.votecounter.gameManager:votecount }
+  requirements:
+    thread_id: \d+

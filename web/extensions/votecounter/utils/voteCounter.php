@@ -4,77 +4,187 @@ namespace mafiascum\votecounter\utils;
 
 class VoteCounter
 {
-    public static function buildMessage(array $players, array $vote_rows): string
+
+    public static function fetchVoteCountData(int $game_id, ?int $as_at): array
     {
-        $alive_count = count($players);
-        $majority    = (int) floor($alive_count / 2) + 1;
 
+        global $phpbb_container;
+        $db = $phpbb_container->get('dbal.conn');
+        $table_prefix = $phpbb_container->getParameter('core.table_prefix');
+
+        // Find the appropriate day
+        if ($as_at) {
+            $sql = 'SELECT *
+                    FROM ' . $table_prefix . 'game_days
+                    WHERE game_id = ' . $game_id . '
+                        AND start_post_number <= ' . (int) $as_at . '
+                    ORDER BY start_post_number DESC';
+            $result = $db->sql_query_limit($sql, 1);
+        } else {
+            $sql = 'SELECT *
+                    FROM ' . $table_prefix . 'game_days
+                    WHERE game_id = ' . $game_id . '
+                    ORDER BY start_post_number DESC';
+            $result = $db->sql_query_limit($sql, 1);
+        }
+
+        $day = $db->sql_fetchrow($result);
+        $db->sql_freeresult($result);
+
+        if (!$day) {
+            return array("day" => null, "players" => [], "votes" => []);
+        }
+
+        $cutoff = $as_at ?? $day['end_post_number'];
+
+        // Fetch all living players
+        $died_at_condition = $cutoff !== null
+            ? '(p.died_at IS NULL OR p.died_at > ' . (int) $cutoff . ')'
+            : 'p.died_at IS NULL';
+
+        $sql = 'SELECT p.id, u.username, p.died_at
+                FROM ' . $table_prefix . 'players p
+                JOIN ' . USERS_TABLE . ' u ON p.user_id = u.user_id
+                WHERE p.game_id = ' . $game_id . '
+                    AND ' . $died_at_condition . '
+                ORDER BY u.username ASC';
+        $result = $db->sql_query($sql);
+        $players = [];
+        while ($row = $db->sql_fetchrow($result)) {
+            $players[] = [
+                'id' => $row['id'],
+                'username' => $row['username'],
+                'died_at'  => $row['died_at'],
+            ];
+        }
+        $db->sql_freeresult($result);
+
+        // Fetch all votes registered under game_id
+        $vote_start = (int) $day['start_post_number'];
+        $upper_bound_condition = $cutoff !== null ? ' AND post_number <= ' . (int) $cutoff : '';
+
+        $sql = 'SELECT *
+                FROM ' . $table_prefix . 'game_votes
+                WHERE game_id = ' . (int) $game_id . '
+                    AND post_number >= ' . $vote_start . $upper_bound_condition . '
+                ORDER BY post_number ASC';
+
+        $result = $db->sql_query($sql);
+        $votes = [];
+        while ($row = $db->sql_fetchrow($result)) {
+            $votes[] = array(
+                'id' => $row['id'],
+                'game_id' => $row['game_id'],
+                'voter_player_id' => $row['voter_player_id'],
+                'target_player_id' => $row['target_player_id'],
+                'post_number' => $row['post_number']
+            );
+        }
+        $db->sql_freeresult($result);
+
+        return array(
+            "day" => $day,
+            "players" => $players,
+            "votes" => $votes
+        );
+    }
+
+    public static function calculateVoteCount(int $game_id, ?int $as_at): array
+    {
+        $data = self::fetchVoteCountData($game_id, $as_at);
+        $day = $data['day'];
+        $players = $data['players'];
+        $votes = $data['votes'];
+
+        $majority = (int) floor(count($players) / 2) + 1;
+
+        $players_by_id = [];
+        foreach ($players as $player) {
+            $players_by_id[(int) $player['id']] = $player;
+        }
+
+        // current_votes: voter_id => ['target_id' => int|null, 'post_number' => int]
         $current_votes = [];
-        foreach ($vote_rows as $row) {
-            $voter_id = (int) $row['voter_player_id'];
+        $wagons = [];
 
-            if ($row['target_player_id'] === null) {
-                $current_votes[$voter_id] = null;
-            } else {
-                $current_votes[$voter_id] = [
-                    'target_id'   => (int) $row['target_player_id'],
-                    'target_name' => $row['target_name'],
-                    'post_number' => (int) $row['post_number'],
-                ];
-            }
+        foreach ($votes as $vote) {
+            $voter_id    = (int) $vote['voter_player_id'];
+            $target_id   = $vote['target_player_id'] !== null ? (int) $vote['target_player_id'] : null;
+            $post_number = (int) $vote['post_number'];
+            $voter_name  = $players_by_id[$voter_id]['username'] ?? 'Unknown';
 
-            $tally = [];
-            foreach ($players as $pid => $_) {
-                $v = $current_votes[$pid] ?? null;
-                if ($v !== null) {
-                    $tally[$v['target_id']] = ($tally[$v['target_id']] ?? 0) + 1;
+            $prev = $current_votes[$voter_id] ?? null;
+            if ($prev !== null && $prev['target_id'] !== null) {
+                $prev_target_name = $players_by_id[$prev['target_id']]['username'] ?? 'Unknown';
+                unset($wagons[$prev_target_name][$voter_id]);
+                if (empty($wagons[$prev_target_name])) {
+                    unset($wagons[$prev_target_name]);
                 }
             }
-            foreach ($tally as $count) {
-                if ($count >= $majority) {
-                    break 2;
+
+            $current_votes[$voter_id] = ['target_id' => $target_id, 'post_number' => $post_number];
+
+            if ($target_id !== null) {
+                $target_name = $players_by_id[$target_id]['username'] ?? 'Unknown';
+                $wagons[$target_name][$voter_id] = ['username' => $voter_name, 'post_number' => $post_number];
+
+                if (count($wagons[$target_name]) >= $majority) {
+                    break;
                 }
             }
         }
 
-        $votes_by_target = [];
-        $not_voting      = [];
+        foreach ($wagons as $target_name => $voters) {
+            $wagons[$target_name] = array_values($voters);
+        }
 
-        foreach ($players as $pid => $pname) {
-            $v = $current_votes[$pid] ?? null;
-            if ($v === null) {
-                $not_voting[] = $pname;
-            } else {
-                $tid = $v['target_id'];
-                if (!isset($votes_by_target[$tid])) {
-                    $votes_by_target[$tid] = ['name' => $v['target_name'], 'voters' => []];
-                }
-                $votes_by_target[$tid]['voters'][] = [
-                    'name'        => $pname,
-                    'post_number' => $v['post_number'],
-                ];
+        $not_voting = [];
+        foreach ($players as $player) {
+            $pid = (int) $player['id'];
+            if (!array_key_exists($pid, $current_votes)) {
+                $not_voting[] = ['username' => $player['username'], 'post_number' => null];
+            } elseif ($current_votes[$pid]['target_id'] === null) {
+                $not_voting[] = ['username' => $player['username'], 'post_number' => $current_votes[$pid]['post_number']];
             }
         }
 
-        uasort($votes_by_target, function ($a, $b) {
-            return count($b['voters']) - count($a['voters']);
-        });
+        return [
+            'day' => $day,
+            'majority' => $majority,
+            'wagons' => $wagons,
+            'not_voting' => $not_voting,
+        ];
+    }
+
+    public static function formatVoteCount(array $data): string
+    {
+        $majority   = $data['majority'];
+        $wagons     = $data['wagons'];
+        $not_voting = $data['not_voting'];
+
+        uasort($wagons, fn($a, $b) => count($b) - count($a));
 
         $lines = [];
-        foreach ($votes_by_target as $entry) {
-            $count       = count($entry['voters']);
-            $voter_parts = [];
-            foreach ($entry['voters'] as $v) {
-                $voter_parts[] = $v['name'] . ' ([post]' . $v['post_number'] . '[/post])';
+        foreach ($wagons as $target_name => $voters) {
+            $count        = count($voters);
+            $voter_parts  = [];
+            foreach ($voters as $v) {
+                $voter_parts[] = $v['username'] . ' ([post]' . $v['post_number'] . '[/post])';
             }
-            $lines[] = '[b]' . $entry['name'] . ' (' . $count . '/' . $majority . ')[/b] -> ' . implode(', ', $voter_parts);
+            $lines[] = '[b]' . $target_name . ' (' . $count . '/' . $majority . ')[/b] -> ' . implode(', ', $voter_parts);
         }
 
         if (!empty($not_voting)) {
+            $nv_parts = [];
+            foreach ($not_voting as $nv) {
+                $nv_parts[] = $nv['post_number'] !== null
+                    ? $nv['username'] . ' ([post]' . $nv['post_number'] . '[/post])'
+                    : $nv['username'];
+            }
             $lines[] = '';
-            $lines[] = '[b]Not Voting (' . count($not_voting) . ')[/b] -> ' . implode(', ', $not_voting);
+            $lines[] = '[b]Not Voting (' . count($not_voting) . ')[/b] -> ' . implode(', ', $nv_parts);
         }
 
-        return '[area=Current Votes]' . implode("\n", $lines) . '[/area]';
+        return '[area=Current Votes]' . trim(implode("\n", $lines)) . '[/area]';
     }
 }

@@ -3,7 +3,7 @@
 namespace mafiascum\votecounter\event;
 
 require_once(dirname(__FILE__) . "/../utils/bot.php");
-require_once(dirname(__FILE__) . "/../utils/voteCounter.php");
+require_once(dirname(__FILE__) . "/../utils/VoteCounter.php");
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use mafiascum\votecounter\utils\BotPoster;
@@ -232,61 +232,8 @@ class main_listener implements EventSubscriberInterface
 
     private function buildVoteCountMessage(int $game_id, int $post_number): string
     {
-        $sql = 'SELECT * FROM ' . $this->table_prefix . 'game_days
-                WHERE game_id = ' . $game_id . '
-                ORDER BY day_number DESC';
-        $result = $this->db->sql_query($sql);
-        $days = [];
-        while ($row = $this->db->sql_fetchrow($result)) {
-            $days[] = $row;
-        }
-        $this->db->sql_freeresult($result);
-
-        $day = null;
-        foreach ($days as $d) {
-            if ($d['end_post_number'] === null || $d['end_post_number'] === '') {
-                $day = $d;
-                break;
-            }
-        }
-        if (!$day && !empty($days)) {
-            $day = $days[0];
-        }
-
-        $start_post = $day ? (int) $day['start_post_number'] : 1;
-        $end_post   = ($day && $day['end_post_number']) ? (int) $day['end_post_number'] : null;
-
-        $sql = 'SELECT p.id, u.username
-                FROM ' . $this->table_prefix . 'players p
-                JOIN ' . USERS_TABLE . ' u ON p.user_id = u.user_id
-                WHERE p.game_id = ' . $game_id . '
-                AND p.died_at IS NULL
-                ORDER BY u.username ASC';
-        $result = $this->db->sql_query($sql);
-        $players = [];
-        while ($row = $this->db->sql_fetchrow($result)) {
-            $players[(int) $row['id']] = $row['username'];
-        }
-        $this->db->sql_freeresult($result);
-
-        $end_cond = $end_post !== null ? ' AND gv.post_number <= ' . $end_post : '';
-        $sql = 'SELECT gv.voter_player_id, gv.target_player_id, gv.post_number,
-                       tu.username AS target_name
-                FROM ' . $this->table_prefix . 'game_votes gv
-                LEFT JOIN ' . $this->table_prefix . 'players tp ON gv.target_player_id = tp.id
-                LEFT JOIN ' . USERS_TABLE . ' tu ON tp.user_id = tu.user_id
-                WHERE gv.game_id = ' . $game_id . '
-                AND gv.post_number >= ' . $start_post .
-            $end_cond . '
-                ORDER BY gv.post_number ASC';
-        $result = $this->db->sql_query($sql);
-        $vote_rows = [];
-        while ($row = $this->db->sql_fetchrow($result)) {
-            $vote_rows[] = $row;
-        }
-        $this->db->sql_freeresult($result);
-
-        return VoteCounter::buildMessage($players, $vote_rows);
+        $data = VoteCounter::calculateVoteCount($game_id, $post_number);
+        return VoteCounter::formatVoteCount($data);
     }
 
     public function inject_template_vars($event)
