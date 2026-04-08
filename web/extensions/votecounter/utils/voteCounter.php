@@ -103,25 +103,26 @@ class VoteCounter
             $players_by_id[(int) $player['id']] = $player;
         }
 
+        // current_votes: voter_id => ['target_id' => int|null, 'post_number' => int]
         $current_votes = [];
         $wagons = [];
 
         foreach ($votes as $vote) {
-            $voter_id   = (int) $vote['voter_player_id'];
-            $target_id  = $vote['target_player_id'] !== null ? (int) $vote['target_player_id'] : null;
+            $voter_id    = (int) $vote['voter_player_id'];
+            $target_id   = $vote['target_player_id'] !== null ? (int) $vote['target_player_id'] : null;
             $post_number = (int) $vote['post_number'];
-            $voter_name = $players_by_id[$voter_id]['username'] ?? 'Unknown';
+            $voter_name  = $players_by_id[$voter_id]['username'] ?? 'Unknown';
 
-            $prev_target_id = $current_votes[$voter_id] ?? null;
-            if ($prev_target_id !== null) {
-                $prev_target_name = $players_by_id[$prev_target_id]['username'] ?? 'Unknown';
+            $prev = $current_votes[$voter_id] ?? null;
+            if ($prev !== null && $prev['target_id'] !== null) {
+                $prev_target_name = $players_by_id[$prev['target_id']]['username'] ?? 'Unknown';
                 unset($wagons[$prev_target_name][$voter_id]);
                 if (empty($wagons[$prev_target_name])) {
                     unset($wagons[$prev_target_name]);
                 }
             }
 
-            $current_votes[$voter_id] = $target_id;
+            $current_votes[$voter_id] = ['target_id' => $target_id, 'post_number' => $post_number];
 
             if ($target_id !== null) {
                 $target_name = $players_by_id[$target_id]['username'] ?? 'Unknown';
@@ -140,17 +141,10 @@ class VoteCounter
         $not_voting = [];
         foreach ($players as $player) {
             $pid = (int) $player['id'];
-            if (!isset($current_votes[$pid])) {
+            if (!array_key_exists($pid, $current_votes)) {
                 $not_voting[] = ['username' => $player['username'], 'post_number' => null];
-            } elseif ($current_votes[$pid] === null) {
-                $unvote_post = null;
-                foreach (array_reverse($votes) as $vote) {
-                    if ((int) $vote['voter_player_id'] === $pid && $vote['target_player_id'] === null) {
-                        $unvote_post = (int) $vote['post_number'];
-                        break;
-                    }
-                }
-                $not_voting[] = ['username' => $player['username'], 'post_number' => $unvote_post];
+            } elseif ($current_votes[$pid]['target_id'] === null) {
+                $not_voting[] = ['username' => $player['username'], 'post_number' => $current_votes[$pid]['post_number']];
             }
         }
 
@@ -191,6 +185,6 @@ class VoteCounter
             $lines[] = '[b]Not Voting (' . count($not_voting) . ')[/b] -> ' . implode(', ', $nv_parts);
         }
 
-        return '[area=Current Votes]' . implode("\n", $lines) . '[/area]';
+        return '[area=Current Votes]' . trim(implode("\n", $lines)) . '[/area]';
     }
 }
