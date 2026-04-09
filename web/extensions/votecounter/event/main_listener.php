@@ -205,7 +205,7 @@ class main_listener implements EventSubscriberInterface
 
         $is_local = (getenv('MAFIASCUM_ENVIRONMENT') === 'local');
         $posts_per_page = max(1, (int) ($this->config['posts_per_page'] ?? 25));
-        if ($is_local || $post_number % $posts_per_page === 0) {
+        if ($is_local || ($post_number + 1) % $posts_per_page === 0) {
             $vc_message = $this->buildVoteCountMessage($game_id, $post_number);
             BotPoster::postMessage(
                 $bot_user_id,
