@@ -120,7 +120,7 @@ class main_listener implements EventSubscriberInterface
         $topic_id   = (int) ($data['topic_id'] ?? 0);
         $forum_id   = (int) ($data['forum_id'] ?? 0);
         $post_id    = (int) ($data['post_id'] ?? 0);
-        $poster_id  = (int) ($data['poster_id'] ?? 0);
+        $poster_id = (int) $this->user->data['user_id'];
         $topic_title = (string) ($data['topic_title'] ?? '');
 
         $bot_user_id = 35786;
