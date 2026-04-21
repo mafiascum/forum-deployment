@@ -501,7 +501,7 @@ class main_listener implements EventSubscriberInterface
 
 		for($diceCounter = 0;$diceCounter < $dice;++$diceCounter) {
 
-			$roll = mt_rand(1, $sides);
+			$roll = $sides > 0 ? mt_rand(1, $sides) : 0;
 			$total += $roll;
 
 			if($diceCounter > 0) {
