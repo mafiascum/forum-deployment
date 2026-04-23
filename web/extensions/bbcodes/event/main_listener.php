@@ -44,6 +44,8 @@ class main_listener implements EventSubscriberInterface
 			'core.decode_message_before' => 'decode_message_before',
 			'core.text_formatter_s9e_parser_setup'    => 'onParserSetup',
 			'core.posting_modify_quote_attributes' => 'posting_modify_quote_attributes',
+			'core.submit_post_end' => 'handle_mentions',
+			'core.message_parser_check_message' => 'validate_mentions',
         );
     }
 
@@ -54,12 +56,16 @@ class main_listener implements EventSubscriberInterface
      * @param \phpbb\template\template	$template	Template object
      * @param \phpbb\request\request	$request	Request object
      */
-    public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db)
+    public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\notification\manager $notification_manager, $table_prefix, \phpbb\language\language $language)
     {
         $this->helper = $helper;
         $this->template = $template;
         $this->request = $request;
 		$this->db = $db;
+		$this->user = $user;
+		$this->notification_manager = $notification_manager;
+		$this->table_prefix = $table_prefix;
+		$this->language = $language;
 	}
 
 	static private function changeTagName($node, $name) {
@@ -604,6 +610,140 @@ class main_listener implements EventSubscriberInterface
 		$sql_ary['rank_title'] = htmlspecialchars_decode($sql_ary['rank_title']);
 
 		$event['sql_ary'] = $sql_ary;
+	}
+
+	public function validate_mentions($event)
+	{
+		$message = $event['message'];
+
+		$stripped = preg_replace('/\[quote[^\]]*\].*?\[\/quote\]/is', '', $message);
+		$stripped = preg_replace('/\[code\].*?\[\/code\]/is', '', $stripped);
+
+		$open_count  = substr_count(strtolower($stripped), '[mention]');
+		$close_count = substr_count(strtolower($stripped), '[/mention]');
+
+		if ($open_count === 0 && $close_count === 0) {
+			return;
+		}
+
+		$this->language->add_lang('common', 'mafiascum/bbcodes');
+		$warn_msg = $event['warn_msg'];
+
+		if ($open_count !== $close_count) {
+			$warn_msg[] = $this->language->lang('MENTION_MALFORMED');
+			$event['warn_msg'] = $warn_msg;
+			return;
+		}
+
+		preg_match_all('/\[mention\](.*?)\[\/mention\]/is', $stripped, $matches);
+
+		foreach (array_unique($matches[1]) as $username) {
+			$clean = utf8_clean_string(trim($username));
+			if ($clean === '') {
+				$warn_msg[] = $this->language->lang('MENTION_INVALID', $username);
+				continue;
+			}
+			$sql = 'SELECT 1 FROM ' . USERS_TABLE . '
+					WHERE username_clean = \'' . $this->db->sql_escape($clean) . '\'';
+			$result = $this->db->sql_query_limit($sql, 1);
+			$exists = (bool) $this->db->sql_fetchrow($result);
+			$this->db->sql_freeresult($result);
+
+			if (!$exists) {
+				$warn_msg[] = $this->language->lang('MENTION_USER_NOT_FOUND', $username);
+			}
+		}
+
+		$event['warn_msg'] = $warn_msg;
+	}
+
+	public function handle_mentions($event)
+	{
+		$raw      = $event->get_data();
+		$data     = $raw['data'] ?? [];
+		$mode     = $raw['mode'] ?? '';
+
+		if ($mode === 'edit') {
+			return;
+		}
+
+		$topic_id  = (int) ($data['topic_id'] ?? 0);
+		$post_id   = (int) ($data['post_id'] ?? 0);
+		$forum_id  = (int) ($data['forum_id'] ?? 0);
+		$poster_id = (int) $this->user->data['user_id'];
+
+		if (!$topic_id || !$post_id || $poster_id === 35786) {
+			return;
+		}
+
+		$message = $this->request->variable('message', '', true);
+		$message = preg_replace('/\[quote[^\]]*\].*?\[\/quote\]/is', '', $message);
+		$message = preg_replace('/\[code\].*?\[\/code\]/is', '', $message);
+
+		if (!preg_match_all('/\[mention\](.*?)\[\/mention\]/is', $message, $matches)) {
+			return;
+		}
+
+		foreach (array_unique($matches[1]) as $username) {
+			$clean = utf8_clean_string(trim($username));
+
+			$sql = 'SELECT user_id FROM ' . USERS_TABLE . '
+					WHERE username_clean = \'' . $this->db->sql_escape($clean) . '\'';
+			$result = $this->db->sql_query_limit($sql, 1);
+			$row = $this->db->sql_fetchrow($result);
+			$this->db->sql_freeresult($result);
+
+			if (!$row) {
+				continue;
+			}
+
+			$mentioned_id = (int) $row['user_id'];
+
+			if ($mentioned_id === $poster_id) {
+				continue;
+			}
+
+			$sql = 'SELECT notification_type_id FROM ' . $this->table_prefix . 'notification_types
+					WHERE notification_type_name = \'notification.type.mention\'';
+			$result = $this->db->sql_query_limit($sql, 1);
+			$type_row = $this->db->sql_fetchrow($result);
+			$this->db->sql_freeresult($result);
+
+			if (!$type_row) {
+				$this->db->sql_query(
+					'INSERT IGNORE INTO ' . $this->table_prefix . 'notification_types
+					(notification_type_name, notification_type_enabled)
+					VALUES (\'notification.type.mention\', 1)'
+				);
+				$type_sql = 'SELECT notification_type_id FROM ' . $this->table_prefix . 'notification_types
+							WHERE notification_type_name = \'notification.type.mention\'';
+				$result = $this->db->sql_query_limit($type_sql, 1);
+				$type_row = $this->db->sql_fetchrow($result);
+				$this->db->sql_freeresult($result);
+				if (!$type_row) {
+					continue;
+				}
+			}
+
+			$sql = 'SELECT forum_name FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . $forum_id;
+			$result = $this->db->sql_query_limit($sql, 1);
+			$forum_row = $this->db->sql_fetchrow($result);
+			$this->db->sql_freeresult($result);
+
+			$notification_data = serialize([
+				'poster_id'     => $poster_id,
+				'topic_title'   => $data['topic_title'] ?? '',
+				'post_subject'  => $data['post_subject'] ?? '',
+				'post_username' => $this->user->data['username'],
+				'forum_id'      => $forum_id,
+				'forum_name'    => $forum_row['forum_name'] ?? '',
+			]);
+
+			$sql = 'INSERT IGNORE INTO ' . $this->table_prefix . 'notifications
+					(notification_type_id, item_id, item_parent_id, user_id, notification_read, notification_time, notification_data)
+					VALUES (' . (int) $type_row['notification_type_id'] . ', ' . $post_id . ', ' . $topic_id . ', ' . $mentioned_id . ', 0, ' . time() . ', \'' . $this->db->sql_escape($notification_data) . '\')';
+			$this->db->sql_query($sql);
+		}
 	}
 
 	public function decode_message_before($event) {

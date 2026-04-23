@@ -6,8 +6,29 @@ services:
             - '@template'
             - '@request'
             - '@dbal.conn'
+            - '@user'
+            - '@notification_manager'
+            - '%core.table_prefix%'
+            - '@language'
         tags:
             - { name: event.listener }
+    notification.type.mention:
+        class: mafiascum\bbcodes\notification\type\mention
+        shared: false
+        arguments:
+            - '@dbal.conn'
+            - '@language'
+            - '@user'
+            - '@auth'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%tables.user_notifications%'
+        calls:
+            - [set_notification_manager, ['@notification_manager']]
+            - [set_user_loader, ['@user_loader']]
+        tags:
+            - { name: notification.type }
+
     mafiascum.bbcodes.helper:
         class: mafiascum\bbcodes\includes\helper
         arguments:

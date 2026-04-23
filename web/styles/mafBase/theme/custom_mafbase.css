@@ -583,7 +583,7 @@ a.header-avatar span:after {
 	width: 1.43em;
 }
 
-.bbvote {
+.bbvote, .bbmention {
 	font-weight: bold;
     background: #FFFFFF;
     color: #000;
