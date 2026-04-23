@@ -70,7 +70,7 @@ class mention extends \phpbb\notification\type\base
 
     public function get_email_template()
     {
-        return 'mention';
+        return '@mafiascum_bbcodes/mention';
     }
 
     public function get_email_template_variables()
