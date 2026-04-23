@@ -57,7 +57,7 @@ class main_listener implements EventSubscriberInterface
      * @param \phpbb\template\template	$template	Template object
      * @param \phpbb\request\request	$request	Request object
      */
-    public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\notification\manager $notification_manager, $table_prefix, \phpbb\language\language $language)
+    public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\notification\manager $notification_manager, \phpbb\language\language $language)
     {
         $this->helper = $helper;
         $this->template = $template;
@@ -65,7 +65,6 @@ class main_listener implements EventSubscriberInterface
 		$this->db = $db;
 		$this->user = $user;
 		$this->notification_manager = $notification_manager;
-		$this->table_prefix = $table_prefix;
 		$this->language = $language;
 	}
 
@@ -695,6 +694,22 @@ class main_listener implements EventSubscriberInterface
 			return;
 		}
 
+		$sql = 'SELECT forum_name FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . $forum_id;
+		$result = $this->db->sql_query_limit($sql, 1);
+		$forum_row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		$type_data = [
+			'post_id'       => $post_id,
+			'topic_id'      => $topic_id,
+			'forum_id'      => $forum_id,
+			'poster_id'     => $poster_id,
+			'topic_title'   => $data['topic_title'] ?? '',
+			'post_subject'  => $data['post_subject'] ?? '',
+			'post_username' => $this->user->data['username'],
+			'forum_name'    => $forum_row['forum_name'] ?? '',
+		];
+
 		foreach (array_unique($matches[1]) as $username) {
 			$clean = utf8_clean_string(trim($username));
 
@@ -714,46 +729,11 @@ class main_listener implements EventSubscriberInterface
 				continue;
 			}
 
-			$sql = 'SELECT notification_type_id FROM ' . $this->table_prefix . 'notification_types
-					WHERE notification_type_name = \'notification.type.mention\'';
-			$result = $this->db->sql_query_limit($sql, 1);
-			$type_row = $this->db->sql_fetchrow($result);
-			$this->db->sql_freeresult($result);
-
-			if (!$type_row) {
-				$this->db->sql_query(
-					'INSERT IGNORE INTO ' . $this->table_prefix . 'notification_types
-					(notification_type_name, notification_type_enabled)
-					VALUES (\'notification.type.mention\', 1)'
-				);
-				$type_sql = 'SELECT notification_type_id FROM ' . $this->table_prefix . 'notification_types
-							WHERE notification_type_name = \'notification.type.mention\'';
-				$result = $this->db->sql_query_limit($type_sql, 1);
-				$type_row = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-				if (!$type_row) {
-					continue;
-				}
-			}
-
-			$sql = 'SELECT forum_name FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . $forum_id;
-			$result = $this->db->sql_query_limit($sql, 1);
-			$forum_row = $this->db->sql_fetchrow($result);
-			$this->db->sql_freeresult($result);
-
-			$notification_data = serialize([
-				'poster_id'     => $poster_id,
-				'topic_title'   => $data['topic_title'] ?? '',
-				'post_subject'  => $data['post_subject'] ?? '',
-				'post_username' => $this->user->data['username'],
-				'forum_id'      => $forum_id,
-				'forum_name'    => $forum_row['forum_name'] ?? '',
-			]);
-
-			$sql = 'INSERT IGNORE INTO ' . $this->table_prefix . 'notifications
-					(notification_type_id, item_id, item_parent_id, user_id, notification_read, notification_time, notification_data)
-					VALUES (' . (int) $type_row['notification_type_id'] . ', ' . $post_id . ', ' . $topic_id . ', ' . $mentioned_id . ', 0, ' . time() . ', \'' . $this->db->sql_escape($notification_data) . '\')';
-			$this->db->sql_query($sql);
+			$this->notification_manager->add_notifications(
+				'notification.type.mention',
+				$type_data,
+				['mentioned_user_ids' => [$mentioned_id]]
+			);
 		}
 	}
 

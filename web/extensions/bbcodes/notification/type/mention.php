@@ -34,7 +34,11 @@ class mention extends \phpbb\notification\type\base
 
     public function find_users_for_notification($data, $options = [])
     {
-        return [];
+        $user_ids = $options['mentioned_user_ids'] ?? [];
+        if (empty($user_ids)) {
+            return [];
+        }
+        return $this->check_user_notification_options($user_ids);
     }
 
     public function users_to_query()

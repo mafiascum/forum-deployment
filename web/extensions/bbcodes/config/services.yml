@@ -8,7 +8,6 @@ services:
             - '@dbal.conn'
             - '@user'
             - '@notification_manager'
-            - '%core.table_prefix%'
             - '@language'
         tags:
             - { name: event.listener }
