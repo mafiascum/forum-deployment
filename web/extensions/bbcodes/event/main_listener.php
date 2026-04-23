@@ -46,6 +46,7 @@ class main_listener implements EventSubscriberInterface
 			'core.posting_modify_quote_attributes' => 'posting_modify_quote_attributes',
 			'core.submit_post_end' => 'handle_mentions',
 			'core.message_parser_check_message' => 'validate_mentions',
+			'core.user_setup' => 'load_language',
         );
     }
 
@@ -610,6 +611,16 @@ class main_listener implements EventSubscriberInterface
 		$sql_ary['rank_title'] = htmlspecialchars_decode($sql_ary['rank_title']);
 
 		$event['sql_ary'] = $sql_ary;
+	}
+
+	public function load_language($event)
+	{
+		$lang_set_ext = $event['lang_set_ext'];
+		$lang_set_ext[] = [
+			'ext_name' => 'mafiascum/bbcodes',
+			'lang_set' => 'common',
+		];
+		$event['lang_set_ext'] = $lang_set_ext;
 	}
 
 	public function validate_mentions($event)

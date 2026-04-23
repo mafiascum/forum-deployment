@@ -1,0 +1,11 @@
+Subject: {AUTHOR_NAME} mentioned you in "{TOPIC_TITLE}"
+
+Hello {USERNAME},
+
+{AUTHOR_NAME} mentioned you in the topic "{TOPIC_TITLE}" at "{SITENAME}".
+
+{U_VIEW_POST}
+
+{U_NOTIFICATION_SETTINGS}
+
+{EMAIL_SIG}

@@ -4,6 +4,11 @@ namespace mafiascum\bbcodes\notification\type;
 
 class mention extends \phpbb\notification\type\base
 {
+    static public $notification_option = [
+        'lang'  => 'NOTIFICATION_TYPE_MENTION',
+        'group' => 'NOTIFICATION_GROUP_POSTING',
+    ];
+
     /** @var \phpbb\user_loader */
     protected $user_loader;
 
@@ -44,7 +49,6 @@ class mention extends \phpbb\notification\type\base
 
     public function get_title()
     {
-        $this->language->add_lang('common', 'mafiascum/bbcodes');
         return $this->language->lang(
             'NOTIFICATION_MENTION',
             $this->get_data('post_username'),
@@ -62,12 +66,16 @@ class mention extends \phpbb\notification\type\base
 
     public function get_email_template()
     {
-        return false;
+        return 'mention';
     }
 
     public function get_email_template_variables()
     {
-        return [];
+        return [
+            'AUTHOR_NAME' => html_entity_decode($this->get_data('post_username'), ENT_COMPAT),
+            'TOPIC_TITLE' => html_entity_decode(censor_text($this->get_data('topic_title')), ENT_COMPAT),
+            'U_VIEW_POST' => generate_board_url() . "/viewtopic.{$this->php_ext}?p={$this->item_id}#p{$this->item_id}",
+        ];
     }
 
     public function create_insert_array($data, $pre_create_data = [])
