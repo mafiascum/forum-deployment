@@ -23,4 +23,5 @@ $lang = array_merge($lang, array(
     'MENTION_USER_NOT_FOUND' => 'The user "%s" in a [mention] tag does not exist.',
     'MENTION_INVALID'        => 'A [mention] tag contains an invalid username.',
     'MENTION_MALFORMED'      => 'A [mention] tag is missing its opening or closing tag.',
+    'MENTION_NO_ACCESS'      => 'The user "%s" in a [mention] tag does not have read access to this forum.',
 ));

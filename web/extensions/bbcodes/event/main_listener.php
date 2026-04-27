@@ -645,6 +645,16 @@ class main_listener implements EventSubscriberInterface
 			return;
 		}
 
+		$forum_id = $this->request->variable('f', 0);
+		$topic_id = $this->request->variable('t', 0);
+
+		if (!$forum_id && $topic_id) {
+			$sql = 'SELECT forum_id FROM ' . TOPICS_TABLE . ' WHERE topic_id = ' . $topic_id;
+			$result = $this->db->sql_query_limit($sql, 1);
+			$forum_id = (int) ($this->db->sql_fetchfield('forum_id') ?: 0);
+			$this->db->sql_freeresult($result);
+		}
+
 		preg_match_all('/\[mention\](.*?)\[\/mention\]/is', $stripped, $matches);
 
 		foreach (array_unique($matches[1]) as $username) {
@@ -653,14 +663,81 @@ class main_listener implements EventSubscriberInterface
 				$warn_msg[] = $this->language->lang('MENTION_INVALID', $username);
 				continue;
 			}
-			$sql = 'SELECT 1 FROM ' . USERS_TABLE . '
+			$sql = 'SELECT user_id FROM ' . USERS_TABLE . '
 					WHERE username_clean = \'' . $this->db->sql_escape($clean) . '\'';
 			$result = $this->db->sql_query_limit($sql, 1);
-			$exists = (bool) $this->db->sql_fetchrow($result);
+			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
 
-			if (!$exists) {
+			if (!$row) {
 				$warn_msg[] = $this->language->lang('MENTION_USER_NOT_FOUND', $username);
+				continue;
+			}
+
+			if ($forum_id) {
+				$mentioned_id = (int) $row['user_id'];
+
+				$sql = 'SELECT 1 FROM ' . ACL_OPTIONS_TABLE . ' ao
+						JOIN ' . ACL_USERS_TABLE . ' au ON au.auth_option_id = ao.auth_option_id
+						WHERE ao.auth_option = \'f_read\'
+						AND au.user_id = ' . $mentioned_id . '
+						AND au.forum_id IN (0, ' . $forum_id . ')
+						AND au.auth_setting = 1
+						UNION
+						SELECT 1 FROM ' . ACL_OPTIONS_TABLE . ' ao
+						JOIN ' . ACL_GROUPS_TABLE . ' ag ON ag.auth_option_id = ao.auth_option_id
+						JOIN ' . USER_GROUP_TABLE . ' ug ON ag.group_id = ug.group_id
+						WHERE ao.auth_option = \'f_read\'
+						AND ug.user_id = ' . $mentioned_id . '
+						AND ug.user_pending = 0
+						AND ag.forum_id IN (0, ' . $forum_id . ')
+						AND ag.auth_setting = 1';
+				$result = $this->db->sql_query_limit($sql, 1);
+				$has_f_read = (bool) $this->db->sql_fetchrow($result);
+				$this->db->sql_freeresult($result);
+
+				if (!$has_f_read) {
+					$warn_msg[] = $this->language->lang('MENTION_NO_ACCESS', $username);
+					continue;
+				}
+
+				if ($topic_id) {
+					global $table_prefix;
+
+					$sql = 'SELECT 1 FROM ' . ACL_OPTIONS_TABLE . ' ao
+							JOIN ' . ACL_USERS_TABLE . ' au ON au.auth_option_id = ao.auth_option_id
+							WHERE ao.auth_option = \'m_edit\'
+							AND au.user_id = ' . $mentioned_id . '
+							AND au.forum_id IN (0, ' . $forum_id . ')
+							AND au.auth_setting = 1
+							UNION
+							SELECT 1 FROM ' . ACL_OPTIONS_TABLE . ' ao
+							JOIN ' . ACL_GROUPS_TABLE . ' ag ON ag.auth_option_id = ao.auth_option_id
+							JOIN ' . USER_GROUP_TABLE . ' ug ON ag.group_id = ug.group_id
+							WHERE ao.auth_option = \'m_edit\'
+							AND ug.user_id = ' . $mentioned_id . '
+							AND ug.user_pending = 0
+							AND ag.forum_id IN (0, ' . $forum_id . ')
+							AND ag.auth_setting = 1';
+					$result = $this->db->sql_query_limit($sql, 1);
+					$is_mod = (bool) $this->db->sql_fetchrow($result);
+					$this->db->sql_freeresult($result);
+
+					if (!$is_mod) {
+						$sql = 'SELECT t.is_private, tu.user_id AS pt_user, tm.user_id AS tm_user
+								FROM ' . TOPICS_TABLE . ' t
+								LEFT JOIN ' . $table_prefix . 'private_topic_users tu ON (t.topic_id = tu.topic_id AND tu.user_id = ' . $mentioned_id . ')
+								LEFT JOIN ' . $table_prefix . 'topic_mod tm ON (t.topic_id = tm.topic_id AND tm.user_id = ' . $mentioned_id . ')
+								WHERE t.topic_id = ' . $topic_id;
+						$result = $this->db->sql_query_limit($sql, 1);
+						$topic_row = $this->db->sql_fetchrow($result);
+						$this->db->sql_freeresult($result);
+
+						if ($topic_row && $topic_row['is_private'] == '1' && $topic_row['pt_user'] === null && $topic_row['tm_user'] === null) {
+							$warn_msg[] = $this->language->lang('MENTION_NO_ACCESS', $username);
+						}
+					}
+				}
 			}
 		}
 
