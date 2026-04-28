@@ -591,11 +591,19 @@ a.header-avatar span:after {
     text-shadow: none;
 }
 
-.bbmention {
+.bbmention,
+a.bbmention,
+a.bbmention:visited {
 	font-weight: bold;
     background: #40A6FF;
     color: #000;
     padding: 0px 2px;
+    text-shadow: none;
+}
+
+a.bbmention:hover {
+    background: #1A8FE3;
+    color: #000;
     text-shadow: none;
 }
 
