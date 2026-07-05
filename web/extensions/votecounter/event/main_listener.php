@@ -201,14 +201,14 @@ class main_listener implements EventSubscriberInterface
         if ($voter) {
             $voter_id = (int) $voter['id'];
 
-            if (preg_match('/\[(?:unvote|uv)\]/i', $message)) {
-                $sql = 'INSERT INTO ' . $this->table_prefix . 'game_votes
-                        (game_id, voter_player_id, target_player_id, post_number)
-                        VALUES (' . $game_id . ', ' . $voter_id . ', NULL, ' . $post_number . ')';
-                $this->db->sql_query($sql);
-            }
+            preg_match_all(
+                '/(\[(?:unvote|uv)\])|\[(?:vote|v)\](.*?)(?:\[\/(?:vote|v)\]|$)/im',
+                $message,
+                $matches,
+                PREG_SET_ORDER
+            );
 
-            if (preg_match_all('/\[(?:vote|v)\](.*?)(?:\[\/(?:vote|v)\]|$)/im', $message, $matches)) {
+            if (!empty($matches)) {
                 $sql = 'SELECT p.id, u.username_clean
                         FROM ' . $this->table_prefix . 'players p
                         JOIN ' . USERS_TABLE . ' u ON p.user_id = u.user_id
@@ -220,14 +220,21 @@ class main_listener implements EventSubscriberInterface
                 }
                 $this->db->sql_freeresult($result);
 
-                foreach ($matches[1] as $target) {
-                    $target_clean = utf8_clean_string(trim($target));
-                    if (isset($player_by_clean[$target_clean])) {
-                        $target_player_id = $player_by_clean[$target_clean];
+                foreach ($matches as $match) {
+                    if (!empty($match[1])) {
                         $sql = 'INSERT INTO ' . $this->table_prefix . 'game_votes
                                 (game_id, voter_player_id, target_player_id, post_number)
-                                VALUES (' . $game_id . ', ' . $voter_id . ', ' . $target_player_id . ', ' . $post_number . ')';
+                                VALUES (' . $game_id . ', ' . $voter_id . ', NULL, ' . $post_number . ')';
                         $this->db->sql_query($sql);
+                    } else {
+                        $target_clean = utf8_clean_string(trim($match[2]));
+                        if (isset($player_by_clean[$target_clean])) {
+                            $target_player_id = $player_by_clean[$target_clean];
+                            $sql = 'INSERT INTO ' . $this->table_prefix . 'game_votes
+                                    (game_id, voter_player_id, target_player_id, post_number)
+                                    VALUES (' . $game_id . ', ' . $voter_id . ', ' . $target_player_id . ', ' . $post_number . ')';
+                            $this->db->sql_query($sql);
+                        }
                     }
                 }
             }

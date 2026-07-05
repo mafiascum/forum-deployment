@@ -67,7 +67,7 @@ class VoteCounter
                 FROM ' . $table_prefix . 'game_votes
                 WHERE game_id = ' . (int) $game_id . '
                     AND post_number >= ' . $vote_start . $upper_bound_condition . '
-                ORDER BY post_number ASC';
+                ORDER BY post_number ASC, id ASC';
 
         $result = $db->sql_query($sql);
         $votes = [];
