@@ -1,0 +1,5 @@
+services:
+    mafiascum.titlefairy.listener:
+        class: mafiascum\titlefairy\event\main_listener
+        tags:
+            - { name: event.listener }
