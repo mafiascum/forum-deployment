@@ -1,0 +1,87 @@
+<!-- INCLUDE ucp_header.html -->
+
+<style>
+    .banners-ucp-inline-form { display: inline; margin: 0; padding: 0; }
+    .banners-ucp-preview img { max-height: 24px; vertical-align: middle; }
+    .banners-ucp-actions { white-space: nowrap; }
+    #ucp_banners_table th, #ucp_banners_table td { text-align: center; vertical-align: middle; }
+</style>
+
+<h2>{L_UCP_BANNERS}</h2>
+
+<p>{L_UCP_BANNERS_INTRO}</p>
+
+<!-- IF S_HAS_AVAILABLE -->
+
+<fieldset>
+    <legend>{L_UCP_BANNERS_SLOTS}</legend>
+    <table id="ucp_banners_table" class="table1">
+        <thead>
+            <tr>
+                <th>{L_UCP_BANNERS_SLOT}</th>
+                <th>{L_UCP_BANNERS_PREVIEW}</th>
+                <th>{L_UCP_BANNERS_NAME}</th>
+                <th>{L_UCP_BANNERS_ORDER}</th>
+                <th>{L_UCP_BANNERS_REMOVE}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- BEGIN equipped -->
+            <tr>
+                <td>{equipped.SLOT}</td>
+                <td class="banners-ucp-preview"><img src="{equipped.BANNER_URL}" alt="{equipped.BANNER_NAME}" /></td>
+                <td>{equipped.BANNER_NAME}</td>
+                <td class="banners-ucp-actions">
+                    <!-- IF not equipped.IS_FIRST -->
+                    <form class="banners-ucp-inline-form" method="post" action="{U_ACTION}">
+                        <input type="hidden" name="action" value="move_up" />
+                        <input type="hidden" name="banner_id" value="{equipped.BANNER_ID}" />
+                        <input type="submit" name="submit" value="&#x25B2;" class="button button-secondary" title="{L_UCP_BANNERS_MOVE_UP}" />
+                        {S_FORM_TOKEN}
+                    </form>
+                    <!-- ENDIF -->
+                    <!-- IF not equipped.IS_LAST -->
+                    <form class="banners-ucp-inline-form" method="post" action="{U_ACTION}">
+                        <input type="hidden" name="action" value="move_down" />
+                        <input type="hidden" name="banner_id" value="{equipped.BANNER_ID}" />
+                        <input type="submit" name="submit" value="&#x25BC;" class="button button-secondary" title="{L_UCP_BANNERS_MOVE_DOWN}" />
+                        {S_FORM_TOKEN}
+                    </form>
+                    <!-- ENDIF -->
+                </td>
+                <td>
+                    <form class="banners-ucp-inline-form" method="post" action="{U_ACTION}">
+                        <input type="hidden" name="action" value="remove" />
+                        <input type="hidden" name="banner_id" value="{equipped.BANNER_ID}" />
+                        <input type="submit" name="submit" value="{L_UCP_BANNERS_REMOVE}" class="button button-secondary" />
+                        {S_FORM_TOKEN}
+                    </form>
+                </td>
+            </tr>
+            <!-- BEGINELSE -->
+            <tr><td colspan="5" style="text-align:center;">{L_UCP_BANNERS_NONE_EQUIPPED}</td></tr>
+            <!-- END equipped -->
+        </tbody>
+    </table>
+
+    <!-- IF S_CAN_ADD -->
+    <form method="post" action="{U_ACTION}" style="margin-top: 10px;">
+        <input type="hidden" name="action" value="add" />
+        <select name="banner_id">
+            <!-- BEGIN unequipped -->
+            <option value="{unequipped.BANNER_ID}">{unequipped.BANNER_NAME}</option>
+            <!-- END unequipped -->
+        </select>
+        <input type="submit" name="submit" value="{L_UCP_BANNERS_ADD}" class="button1" />
+        {S_FORM_TOKEN}
+    </form>
+    <!-- ELSEIF S_AT_LIMIT -->
+    <p><em>{L_UCP_BANNERS_LIMIT_REACHED}</em></p>
+    <!-- ENDIF -->
+</fieldset>
+
+<!-- ELSE -->
+<p><em>{L_UCP_BANNERS_NONE_AVAILABLE}</em></p>
+<!-- ENDIF -->
+
+<!-- INCLUDE ucp_footer.html -->

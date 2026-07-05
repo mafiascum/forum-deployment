@@ -1,0 +1,51 @@
+<!-- INCLUDE overall_header.html -->
+
+<style>
+    .banners-form { display: block; box-sizing: border-box; width: 100%; }
+    .banners-form fieldset { box-sizing: border-box; width: 100%; }
+    .banners-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .banners-row > label { flex: 0 0 200px; font-weight: bold; }
+    .banners-row > .banners-value { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+    .banners-row input[type="text"] { max-width: 400px; width: 100%; box-sizing: border-box; }
+    .banners-actions { padding-top: 8px; }
+    .banners-preview img { max-height: 40px; vertical-align: middle; }
+    .banners-warning { color: #b00; }
+</style>
+
+<h1>{L_ACP_BANNERS_TITLE} &raquo; {L_BANNERS_DELETE}</h1>
+
+<p><a href="{U_BACK}">&laquo; {L_BANNERS_BACK}</a></p>
+
+<form class="banners-form" method="post" action="{U_ACTION_DELETE}">
+    <fieldset>
+        <legend>{L_BANNERS_DELETE}</legend>
+        <div class="banners-row banners-preview">
+            <label>{L_BANNERS_COL_PREVIEW}{L_COLON}</label>
+            <span class="banners-value"><img src="{BANNER_URL}" alt="{BANNER_NAME}" /></span>
+        </div>
+        <div class="banners-row">
+            <label>{L_BANNERS_NAME}{L_COLON}</label>
+            <span class="banners-value"><strong>{BANNER_NAME}</strong></span>
+        </div>
+        <div class="banners-row">
+            <label>{L_BANNERS_COL_ACTIVE}{L_COLON}</label>
+            <span class="banners-value">{ACTIVE_COUNT}</span>
+        </div>
+        <div class="banners-row">
+            <label>{L_BANNERS_COL_GRANTS}{L_COLON}</label>
+            <span class="banners-value">{GRANT_COUNT}</span>
+        </div>
+        <p class="banners-warning">{L_BANNERS_DELETE_WARNING}</p>
+        <div class="banners-row">
+            <label for="confirm_name">{L_BANNERS_DELETE_CONFIRM_LABEL}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="confirm_name" name="confirm_name" value="" autocomplete="off" required /></span>
+        </div>
+        <div class="banners-actions">
+            <input type="submit" name="submit" value="{L_BANNERS_DELETE}" class="button1" />
+            <a href="{U_BACK}" class="button button-secondary">{L_CANCEL}</a>
+            {S_FORM_TOKEN}
+        </div>
+    </fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

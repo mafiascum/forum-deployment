@@ -2,6 +2,7 @@
 	<!-- IF not postrow.U_POST_AUTHOR --><strong>{postrow.POST_AUTHOR_FULL}</strong><!-- ELSE -->{postrow.POST_AUTHOR_FULL}<!-- ENDIF -->
 	<div class="profile-pronoun-only">{postrow.PRONOUN}</profile-pronoun-only>
 	<!-- IF postrow.RANK_TITLE or postrow.RANK_IMG --><div class="profile-rank visible">{postrow.RANK_TITLE}<!-- IF postrow.RANK_TITLE and postrow.RANK_IMG --><br /><!-- ENDIF -->{postrow.RANK_IMG}</div><!-- ENDIF -->
+	<!-- IF postrow.BANNER --><div class="profile-banner visible">{postrow.BANNER}</div><!-- ENDIF -->
 	<div class="avatar-container">
 			<!-- IF postrow.POSTER_AVATAR -->
 					<!-- IF postrow.U_POST_AUTHOR --><a href="{postrow.U_POST_AUTHOR}" class="avatar">{postrow.POSTER_AVATAR}</a><!-- ELSE --><span class="avatar">{postrow.POSTER_AVATAR}</span><!-- ENDIF -->
@@ -18,3 +19,4 @@
 	<div class="profile-pronoun-only">{postrow.PRONOUN}</profile-pronoun-only>
 </dt>
 <!-- IF postrow.RANK_TITLE or postrow.RANK_IMG --><dd class="profile-rank visible mobile-only">{postrow.RANK_TITLE}<!-- IF postrow.RANK_TITLE and postrow.RANK_IMG --><br /><!-- ENDIF -->{postrow.RANK_IMG}</dd><!-- ENDIF -->
+<!-- IF postrow.BANNER --><dd class="profile-banner visible mobile-only">{postrow.BANNER}</dd><!-- ENDIF -->
