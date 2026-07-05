@@ -12,16 +12,20 @@ class main_listener implements EventSubscriberInterface
     /** @var \phpbb\config\config */
     protected $config;
 
+    /** @var \phpbb\template\template */
+    protected $template;
+
     /** @var string */
     protected $table_prefix;
 
     /** @var array<int,string> */
     private $banner_cache = [];
 
-    public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, $table_prefix)
+    public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\template\template $template, $table_prefix)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->template = $template;
         $this->table_prefix = $table_prefix;
     }
 
@@ -29,9 +33,22 @@ class main_listener implements EventSubscriberInterface
     {
         return array(
             'core.viewtopic_modify_post_row' => 'add_banner_to_post_row',
+            'core.memberlist_view_profile'   => 'add_banner_to_profile',
             'core.permissions'               => 'add_permission',
             'core.user_setup'                => 'load_language_on_setup',
         );
+    }
+
+    public function add_banner_to_profile($event)
+    {
+        if (empty($this->config['banners_enabled'])) {
+            return;
+        }
+        $member = $event['member'];
+        if (empty($member['user_id'])) {
+            return;
+        }
+        $this->template->assign_var('BANNER', $this->get_banner((int) $member['user_id']));
     }
 
     public function load_language_on_setup($event)

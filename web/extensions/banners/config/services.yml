@@ -4,6 +4,7 @@ services:
     arguments:
       - "@dbal.conn"
       - "@config"
+      - "@template"
       - "%core.table_prefix%"
     tags:
       - { name: event.listener }
