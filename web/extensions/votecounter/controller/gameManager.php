@@ -31,8 +31,6 @@ class gameManager
         $this->user     = $user;
         $this->auth     = $auth;
         $this->request  = $request;
-
-        $this->language->add_lang('votecounter', 'mafiascum/votecounter');
     }
 
     public function handle($topic_id)
