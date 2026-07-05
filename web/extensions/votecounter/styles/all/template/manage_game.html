@@ -6,22 +6,7 @@
 </div>
 
 {% if VOTECOUNTER_EXISTS %}
-<div id="manage-game-pause" class="manage-game-pause {% if GAME_PAUSED_AT %}is-paused{% endif %}" data-pause-url="{{ U_PAUSE_GAME }}" data-unpause-url="{{ U_UNPAUSE_GAME }}">
-    <div class="pause-banner">
-        {% if GAME_PAUSED_AT %}
-            <span class="pause-status">Paused at <strong id="pause-timestamp">{{ GAME_PAUSED_AT_FORMATTED }}</strong></span>
-            <input type="button" class="button1" value="Unpause" onclick="unpauseGame('{{ U_UNPAUSE_GAME }}')" />
-        {% else %}
-            <span class="pause-status">Vote counter is running.</span>
-            <input type="button" class="button1" value="Pause" onclick="pauseGame('{{ U_PAUSE_GAME }}')" />
-        {% endif %}
-    </div>
-    {% if GAME_PAUSED_AT %}
-    <div class="pause-disclaimer">
-        <strong>Warning:</strong> The vote counter is paused. Any votes cast while paused will not be tracked, and no vote counts will be posted automatically. Unpause to resume tracking.
-    </div>
-    {% endif %}
-</div>
+    {% include 'forms/pause_banner.html' %}
 {% endif %}
 
 <div class="manage-game-wrapper">

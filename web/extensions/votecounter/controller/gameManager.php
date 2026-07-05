@@ -181,16 +181,16 @@ class gameManager
                 WHERE id = ' . (int) $game['id'];
         $this->db->sql_query($sql);
 
-        $formatted = $paused_at === null ? '' : $this->user->format_date((int) $paused_at);
+        $this->template->assign_vars([
+            'GAME_PAUSED_AT' => $paused_at === null ? 0 : (int) $paused_at,
+            'GAME_PAUSED_AT_FORMATTED' => $paused_at === null ? '' : $this->user->format_date((int) $paused_at),
+            'U_PAUSE_GAME'   => $this->helper->route('game_pause',   ['topic_id' => $topic_id]),
+            'U_UNPAUSE_GAME' => $this->helper->route('game_unpause', ['topic_id' => $topic_id]),
+        ]);
 
-        return new Response(
-            json_encode([
-                'paused_at' => $paused_at,
-                'paused_at_formatted' => $formatted,
-            ]),
-            200,
-            ['Content-Type' => 'application/json']
-        );
+        $this->template->set_filenames(['pause_banner' => '@mafiascum_votecounter/forms/pause_banner.html']);
+        $content = $this->template->assign_display('pause_banner', '', true);
+        return new Response($content, 200);
     }
 
     public function create_player($topic_id)

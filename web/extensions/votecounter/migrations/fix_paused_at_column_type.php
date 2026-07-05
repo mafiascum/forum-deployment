@@ -2,22 +2,22 @@
 
 namespace mafiascum\votecounter\migrations;
 
-class add_paused_at_to_games extends \phpbb\db\migration\migration
+class fix_paused_at_column_type extends \phpbb\db\migration\migration
 {
     public function effectively_installed()
     {
-        return $this->db_tools->sql_column_exists($this->table_prefix . 'games', 'paused_at');
+        return false;
     }
 
     static public function depends_on()
     {
-        return array('\mafiascum\votecounter\migrations\votecount_db_tables');
+        return array('\mafiascum\votecounter\migrations\add_paused_at_to_games');
     }
 
     public function update_schema()
     {
         return [
-            'add_columns' => [
+            'change_columns' => [
                 $this->table_prefix . 'games' => [
                     'paused_at' => ['TIMESTAMP', null],
                 ],
@@ -28,9 +28,9 @@ class add_paused_at_to_games extends \phpbb\db\migration\migration
     public function revert_schema()
     {
         return [
-            'drop_columns' => [
+            'change_columns' => [
                 $this->table_prefix . 'games' => [
-                    'paused_at',
+                    'paused_at' => ['UINT', null],
                 ],
             ],
         ];
