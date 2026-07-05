@@ -50,6 +50,66 @@ function generateVotecount(url) {
         .catch(err => console.error('Failed to generate vote count', err));
 }
 
+function pauseGame(url) {
+    setPauseState(url, true);
+}
+
+function unpauseGame(url) {
+    setPauseState(url, false);
+}
+
+function setPauseState(url, paused) {
+    fetch(url, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    }).then(res => res.json()).then(data => {
+        renderPauseBanner(paused, data.paused_at_formatted || '');
+    }).catch(err => console.error('Failed to update pause state', err));
+}
+
+function renderPauseBanner(paused, formattedTime) {
+    const container = document.getElementById('manage-game-pause');
+    if (!container) {
+        return;
+    }
+
+    const pauseUrl = container.dataset.pauseUrl;
+    const unpauseUrl = container.dataset.unpauseUrl;
+
+    container.classList.toggle('is-paused', paused);
+
+    const bannerParts = ['<div class="pause-banner">'];
+    if (paused) {
+        bannerParts.push(
+            '<span class="pause-status">Paused at <strong id="pause-timestamp"></strong></span>' +
+            '<input type="button" class="button1" value="Unpause" onclick="unpauseGame(\'' + unpauseUrl + '\')" />'
+        );
+    } else {
+        bannerParts.push(
+            '<span class="pause-status">Vote counter is running.</span>' +
+            '<input type="button" class="button1" value="Pause" onclick="pauseGame(\'' + pauseUrl + '\')" />'
+        );
+    }
+    bannerParts.push('</div>');
+
+    if (paused) {
+        bannerParts.push(
+            '<div class="pause-disclaimer">' +
+            '<strong>Warning:</strong> The vote counter is paused. Any votes cast while paused will not be tracked, and no vote counts will be posted automatically. Unpause to resume tracking.' +
+            '</div>'
+        );
+    }
+
+    container.innerHTML = bannerParts.join('');
+
+    if (paused) {
+        const ts = document.getElementById('pause-timestamp');
+        if (ts) {
+            ts.textContent = formattedTime;
+        }
+    }
+}
+
 function createVoteCounter(url) {
     const contentContainer = document.querySelector(manageGameContentSelector);
 

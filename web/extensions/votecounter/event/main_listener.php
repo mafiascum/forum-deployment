@@ -71,11 +71,15 @@ class main_listener implements EventSubscriberInterface
             return;
         }
 
-        $sql = 'SELECT id FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
+        $sql = 'SELECT id, paused_at FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
         $result = $this->db->sql_query_limit($sql, 1);
         $game = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
         if (!$game) {
+            return;
+        }
+
+        if (!empty($game['paused_at'])) {
             return;
         }
 
@@ -139,11 +143,15 @@ class main_listener implements EventSubscriberInterface
             return;
         }
 
-        $sql = 'SELECT id FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
+        $sql = 'SELECT id, paused_at FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
         $result = $this->db->sql_query_limit($sql, 1);
         $game = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
         if (!$game) {
+            return;
+        }
+
+        if (!empty($game['paused_at'])) {
             return;
         }
 

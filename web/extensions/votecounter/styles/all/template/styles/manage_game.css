@@ -63,3 +63,31 @@
     padding: 8px 12px;
     margin: 4px 0;
 }
+
+.manage-game-pause {
+    margin-top: 10px;
+    border: 1px solid grey;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.manage-game-pause.is-paused {
+    background: #5a3e00;
+    border-color: #a06800;
+}
+
+.manage-game-pause .pause-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.manage-game-pause .pause-status {
+    flex-grow: 1;
+}
+
+.manage-game-pause .pause-disclaimer {
+    margin-top: 8px;
+    font-size: 0.95em;
+}
