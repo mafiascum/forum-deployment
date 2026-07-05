@@ -1,0 +1,5 @@
+services:
+  mafiascum.banners.listener:
+    class: mafiascum\banners\event\main_listener
+    tags:
+      - { name: event.listener }
