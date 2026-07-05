@@ -1,0 +1,14 @@
+.post:not(.pm) .profile-banner:not(.visible) {
+	display: none;
+}
+
+@media (min-width: 700px) {
+	.post:not(.pm) .profile-banner.mobile-only {
+		display: none;
+	}
+}
+@media (max-width: 699px) {
+	.post:not(.pm) .profile-banner:not(.mobile-only) {
+		display: none;
+	}
+}
