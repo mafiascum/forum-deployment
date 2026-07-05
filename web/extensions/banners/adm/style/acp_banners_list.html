@@ -1,0 +1,95 @@
+<!-- INCLUDE overall_header.html -->
+
+<style>
+    .banners-form { display: block; box-sizing: border-box; width: 100%; }
+    .banners-form fieldset { box-sizing: border-box; width: 100%; }
+    .banners-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .banners-row > label { flex: 0 0 200px; font-weight: bold; }
+    .banners-row > .banners-value { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+    .banners-row input[type="text"] { max-width: 400px; width: 100%; box-sizing: border-box; }
+    .banners-actions { padding-top: 8px; }
+    .banners-list img { max-height: 20px; vertical-align: middle; }
+    .banners-list .banners-preview { max-width: 200px; }
+</style>
+
+<h1>{L_ACP_BANNERS_TITLE}</h1>
+
+<p>{L_BANNERS_INTRO}</p>
+
+<fieldset>
+    <legend>{L_BANNERS_GLOBAL_STATE}</legend>
+    <div class="banners-row">
+        <label>{L_BANNERS_GLOBAL_STATE}{L_COLON}</label>
+        <span class="banners-value">
+            <!-- IF S_BANNERS_ENABLED -->
+                <strong style="color:#080">{L_BANNERS_STATE_ENABLED}</strong>
+            <!-- ELSE -->
+                <strong style="color:#b00">{L_BANNERS_STATE_DISABLED}</strong>
+            <!-- ENDIF -->
+        </span>
+    </div>
+    <form class="banners-form" method="post" action="{U_ACTION_TOGGLE}">
+        <div class="banners-actions">
+            <!-- IF S_BANNERS_ENABLED -->
+                <input type="submit" name="submit" value="{L_BANNERS_DISABLE}" class="button1" />
+            <!-- ELSE -->
+                <input type="submit" name="submit" value="{L_BANNERS_ENABLE}" class="button1" />
+            <!-- ENDIF -->
+            {S_FORM_TOKEN}
+        </div>
+    </form>
+</fieldset>
+
+<table class="table1 banners-list">
+    <thead>
+        <tr>
+            <th>{L_BANNERS_COL_NAME}</th>
+            <th>{L_BANNERS_COL_PREVIEW}</th>
+            <th>{L_BANNERS_COL_PUBLIC}</th>
+            <th>{L_BANNERS_COL_ACTIVE}</th>
+            <th>{L_BANNERS_COL_GRANTS}</th>
+            <th>{L_BANNERS_COL_ACTIONS}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- BEGIN banners -->
+        <tr>
+            <td><strong>{banners.BANNER_NAME}</strong></td>
+            <td class="banners-preview"><img src="{banners.BANNER_URL}" alt="{banners.BANNER_NAME}" /></td>
+            <td><!-- IF banners.IS_PUBLIC -->{L_YES}<!-- ELSE -->{L_NO}<!-- ENDIF --></td>
+            <td>{banners.ACTIVE_COUNT}</td>
+            <td>{banners.GRANT_COUNT}</td>
+            <td>
+                <a href="{banners.U_MANAGE}" class="button button-secondary">{L_BANNERS_MANAGE}</a>
+                <a href="{banners.U_DELETE}" class="button button-secondary">{L_BANNERS_DELETE}</a>
+            </td>
+        </tr>
+        <!-- BEGINELSE -->
+        <tr><td colspan="6" style="text-align:center;">{L_BANNERS_NONE}</td></tr>
+        <!-- END banners -->
+    </tbody>
+</table>
+
+<form class="banners-form" method="post" action="{U_ACTION_CREATE}">
+    <fieldset>
+        <legend>{L_BANNERS_ADD}</legend>
+        <div class="banners-row">
+            <label for="banner_name">{L_BANNERS_NAME}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="banner_name" name="banner_name" value="" required /></span>
+        </div>
+        <div class="banners-row">
+            <label for="banner_url">{L_BANNERS_URL}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="banner_url" name="banner_url" value="" required /></span>
+        </div>
+        <div class="banners-row">
+            <label for="is_public">{L_BANNERS_PUBLIC}{L_COLON}</label>
+            <span class="banners-value"><input type="checkbox" id="is_public" name="is_public" value="1" /></span>
+        </div>
+        <div class="banners-actions">
+            <input type="submit" name="submit" value="{L_BANNERS_ADD}" class="button1" />
+            {S_FORM_TOKEN}
+        </div>
+    </fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

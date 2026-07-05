@@ -1,5 +1,9 @@
 services:
   mafiascum.banners.listener:
     class: mafiascum\banners\event\main_listener
+    arguments:
+      - "@dbal.conn"
+      - "@config"
+      - "%core.table_prefix%"
     tags:
       - { name: event.listener }

@@ -1,0 +1,149 @@
+<!-- INCLUDE overall_header.html -->
+
+<style>
+    .banners-form { display: block; box-sizing: border-box; width: 100%; }
+    .banners-form fieldset { box-sizing: border-box; width: 100%; }
+    .banners-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .banners-row > label { flex: 0 0 200px; font-weight: bold; }
+    .banners-row > .banners-value { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+    .banners-row input[type="text"] { max-width: 400px; width: 100%; box-sizing: border-box; }
+    .banners-actions { padding-top: 8px; }
+    .banners-preview img { max-height: 40px; vertical-align: middle; }
+    .banners-inline-form { display: inline; margin: 0; padding: 0; }
+    .banners-pagination { padding: 8px 0; }
+    .banners-pagination a, .banners-pagination strong { display: inline-block; padding: 2px 8px; margin-right: 2px; }
+    .banners-pagination strong { background: #e8e8e8; border-radius: 3px; }
+</style>
+
+<h1>{L_ACP_BANNERS_TITLE} &raquo; {BANNER_NAME}</h1>
+
+<p><a href="{U_BACK}">&laquo; {L_BANNERS_BACK}</a></p>
+
+<form class="banners-form" method="post" action="{U_ACTION_UPDATE}">
+    <fieldset>
+        <legend>{L_BANNERS_EDIT}</legend>
+        <div class="banners-row banners-preview">
+            <label>{L_BANNERS_COL_PREVIEW}{L_COLON}</label>
+            <span class="banners-value"><img src="{BANNER_URL}" alt="{BANNER_NAME}" /></span>
+        </div>
+        <div class="banners-row">
+            <label for="banner_name">{L_BANNERS_NAME}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="banner_name" name="banner_name" value="{BANNER_NAME}" required /></span>
+        </div>
+        <div class="banners-row">
+            <label for="banner_url">{L_BANNERS_URL}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="banner_url" name="banner_url" value="{BANNER_URL}" required /></span>
+        </div>
+        <div class="banners-row">
+            <label for="is_public">{L_BANNERS_PUBLIC}{L_COLON}</label>
+            <span class="banners-value"><input type="checkbox" id="is_public" name="is_public" value="1"<!-- IF IS_PUBLIC --> checked="checked"<!-- ENDIF --> /></span>
+        </div>
+        <div class="banners-row">
+            <label>{L_BANNERS_COL_ACTIVE}{L_COLON}</label>
+            <span class="banners-value">{ACTIVE_COUNT}</span>
+        </div>
+        <div class="banners-actions">
+            <input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+            <a href="{U_DELETE}" class="button button-secondary">{L_BANNERS_DELETE}</a>
+            {S_FORM_TOKEN}
+        </div>
+    </fieldset>
+</form>
+
+<fieldset>
+    <legend>{L_BANNERS_GRANTS}</legend>
+    <table class="table1">
+        <thead>
+            <tr>
+                <th>{L_BANNERS_COL_USER}</th>
+                <th>{L_BANNERS_COL_ACTIONS}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- BEGIN grants -->
+            <tr>
+                <td>{grants.USERNAME}</td>
+                <td>
+                    <form class="banners-inline-form" method="post" action="{U_ACTION_REM_GRANT}">
+                        <input type="hidden" name="grant_id" value="{grants.GRANT_ID}" />
+                        <input type="submit" name="submit" value="{L_BANNERS_GRANT_REMOVE}" class="button button-secondary" />
+                        {S_FORM_TOKEN}
+                    </form>
+                </td>
+            </tr>
+            <!-- BEGINELSE -->
+            <tr><td colspan="2" style="text-align:center;">{L_BANNERS_GRANTS_NONE}</td></tr>
+            <!-- END grants -->
+        </tbody>
+    </table>
+    <!-- IF S_GRANTS_HAS_PAGINATION -->
+    <div class="banners-pagination">
+        <!-- IF U_GRANTS_PREV --><a href="{U_GRANTS_PREV}">&laquo; {L_PREVIOUS}</a><!-- ENDIF -->
+        <!-- BEGIN grants_pagination -->
+        <!-- IF grants_pagination.CURRENT --><strong>{grants_pagination.NUMBER}</strong><!-- ELSE --><a href="{grants_pagination.URL}">{grants_pagination.NUMBER}</a><!-- ENDIF -->
+        <!-- END grants_pagination -->
+        <!-- IF U_GRANTS_NEXT --><a href="{U_GRANTS_NEXT}">{L_NEXT} &raquo;</a><!-- ENDIF -->
+    </div>
+    <!-- ENDIF -->
+    <form class="banners-form" method="post" action="{U_ACTION_ADD_GRANT}">
+        <div class="banners-row">
+            <label for="grant_username">{L_BANNERS_GRANT_ADD}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="grant_username" name="grant_username" value="" placeholder="{L_BANNERS_USERNAME}" /></span>
+        </div>
+        <div class="banners-actions">
+            <input type="submit" name="submit" value="{L_BANNERS_GRANT_ADD}" class="button1" />
+            {S_FORM_TOKEN}
+        </div>
+    </form>
+</fieldset>
+
+<fieldset>
+    <legend>{L_BANNERS_ACTIVE_ON}</legend>
+    <table class="table1">
+        <thead>
+            <tr>
+                <th>{L_BANNERS_COL_USER}</th>
+                <th>{L_BANNERS_COL_SLOT}</th>
+                <th>{L_BANNERS_COL_ACTIONS}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- BEGIN active_users -->
+            <tr>
+                <td>{active_users.USERNAME}</td>
+                <td>{active_users.SLOT}</td>
+                <td>
+                    <form class="banners-inline-form" method="post" action="{U_ACTION_REM_ACTIVE}">
+                        <input type="hidden" name="active_id" value="{active_users.ACTIVE_ID}" />
+                        <input type="submit" name="submit" value="{L_BANNERS_ACTIVE_REMOVE}" class="button button-secondary" />
+                        {S_FORM_TOKEN}
+                    </form>
+                </td>
+            </tr>
+            <!-- BEGINELSE -->
+            <tr><td colspan="3" style="text-align:center;">{L_BANNERS_ACTIVE_NONE}</td></tr>
+            <!-- END active_users -->
+        </tbody>
+    </table>
+    <!-- IF S_ACTIVE_HAS_PAGINATION -->
+    <div class="banners-pagination">
+        <!-- IF U_ACTIVE_PREV --><a href="{U_ACTIVE_PREV}">&laquo; {L_PREVIOUS}</a><!-- ENDIF -->
+        <!-- BEGIN active_pagination -->
+        <!-- IF active_pagination.CURRENT --><strong>{active_pagination.NUMBER}</strong><!-- ELSE --><a href="{active_pagination.URL}">{active_pagination.NUMBER}</a><!-- ENDIF -->
+        <!-- END active_pagination -->
+        <!-- IF U_ACTIVE_NEXT --><a href="{U_ACTIVE_NEXT}">{L_NEXT} &raquo;</a><!-- ENDIF -->
+    </div>
+    <!-- ENDIF -->
+    <form class="banners-form" method="post" action="{U_ACTION_ADD_ACTIVE}">
+        <div class="banners-row">
+            <label for="active_username">{L_BANNERS_ACTIVE_ADD}{L_COLON}</label>
+            <span class="banners-value"><input class="text medium" type="text" id="active_username" name="active_username" value="" placeholder="{L_BANNERS_USERNAME}" /></span>
+        </div>
+        <div class="banners-actions">
+            <input type="submit" name="submit" value="{L_BANNERS_ACTIVE_ADD}" class="button1" />
+            {S_FORM_TOKEN}
+        </div>
+    </form>
+</fieldset>
+
+<!-- INCLUDE overall_footer.html -->
