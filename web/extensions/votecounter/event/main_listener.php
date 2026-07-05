@@ -49,10 +49,21 @@ class main_listener implements EventSubscriberInterface
     {
         return array(
             'core.user_setup' => 'load_language_on_setup',
+            'core.permissions' => 'add_permission',
             'core.posting_modify_submission_errors' => 'validate_vote',
             'core.submit_post_end' => 'submit_post_end',
             'core.viewtopic_assign_template_vars_before' => 'inject_template_vars',
         );
+    }
+
+    public function add_permission($event)
+    {
+        $permissions = $event['permissions'];
+        $permissions['a_votecounter_whitelist'] = array(
+            'lang' => 'ACL_A_VOTECOUNTER_WHITELIST',
+            'cat'  => 'misc',
+        );
+        $event['permissions'] = $permissions;
     }
 
     public function load_language_on_setup($event)

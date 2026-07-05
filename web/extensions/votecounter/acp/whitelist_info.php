@@ -12,7 +12,7 @@ class whitelist_info
             'modes'    => array(
                 'manage' => array(
                     'title' => 'ACP_VC_WHITELIST',
-                    'auth'  => 'ext_mafiascum/votecounter && acl_a_board',
+                    'auth'  => 'ext_mafiascum/votecounter && acl_a_votecounter_whitelist',
                     'cat'   => array('ACP_VC_TITLE'),
                 ),
             ),
