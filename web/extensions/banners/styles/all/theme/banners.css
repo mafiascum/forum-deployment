@@ -11,4 +11,18 @@
 	.post:not(.pm) .profile-banner:not(.mobile-only) {
 		display: none;
 	}
+	.postprofile dd.profile-banner.mobile-only.visible {
+		display: block;
+		margin: 2px 0 0;
+		line-height: 1;
+	}
+	.postprofile dd.profile-banner.mobile-only.visible br {
+		display: none;
+	}
+	.postprofile dd.profile-banner.mobile-only.visible img {
+		max-height: 16px;
+		width: auto;
+		vertical-align: middle;
+		margin-right: 3px;
+	}
 }
