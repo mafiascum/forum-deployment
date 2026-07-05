@@ -50,6 +50,34 @@ function generateVotecount(url) {
         .catch(err => console.error('Failed to generate vote count', err));
 }
 
+function pauseGame(url) {
+    updatePauseState(url);
+}
+
+function unpauseGame(url) {
+    updatePauseState(url);
+}
+
+function updatePauseState(url) {
+    fetch(url, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error('Pause request failed with status ' + res.status);
+        }
+        return res.text();
+    }).then(html => {
+        const container = document.getElementById('manage-game-pause');
+        if (container) {
+            container.outerHTML = html;
+        }
+    }).catch(err => {
+        console.error('Failed to update pause state', err);
+        alert('Failed to update pause state. Please try again.');
+    });
+}
+
 function createVoteCounter(url) {
     const contentContainer = document.querySelector(manageGameContentSelector);
 

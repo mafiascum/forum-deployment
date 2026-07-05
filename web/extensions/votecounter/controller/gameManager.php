@@ -31,8 +31,6 @@ class gameManager
         $this->user     = $user;
         $this->auth     = $auth;
         $this->request  = $request;
-
-        $this->language->add_lang('votecounter', 'mafiascum/votecounter');
     }
 
     public function handle($topic_id)
@@ -70,13 +68,19 @@ class gameManager
             $this->assignPlayerTabVars($topic_id, $game);
         }
 
+        $paused_at = ($votecounter_exists && !empty($game['paused_at'])) ? (int) $game['paused_at'] : 0;
+
         $this->template->assign_vars([
             'TOPIC_ID' => $topic_id,
             'ACTIVE_TAB' => $active_tab,
             'VOTECOUNTER_EXISTS' => $votecounter_exists,
+            'GAME_PAUSED_AT' => $paused_at,
+            'GAME_PAUSED_AT_FORMATTED' => $paused_at ? $this->user->format_date($paused_at) : '',
             'U_CREATE_VOTECOUNTER' => $this->helper->route('game_create', [
                 'topic_id' => $topic_id
             ]),
+            'U_PAUSE_GAME'   => $this->helper->route('game_pause',   ['topic_id' => $topic_id]),
+            'U_UNPAUSE_GAME' => $this->helper->route('game_unpause', ['topic_id' => $topic_id]),
             'U_TAB_PLAYERS' => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'players']),
             'U_TAB_DAYS'    => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'days']),
             'U_TAB_SETTINGS' => $this->helper->route('game_manage_tab', ['topic_id' => $topic_id, 'tab' => 'settings']),
@@ -142,6 +146,49 @@ class gameManager
         }
 
         return $this->renderPlayerTab($topic_id, $game);
+    }
+
+    public function pause_game($topic_id)
+    {
+        return $this->setPauseState($topic_id, time());
+    }
+
+    public function unpause_game($topic_id)
+    {
+        return $this->setPauseState($topic_id, null);
+    }
+
+    private function setPauseState($topic_id, $paused_at)
+    {
+        global $table_prefix;
+
+        if (!$topic_id) {
+            trigger_error('NO_TOPIC');
+        }
+
+        $this->requirePermission($topic_id);
+
+        $game = $this->fetchGame($topic_id);
+        if (!$game) {
+            trigger_error('GAME_NOT_FOUND');
+        }
+
+        $paused_sql = $paused_at === null ? 'NULL' : (int) $paused_at;
+        $sql = 'UPDATE ' . $table_prefix . 'games
+                SET paused_at = ' . $paused_sql . '
+                WHERE id = ' . (int) $game['id'];
+        $this->db->sql_query($sql);
+
+        $this->template->assign_vars([
+            'GAME_PAUSED_AT' => $paused_at === null ? 0 : (int) $paused_at,
+            'GAME_PAUSED_AT_FORMATTED' => $paused_at === null ? '' : $this->user->format_date((int) $paused_at),
+            'U_PAUSE_GAME'   => $this->helper->route('game_pause',   ['topic_id' => $topic_id]),
+            'U_UNPAUSE_GAME' => $this->helper->route('game_unpause', ['topic_id' => $topic_id]),
+        ]);
+
+        $this->template->set_filenames(['pause_banner' => '@mafiascum_votecounter/forms/pause_banner.html']);
+        $content = $this->template->assign_display('pause_banner', '', true);
+        return new Response($content, 200);
     }
 
     public function create_player($topic_id)

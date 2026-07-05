@@ -3,7 +3,11 @@
 
 <div class="manage-game-disclaimer">
     <div><strong>Beta:</strong> The vote counter is still in development. UI and individual features may be incomplete or inaccurate, and behavior may change without notice. Use with caution.</div>
-</div> 
+</div>
+
+{% if VOTECOUNTER_EXISTS %}
+    {% include 'forms/pause_banner.html' %}
+{% endif %}
 
 <div class="manage-game-wrapper">
     <div class="manage-game-tabs">

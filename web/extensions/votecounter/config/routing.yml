@@ -18,6 +18,18 @@ game_create:
   requirements:
     topic_id: \d+
 
+game_pause:
+  path: /game/manage/{topic_id}/pause
+  defaults: { _controller: mafiascum.votecounter.gameManager:pause_game }
+  requirements:
+    topic_id: \d+
+
+game_unpause:
+  path: /game/manage/{topic_id}/unpause
+  defaults: { _controller: mafiascum.votecounter.gameManager:unpause_game }
+  requirements:
+    topic_id: \d+
+
 player_create:
   path: /game/manage/{topic_id}/player_create
   defaults: { _controller: mafiascum.votecounter.gameManager:create_player }

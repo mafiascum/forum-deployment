@@ -48,10 +48,21 @@ class main_listener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
+            'core.user_setup' => 'load_language_on_setup',
             'core.posting_modify_submission_errors' => 'validate_vote',
             'core.submit_post_end' => 'submit_post_end',
             'core.viewtopic_assign_template_vars_before' => 'inject_template_vars',
         );
+    }
+
+    public function load_language_on_setup($event)
+    {
+        $lang_set_ext = $event['lang_set_ext'];
+        $lang_set_ext[] = array(
+            'ext_name' => 'mafiascum/votecounter',
+            'lang_set' => 'common',
+        );
+        $event['lang_set_ext'] = $lang_set_ext;
     }
 
     public function validate_vote($event)
@@ -71,11 +82,15 @@ class main_listener implements EventSubscriberInterface
             return;
         }
 
-        $sql = 'SELECT id FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
+        $sql = 'SELECT id, paused_at FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
         $result = $this->db->sql_query_limit($sql, 1);
         $game = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
         if (!$game) {
+            return;
+        }
+
+        if (!empty($game['paused_at'])) {
             return;
         }
 
@@ -139,11 +154,15 @@ class main_listener implements EventSubscriberInterface
             return;
         }
 
-        $sql = 'SELECT id FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
+        $sql = 'SELECT id, paused_at FROM ' . $this->table_prefix . 'games WHERE topic_id = ' . $topic_id;
         $result = $this->db->sql_query_limit($sql, 1);
         $game = $this->db->sql_fetchrow($result);
         $this->db->sql_freeresult($result);
         if (!$game) {
+            return;
+        }
+
+        if (!empty($game['paused_at'])) {
             return;
         }
 

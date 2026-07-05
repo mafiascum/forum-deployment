@@ -1,0 +1,48 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>Vote Counter Whitelist</h1>
+
+<p>Topics listed here have vote-counter functionality available (vote parsing, the Manage Game button, and automatic vote count posting).</p>
+
+<form id="add_whitelist" method="post" action="{U_ACTION}&amp;action=add">
+    <fieldset>
+        <legend>Add topic to whitelist</legend>
+        <dl>
+            <dt><label for="topic_id">Topic ID:</label></dt>
+            <dd><input class="text medium" type="number" id="topic_id" name="topic_id" min="1" required /></dd>
+        </dl>
+        <p class="quick">
+            <input type="submit" name="submit" value="Add" class="button1" />
+            {S_FORM_TOKEN}
+        </p>
+    </fieldset>
+</form>
+
+<table class="table1" cellspacing="1">
+    <thead>
+        <tr>
+            <th>Topic ID</th>
+            <th>Topic</th>
+            <th>Added</th>
+            <th>Added by</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- BEGIN whitelist -->
+        <tr class="<!-- IF whitelist.S_ROW_COUNT is odd -->bg1<!-- ELSE -->bg2<!-- ENDIF -->">
+            <td>{whitelist.TOPIC_ID}</td>
+            <td><a href="{whitelist.U_VIEW}">{whitelist.TOPIC_TITLE}</a></td>
+            <td>{whitelist.CREATED_AT}</td>
+            <td><!-- IF whitelist.ADDED_BY -->{whitelist.ADDED_BY}<!-- ELSE -->&mdash;<!-- ENDIF --></td>
+            <td><a href="{whitelist.U_REMOVE}" onclick="return confirm('Remove topic {whitelist.TOPIC_ID} from the vote counter whitelist?');">Remove</a></td>
+        </tr>
+        <!-- BEGINELSE -->
+        <tr>
+            <td colspan="5">No topics whitelisted yet.</td>
+        </tr>
+        <!-- END whitelist -->
+    </tbody>
+</table>
+
+<!-- INCLUDE overall_footer.html -->
