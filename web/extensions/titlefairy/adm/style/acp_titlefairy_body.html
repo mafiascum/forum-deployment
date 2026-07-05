@@ -1,0 +1,64 @@
+<!-- INCLUDE overall_header.html -->
+
+<style>
+    .titlefairy-form { display: block; box-sizing: border-box; width: 100%; max-width: 100%; }
+    .titlefairy-form fieldset { box-sizing: border-box; width: 100%; max-width: 100%; }
+    .titlefairy-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .titlefairy-row > label { flex: 0 0 200px; font-weight: bold; }
+    .titlefairy-row > .titlefairy-value { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+    .titlefairy-row select, .titlefairy-row input[type="text"] { max-width: 400px; width: 100%; box-sizing: border-box; }
+    .titlefairy-actions { padding-top: 8px; }
+</style>
+
+<h1>{L_ACP_TITLEFAIRY_TITLE}</h1>
+
+<p>{L_TITLEFAIRY_INTRO}</p>
+
+<form id="titlefairy_find" class="titlefairy-form" method="post" action="{U_ACTION}">
+    <fieldset>
+        <legend>{L_TITLEFAIRY_SEARCH_USER}</legend>
+        <div class="titlefairy-row">
+            <label for="username">{L_TITLEFAIRY_USERNAME}{L_COLON}</label>
+            <span class="titlefairy-value">
+                <input class="text medium" type="text" id="username" name="username" value="{S_SEARCH_VALUE}" autocomplete="off" required />
+            </span>
+        </div>
+        <div class="titlefairy-actions">
+            <input type="submit" value="{L_TITLEFAIRY_FIND}" class="button1" />
+            {S_FORM_TOKEN}
+        </div>
+    </fieldset>
+</form>
+
+<!-- IF S_USER_SELECTED -->
+<form id="titlefairy_assign" class="titlefairy-form" method="post" action="{U_ACTION_ASSIGN}">
+    <fieldset>
+        <legend>{L_TITLEFAIRY_ASSIGN_RANK}</legend>
+        <div class="titlefairy-row">
+            <label>{L_TITLEFAIRY_SELECTED_USER}{L_COLON}</label>
+            <span class="titlefairy-value"><strong>{SELECTED_USERNAME}</strong></span>
+        </div>
+        <div class="titlefairy-row">
+            <label>{L_TITLEFAIRY_CURRENT_RANK}{L_COLON}</label>
+            <span class="titlefairy-value">{CURRENT_RANK_TITLE}</span>
+        </div>
+        <div class="titlefairy-row">
+            <label for="rank_id">{L_TITLEFAIRY_SELECT_RANK}{L_COLON}</label>
+            <span class="titlefairy-value">
+                <select id="rank_id" name="rank_id">
+                    <option value="0"<!-- IF CURRENT_RANK_ID eq 0 --> selected="selected"<!-- ENDIF -->>{L_TITLEFAIRY_NONE}</option>
+                    <!-- BEGIN ranks -->
+                    <option value="{ranks.RANK_ID}"<!-- IF ranks.S_SELECTED --> selected="selected"<!-- ENDIF -->>{ranks.RANK_TITLE}</option>
+                    <!-- END ranks -->
+                </select>
+            </span>
+        </div>
+        <div class="titlefairy-actions">
+            <input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+            {S_FORM_TOKEN}
+        </div>
+    </fieldset>
+</form>
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->
