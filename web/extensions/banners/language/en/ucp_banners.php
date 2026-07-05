@@ -10,6 +10,7 @@ if (empty($lang) || !is_array($lang)) {
 
 $lang = array_merge($lang, array(
     'UCP_BANNERS'                => 'Edit Banners',
+    'BANNERS_PROFILE_LABEL'      => 'Banners',
 
     'UCP_BANNERS_INTRO'            => 'Pick which banners appear below your rank and in what order. You can equip up to three; slot 1 shows on top.',
     'UCP_BANNERS_SLOTS'            => 'Equipped banners',
