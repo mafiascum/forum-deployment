@@ -402,6 +402,11 @@ html, body {
   
   .codebox code {
 	color: #00ee00; }
+
+  .inline-code {
+	background-color: #222;
+	border-color: #fff;
+	color: #00ee00; }
   
   .syntaxbg {
 	color: #fff; }

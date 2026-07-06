@@ -436,6 +436,12 @@ blockquote blockquote blockquote {
 	color: #2E8B57;
 }
 
+.inline-code {
+	background-color: #FFFFFF;
+	border-color: #C9D2D8;
+	color: #2E8B57;
+}
+
 /* Attachments
 ----------------------------------------*/
 .attachbox {

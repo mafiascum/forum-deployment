@@ -331,6 +331,31 @@ blockquote cite:before, .uncited:before {
 	margin: 2px 0;
 }
 
+.inline-code {
+	padding: 0 4px;
+	border-width: 1px;
+	border-style: solid;
+	font: 0.9em Monaco, "Andale Mono", "Courier New", Courier, monospace;
+	word-wrap: normal;
+	cursor: pointer;
+}
+
+.inline-code::after {
+	content: " \2398";
+	opacity: 0.55;
+	font-size: 0.85em;
+	margin-left: 2px;
+}
+
+.inline-code:hover::after {
+	opacity: 1;
+}
+
+.inline-code.copied::after {
+	content: " \2713 Copied";
+	opacity: 1;
+}
+
 .attachbox dt {
 	font-family: inherit;
 }

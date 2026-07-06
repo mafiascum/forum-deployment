@@ -1,0 +1,5 @@
+Mysql.Main.Url=jdbc:mysql://database/ms_phpbb3?useUnicode=yes&characterEncoding=UTF-8&jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&rewriteBatchedStatements=true
+Mysql.Main.Username=root
+Mysql.Main.Password=password
+Mysql.Main.MaxConnections=6
+Environment=dev
