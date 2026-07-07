@@ -94,8 +94,6 @@ class main_listener implements EventSubscriberInterface
             'core.viewtopic_modify_post_row'                 => 'viewtopic_modify_post_row',
             'core.ucp_pm_compose_quotepost_query_after'      => 'ucp_pm_compose_quotepost_query_after',
             'core.notification_manager_add_notifications_for_users_modify_data' => 'notification_manager_add_notifications_for_users_modify_data',
-            'core.mcp_reports_get_reports_query_before'      => 'mcp_reports_broaden_query_for_pt_access',
-            'core.mcp_get_post_data_after'                   => 'mcp_get_post_data_add_pt_posts',
         );
     }
 
@@ -1059,86 +1057,5 @@ class main_listener implements EventSubscriberInterface
                 $event['notify_users'] = array();
             }
         }
-    }
-
-    // Broaden the MCP reports queue query so PT-authorized users see reports on
-    // posts within topics they have PT access to, in addition to reports in
-    // forums where they hold m_report. Module-level aclf_m_report still gates
-    // entry, so users with no m_ perms anywhere are unaffected.
-    public function mcp_reports_broaden_query_for_pt_access($event) {
-        $user_id = (int) $this->user->data['user_id'];
-        $pt_topic_ids = Utils::get_user_authorized_topic_ids($this->db, $this->table_prefix, $user_id);
-
-        if (empty($pt_topic_ids)) {
-            return;
-        }
-
-        $forum_list = $event['forum_list'];
-        $sql = $event['sql'];
-
-        $forum_in_set = $this->db->sql_in_set('p.forum_id', $forum_list);
-        $pt_in_set = $this->db->sql_in_set('p.topic_id', $pt_topic_ids);
-
-        $needle = 'WHERE ' . $forum_in_set;
-        $replacement = 'WHERE (' . $forum_in_set . ' OR ' . $pt_in_set . ')';
-
-        $event['sql'] = str_replace($needle, $replacement, $sql);
-    }
-
-    // Add PT-authorized posts back to the phpbb_get_post_data rowset when the
-    // caller filtered by m_report. Without this the MCP report_details page
-    // trips NO_REPORT_SELECTED for PT posts a PT-authorized mod can otherwise
-    // reach via notification link.
-    public function mcp_get_post_data_add_pt_posts($event) {
-        $acl_list = $event['acl_list'];
-        $checks_m_report = ($acl_list === 'm_report')
-            || (is_array($acl_list) && in_array('m_report', $acl_list, true));
-
-        if (!$checks_m_report) {
-            return;
-        }
-
-        $post_ids = $event['post_ids'];
-        $rowset = $event['rowset'];
-        $missing = array_diff($post_ids, array_keys($rowset));
-
-        if (empty($missing)) {
-            return;
-        }
-
-        $user_id = (int) $this->user->data['user_id'];
-        $pt_topic_ids = Utils::get_user_authorized_topic_ids($this->db, $this->table_prefix, $user_id);
-
-        if (empty($pt_topic_ids)) {
-            return;
-        }
-
-        $sql_array = array(
-            'SELECT'    => 'p.*, u.*, t.*, f.*',
-            'FROM'      => array(
-                USERS_TABLE  => 'u',
-                POSTS_TABLE  => 'p',
-                TOPICS_TABLE => 't',
-            ),
-            'LEFT_JOIN' => array(
-                array(
-                    'FROM' => array(FORUMS_TABLE => 'f'),
-                    'ON'   => 'f.forum_id = t.forum_id',
-                ),
-            ),
-            'WHERE'     => $this->db->sql_in_set('p.post_id', $missing) . '
-                AND u.user_id = p.poster_id
-                AND t.topic_id = p.topic_id
-                AND ' . $this->db->sql_in_set('t.topic_id', $pt_topic_ids),
-        );
-
-        $sql = $this->db->sql_build_query('SELECT', $sql_array);
-        $result = $this->db->sql_query($sql);
-        while ($row = $this->db->sql_fetchrow($result)) {
-            $rowset[$row['post_id']] = $row;
-        }
-        $this->db->sql_freeresult($result);
-
-        $event['rowset'] = $rowset;
     }
 }
