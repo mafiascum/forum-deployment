@@ -120,14 +120,14 @@ class mcp_pm_reports
 					$reason['title'] = $user->lang['report_reasons']['TITLE'][strtoupper($reason['title'])];
 				}
 
-				// Populate reportrow with all open reports on this PM so the mcp
+				// Populate reportrow with all reports on this PM so the mcp
 				// extension's mcp_report_details_show_before event template renders
-				// them, matching the post-report details behaviour.
-				$sql = 'SELECT r.report_id, r.user_id, r.report_time, r.report_text, rr.reason_title, rr.reason_description, u.username, u.username_clean, u.user_colour
+				// them, matching the post-report details behaviour. Includes closed
+				// reports so viewing a closed report still shows the reason.
+				$sql = 'SELECT r.report_id, r.user_id, r.report_time, r.report_text, r.report_closed, rr.reason_title, rr.reason_description, u.username, u.username_clean, u.user_colour
 					FROM ' . REPORTS_TABLE . ' r, ' . REPORTS_REASONS_TABLE . ' rr, ' . USERS_TABLE . ' u
 					WHERE r.pm_id = ' . (int) $pm_id . '
 						AND r.post_id = 0
-						AND r.report_closed = 0
 						AND rr.reason_id = r.reason_id
 						AND r.user_id = u.user_id
 					ORDER BY r.report_time ASC';
