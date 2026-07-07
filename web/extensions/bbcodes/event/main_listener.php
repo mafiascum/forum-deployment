@@ -226,6 +226,12 @@ class main_listener implements EventSubscriberInterface
 		$event['configurator']->tags['SIZE']->filterChain
 		->append(array(__CLASS__, 'filter_size'));
 
+		$icode_template = '<span class="inline-code" title="Click to copy" onclick="var t=this,c=t.textContent.replace(/\s*⎘$|\s*✓ Copied$/,\'\');navigator.clipboard.writeText(c).then(function(){t.classList.add(\'copied\');setTimeout(function(){t.classList.remove(\'copied\');},1200);}).catch(function(){});"><xsl:apply-templates/></span>';
+		$event['configurator']->BBCodes->addCustom(
+			'[icode]{TEXT}[/icode]',
+			new UnsafeTemplate($event['configurator']->templateNormalizer->normalizeTemplate($icode_template))
+		);
+
 		foreach ($event['configurator']->tags as $tag)
 		{
 			$tag->nestingLimit = PHP_INT_MAX;
@@ -279,6 +285,8 @@ class main_listener implements EventSubscriberInterface
 		author={PARSE=/^\\[url](?'author'(?'url'.*?))\\[\\/url]$/i}
 		author={PARSE=/(?'url'https?:\\/\\/[^[\\]]+)/i}
 	]{TEXT2}[/QUOTE]", $event['configurator']->tags['quote']->template);
+
+		$event['configurator']->tags['ICODE']->rules->ignoreTags();
 
 	}
 
