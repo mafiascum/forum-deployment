@@ -58,7 +58,30 @@ class main_listener implements EventSubscriberInterface
 			'core.page_header' => 'page_header_after',
 			'core.viewtopic_post_rowset_data' => 'viewtopic_post_rowset_data',
 			'core.viewtopic_modify_quick_reply_template_vars' => 'viewtopic_modify_quick_reply_template_vars',
+			'core.topic_review_modify_row' => 'topic_review_modify_row',
         );
+    }
+
+    public function topic_review_modify_row($event) {
+        $post_row = $event['post_row'];
+        $row = $event['row'];
+        $poster_id = (int) $row['user_id'];
+
+        if ($poster_id <= 0) {
+            $event['post_row'] = $post_row;
+            return;
+        }
+
+        $sql = 'SELECT pf_user_pronoun_text FROM ' . PROFILE_FIELDS_DATA_TABLE . ' WHERE user_id = ' . $poster_id;
+        $result = $this->db->sql_query($sql);
+        $pronoun = (string) $this->db->sql_fetchfield('pf_user_pronoun_text');
+        $this->db->sql_freeresult($result);
+
+        if ($pronoun !== '') {
+            $post_row['POST_AUTHOR_FULL'] = $post_row['POST_AUTHOR_FULL'] . ' <span class="profile-pronoun-only">(' . $pronoun . ')</span>';
+        }
+
+        $event['post_row'] = $post_row;
     }
 
     /**
