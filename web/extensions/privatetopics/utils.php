@@ -59,7 +59,27 @@ class Utils {
         return '(' . $table_alias . '.is_private = 0 OR tu.topic_id IS NOT NULL OR tm.topic_id IS NOT NULL)';
     }
 
-    public static function is_moderator_by_permissions($action, $auth, $user, $forum_id) {  
+    public static function get_user_authorized_topic_ids($db, $table_prefix, $user_id) {
+        $topic_ids = array();
+
+        $sql = 'SELECT topic_id FROM ' . $table_prefix . 'private_topic_users WHERE user_id = ' . (int) $user_id;
+        $result = $db->sql_query($sql);
+        while ($row = $db->sql_fetchrow($result)) {
+            $topic_ids[] = (int) $row['topic_id'];
+        }
+        $db->sql_freeresult($result);
+
+        $sql = 'SELECT topic_id FROM ' . $table_prefix . 'topic_mod WHERE user_id = ' . (int) $user_id;
+        $result = $db->sql_query($sql);
+        while ($row = $db->sql_fetchrow($result)) {
+            $topic_ids[] = (int) $row['topic_id'];
+        }
+        $db->sql_freeresult($result);
+
+        return array_values(array_unique($topic_ids, SORT_NUMERIC));
+    }
+
+    public static function is_moderator_by_permissions($action, $auth, $user, $forum_id) {
         if ($action === 'lock') {
             // Can lock topics in this forum
             if ($auth->acl_get('m_lock', $forum_id)) {
