@@ -9,6 +9,12 @@
 	padding: 2px 3px;
 }
 
+@media (min-width: 701px) {
+	.post-buttons .post-button-pm-mobile {
+		display: none;
+	}
+}
+
 .button-search,
 .button-search-end  {
 	padding: 6px 8px;

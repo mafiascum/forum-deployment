@@ -235,13 +235,13 @@
 			<a {% if postrow.S_FIRST_UNREAD %}class="first-unread" {% endif %}href="{{ postrow.U_MINI_POST }}">{{ postrow.POST_SUBJECT }}</a>
 		</h3>
 
-		<!-- DEFINE $SHOW_POST_BUTTONS = (postrow.U_EDIT or postrow.U_DELETE or postrow.U_REPORT or postrow.U_WARN or postrow.U_INFO or postrow.U_QUOTE) -->
+		<!-- DEFINE $SHOW_POST_BUTTONS = (postrow.U_EDIT or postrow.U_DELETE or postrow.U_REPORT or postrow.U_WARN or postrow.U_INFO or postrow.U_QUOTE or postrow.U_PM) -->
 		<!-- EVENT viewtopic_body_post_buttons_list_before -->
 		<!-- IF not S_IS_BOT -->
 			<!-- IF $SHOW_POST_BUTTONS -->
 				<ul class="post-buttons">
 					<!-- EVENT viewtopic_body_post_buttons_before -->
-					<!-- IF postrow.U_EDIT -->
+				<!-- IF postrow.U_EDIT -->
 						<li>
 							<a href="{postrow.U_EDIT}" title="{L_EDIT_POST}" class="button button-icon-only">
 								<i class="icon fa-pencil fa-fw" aria-hidden="true"></i><span class="sr-only">{L_BUTTON_EDIT}</span>
@@ -273,6 +273,13 @@
 						<li>
 							<a href="{postrow.U_INFO}" title="{L_INFORMATION}" class="button button-icon-only">
 								<i class="icon fa-info fa-fw" aria-hidden="true"></i><span class="sr-only">{L_BUTTON_INFORMATION}</span>
+							</a>
+						</li>
+					<!-- ENDIF -->
+   				<!-- IF postrow.U_PM -->
+						<li class="post-button-pm-mobile">
+							<a href="{postrow.U_PM}" title="{L_SEND_PRIVATE_MESSAGE}" class="button button-icon-only">
+								<i class="icon fa-envelope fa-fw" aria-hidden="true"></i><span class="sr-only">{L_SEND_PRIVATE_MESSAGE}</span>
 							</a>
 						</li>
 					<!-- ENDIF -->
