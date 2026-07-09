@@ -82,3 +82,10 @@ a.topictitle {
 a.topictitle:hover {
 	color: #a20000;
 }
+
+
+@media (min-width: 701px) {
+	.post-buttons .post-button-pm-mobile {
+		display: none;
+	}
+}

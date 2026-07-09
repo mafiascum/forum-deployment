@@ -59,3 +59,9 @@ blockquote blockquote blockquote blockquote blockquote blockquote blockquote blo
 {
 	background-color: #EAE4DC;
 }
+
+@media (min-width: 701px) {
+	.post-buttons .post-button-pm-mobile {
+		display: none;
+	}
+}

@@ -113,3 +113,9 @@ h2 {
 .private .dropdown a:hover {
 	color: #fff !important;
 }
+
+@media (min-width: 701px) {
+	.post-buttons .post-button-pm-mobile {
+		display: none;
+	}
+}

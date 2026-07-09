@@ -44,3 +44,9 @@ blockquote blockquote blockquote blockquote blockquote blockquote blockquote blo
 .post {
 	padding: 20px;
 }
+
+@media (min-width: 701px) {
+	.post-buttons .post-button-pm-mobile {
+		display: none;
+	}
+}
