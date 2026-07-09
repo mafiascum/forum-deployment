@@ -178,8 +178,14 @@ class main_listener implements EventSubscriberInterface
 		$post_id = (int) $post_info['post_id'];
 		$forum_id = (int) $post_info['forum_id'];
 
-		if (!$this->auth->acl_get('m_edit', $forum_id) && !$this->auth->acl_get('a_')) {
-			return;
+		$is_admin = (bool) $this->auth->acl_get('a_');
+		if (!$is_admin) {
+			if (!$this->auth->acl_get('m_edit', $forum_id)) {
+				return;
+			}
+			if (!$this->registered_can_read_forum($forum_id)) {
+				return;
+			}
 		}
 
 		if (!function_exists('generate_text_for_display')) {
@@ -221,5 +227,33 @@ class main_listener implements EventSubscriberInterface
 			'S_HAS_EDIT_HISTORY' => $count > 0,
 			'EDIT_HISTORY_COUNT' => $count,
 		]);
+	}
+
+	private function registered_can_read_forum($forum_id) {
+		$forum_id = (int) $forum_id;
+
+		$sql = 'SELECT 1
+				FROM ' . ACL_OPTIONS_TABLE . ' ao
+				JOIN ' . ACL_GROUPS_TABLE . ' ag ON ag.auth_option_id = ao.auth_option_id
+				JOIN ' . GROUPS_TABLE . ' g ON g.group_id = ag.group_id
+				WHERE ao.auth_option = \'f_read\'
+					AND g.group_name = \'REGISTERED\'
+					AND ag.forum_id = ' . $forum_id . '
+					AND ag.auth_setting = 1
+				UNION
+				SELECT 1
+				FROM ' . ACL_OPTIONS_TABLE . ' ao
+				JOIN ' . ACL_ROLES_DATA_TABLE . ' rd ON rd.auth_option_id = ao.auth_option_id
+				JOIN ' . ACL_GROUPS_TABLE . ' ag ON ag.auth_role_id = rd.role_id
+				JOIN ' . GROUPS_TABLE . ' g ON g.group_id = ag.group_id
+				WHERE ao.auth_option = \'f_read\'
+					AND g.group_name = \'REGISTERED\'
+					AND ag.forum_id = ' . $forum_id . '
+					AND rd.auth_setting = 1';
+		$result = $this->db->sql_query_limit($sql, 1);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return (bool) $row;
 	}
 }
