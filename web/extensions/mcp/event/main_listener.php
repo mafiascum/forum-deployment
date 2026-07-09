@@ -21,10 +21,13 @@ class main_listener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
+			'core.user_setup' => 'load_language_on_setup',
 			'core.report_post_auth' => 'report_post_auth',
 			'core.mcp_reports_report_details_query_after' => 'mcp_reports_report_details_query_after',
 			'core.mcp_report_template_data' => 'mcp_report_template_data',
 			'core.mcp_reports_modify_post_row' => 'mcp_reports_modify_post_row',
+			'core.submit_post_modify_sql_data' => 'snapshot_pre_edit',
+			'core.mcp_post_template_data' => 'mcp_post_add_edit_history',
         );
     }
 
@@ -32,12 +35,25 @@ class main_listener implements EventSubscriberInterface
      * Constructor
      *
      */
-    public function __construct(\phpbb\template\template $template, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\auth\auth $auth)
+    public function __construct(\phpbb\template\template $template, \phpbb\db\driver\driver_interface $db, \phpbb\user $user, \phpbb\auth\auth $auth, $table_prefix, $root_path, $php_ext)
     {
 		$this->template = $template;
 		$this->db = $db;
 		$this->user = $user;
 		$this->auth = $auth;
+		$this->table_prefix = $table_prefix;
+		$this->phpbb_root_path = $root_path;
+		$this->php_ext = $php_ext;
+    }
+
+    public function load_language_on_setup($event)
+    {
+        $lang_set_ext = $event['lang_set_ext'];
+        $lang_set_ext[] = array(
+            'ext_name' => 'mafiascum/mcp',
+            'lang_set' => 'common',
+        );
+        $event['lang_set_ext'] = $lang_set_ext;
     }
 
 	function mcp_reports_modify_post_row($event) {
@@ -95,4 +111,115 @@ class main_listener implements EventSubscriberInterface
 
 		$this->db->sql_freeresult($result);
    }
+
+	/**
+	 * Snapshot the pre-edit state of a post into the edit history table.
+	 * Fires just before phpBB runs the UPDATE on the posts row, so the DB
+	 * still holds the previous subject/text/bbcode fields.
+	 */
+	public function snapshot_pre_edit($event) {
+		$post_mode = $event['post_mode'];
+		if (!in_array($post_mode, ['edit', 'edit_topic', 'edit_first_post', 'edit_last_post'], true)) {
+			return;
+		}
+
+		$data = $event['data'];
+		$post_id = isset($data['post_id']) ? (int) $data['post_id'] : 0;
+		if (!$post_id) {
+			return;
+		}
+
+		$sql = 'SELECT post_subject, post_text, bbcode_uid, bbcode_bitfield,
+					   enable_bbcode, enable_smilies, enable_magic_url
+				FROM ' . POSTS_TABLE . '
+				WHERE post_id = ' . $post_id;
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if (!$row) {
+			return;
+		}
+
+		// Skip if neither text nor subject actually changed.
+		$new_text = isset($data['message']) ? $data['message'] : $row['post_text'];
+		$new_subject = isset($data['post_subject']) ? $data['post_subject'] : $row['post_subject'];
+		if ($new_text === $row['post_text'] && $new_subject === $row['post_subject']) {
+			return;
+		}
+
+		$insert = [
+			'post_id'                 => $post_id,
+			'editor_user_id'          => (int) $this->user->data['user_id'],
+			'edit_time'               => time(),
+			'edit_reason'             => isset($data['post_edit_reason']) ? (string) $data['post_edit_reason'] : '',
+			'post_subject_before'     => (string) $row['post_subject'],
+			'post_text_before'        => (string) $row['post_text'],
+			'bbcode_uid_before'       => (string) $row['bbcode_uid'],
+			'bbcode_bitfield_before'  => (string) $row['bbcode_bitfield'],
+			'enable_bbcode_before'    => (int) $row['enable_bbcode'],
+			'enable_smilies_before'   => (int) $row['enable_smilies'],
+			'enable_magic_url_before' => (int) $row['enable_magic_url'],
+		];
+
+		$this->db->sql_query('INSERT INTO ' . $this->table_prefix . 'post_edit_history ' . $this->db->sql_build_array('INSERT', $insert));
+	}
+
+	/**
+	 * Render prior versions of the post on mcp_post_details for users with
+	 * moderator edit rights on the forum, or global admins.
+	 */
+	public function mcp_post_add_edit_history($event) {
+		$post_info = $event['post_info'];
+		if (empty($post_info['post_id'])) {
+			return;
+		}
+
+		$post_id = (int) $post_info['post_id'];
+		$forum_id = (int) $post_info['forum_id'];
+
+		if (!$this->auth->acl_get('m_edit', $forum_id) && !$this->auth->acl_get('a_')) {
+			return;
+		}
+
+		if (!function_exists('generate_text_for_display')) {
+			include_once $this->phpbb_root_path . 'includes/functions_content.' . $this->php_ext;
+		}
+
+		$sql = 'SELECT h.*, u.username, u.user_colour
+				FROM ' . $this->table_prefix . 'post_edit_history h
+				LEFT JOIN ' . USERS_TABLE . ' u ON u.user_id = h.editor_user_id
+				WHERE h.post_id = ' . $post_id . '
+				ORDER BY h.edit_time DESC';
+		$result = $this->db->sql_query($sql);
+
+		$count = 0;
+		while ($row = $this->db->sql_fetchrow($result)) {
+			$flags = ($row['enable_bbcode_before'] ? OPTION_FLAG_BBCODE : 0)
+				| ($row['enable_smilies_before'] ? OPTION_FLAG_SMILIES : 0)
+				| ($row['enable_magic_url_before'] ? OPTION_FLAG_LINKS : 0);
+
+			$preview = generate_text_for_display(
+				$row['post_text_before'],
+				$row['bbcode_uid_before'],
+				$row['bbcode_bitfield_before'],
+				$flags
+			);
+
+			$this->template->assign_block_vars('edithistory', [
+				'EDITOR'           => get_username_string('full', (int) $row['editor_user_id'], $row['username'] ?: '', $row['user_colour'] ?: ''),
+				'EDIT_TIME'        => $this->user->format_date($row['edit_time']),
+				'EDIT_REASON'      => $row['edit_reason'],
+				'PREVIOUS_SUBJECT' => $row['post_subject_before'],
+				'PREVIOUS_TEXT'    => $preview,
+			]);
+			$count++;
+		}
+		$this->db->sql_freeresult($result);
+
+		$this->template->assign_vars([
+			'S_HAS_EDIT_HISTORY' => $count > 0,
+			'EDIT_HISTORY_COUNT' => $count,
+		]);
+	}
 }

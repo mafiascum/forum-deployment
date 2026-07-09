@@ -1,0 +1,33 @@
+<!-- IF S_HAS_EDIT_HISTORY -->
+<hr />
+<div class="panel" id="edit_history">
+	<div class="inner">
+		<details class="edit-history-details">
+			<summary class="edit-history-summary">
+				<i class="icon fa-chevron-right fa-fw edit-history-chevron" aria-hidden="true"></i>
+				<i class="icon fa-chevron-down fa-fw edit-history-chevron-open" aria-hidden="true"></i>
+				<strong>{L_EDIT_HISTORY_TITLE}</strong> ({EDIT_HISTORY_COUNT}) &mdash; <span class="edit-history-hint">{L_CLICK_TO_EXPAND}</span>
+			</summary>
+			<!-- BEGIN edithistory -->
+				<div class="postbody">
+					<p class="author"><strong>{L_EDITED_BY}{L_COLON}</strong> {edithistory.EDITOR} &raquo; {edithistory.EDIT_TIME}
+						<!-- IF edithistory.EDIT_REASON --><br /><strong>{L_REASON}{L_COLON}</strong> <em>{edithistory.EDIT_REASON}</em><!-- ENDIF -->
+						<!-- IF edithistory.PREVIOUS_SUBJECT --><br /><strong>{L_SUBJECT}{L_COLON}</strong> {edithistory.PREVIOUS_SUBJECT}<!-- ENDIF -->
+					</p>
+					<div class="content">{edithistory.PREVIOUS_TEXT}</div>
+				</div>
+				<hr class="dashed" />
+			<!-- END edithistory -->
+		</details>
+	</div>
+</div>
+<style>
+	.edit-history-details > summary { list-style: none; cursor: pointer; padding: 6px 0; user-select: none; }
+	.edit-history-details > summary::-webkit-details-marker { display: none; }
+	.edit-history-details > summary:hover .edit-history-hint { text-decoration: underline; }
+	.edit-history-details .edit-history-chevron-open { display: none; }
+	.edit-history-details[open] .edit-history-chevron { display: none; }
+	.edit-history-details[open] .edit-history-chevron-open { display: inline-block; }
+	.edit-history-hint { font-size: 0.9em; opacity: 0.75; }
+</style>
+<!-- ENDIF -->
