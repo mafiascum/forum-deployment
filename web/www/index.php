@@ -40,7 +40,7 @@
 				<div id='nav_container'>
 					<a class='nav' href='<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('FORUM_FQDN')) ?>' alt='Play here' title='Play here!'>Forum</a>&bull;
 					<a class='nav' href='<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('WIKI_FQDN')) ?>' alt='Learn here' title='Learn here!'>Wiki</a>&bull;
-					<a class='nav' href='<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('WIKI_FQDN')) ?>/index.php?title=Newbie_Guide' alt='Newbie Guide' title='Newbie Guide'>Info for new players</a>&bull;<!--<br/>
+					<a class='nav' href='<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('WIKI_FQDN')) ?>/index.php?title=Newbie_Guide' alt='Newbie Guide' title='Newbie Guide'>Info for new players</a><!--&bull;<br/>
 					<a class='nav' href='<?php echo(getenv('PHPBB_FORUM_SERVER_PROTOCOL') . getenv('WWW_FQDN')) ?>/howtojoin.svg' target='_blank' alt='Join your first game' title='Join your first game' target='_blank'>How to join your first game</a>-->
 				<div>
 				<div class='social-icons'>
