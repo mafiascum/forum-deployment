@@ -19,6 +19,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'EDIT_HISTORY_TITLE' => 'Edit history',
-	'EDITED_BY'          => 'Edited by',
+	'EDITED_BY'          => 'Content before edit by',
 	'CLICK_TO_EXPAND'    => 'click to expand',
 ));
