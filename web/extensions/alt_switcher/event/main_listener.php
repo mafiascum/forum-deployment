@@ -22,7 +22,6 @@ class main_listener implements EventSubscriberInterface
     {
         return array(
             'core.user_setup'         => 'load_language_on_setup',
-            'core.user_setup_after'   => 'ensure_browser_cookie',
             'core.page_header_after'  => 'inject_template_vars',
         );
     }
@@ -51,20 +50,12 @@ class main_listener implements EventSubscriberInterface
         $event['lang_set_ext'] = $lang_set_ext;
     }
 
-    public function ensure_browser_cookie($event)
-    {
-        if ((int) $this->user->data['user_id'] === ANONYMOUS) {
-            return;
-        }
-        $this->alt_manager->ensure_browser_id();
-    }
-
     public function inject_template_vars($event)
     {
-        $current_user_id = (int) $this->user->data['user_id'];
-        if ($current_user_id === ANONYMOUS) {
+        if (empty($this->user->data['is_registered'])) {
             return;
         }
+        $current_user_id = (int) $this->user->data['user_id'];
 
         $browser_id = $this->alt_manager->get_browser_id();
         $alts = $browser_id === '' ? array() : $this->alt_manager->get_alts($browser_id);
