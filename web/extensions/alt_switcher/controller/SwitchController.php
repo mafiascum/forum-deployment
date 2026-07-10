@@ -51,8 +51,10 @@ class SwitchController
         $this->alt_manager->background_user($browser_id, $current_user_id);
         $this->alt_manager->remove_alt($browser_id, $user_id);
 
+        $viewonline = $this->alt_manager->get_user_viewonline($user_id);
+
         $this->user->session_kill(false);
-        $this->user->session_create($user_id, false, true, true);
+        $this->user->session_create($user_id, false, true, $viewonline);
 
         return new RedirectResponse(append_sid($this->root_path . 'index.' . $this->php_ext));
     }

@@ -5,6 +5,7 @@ namespace mafiascum\alt_switcher\includes;
 class AltSessionManager
 {
     const TABLE = 'alt_switcher_sessions';
+    const BROWSERS_TABLE = 'alt_switcher_browsers';
     const COOKIE_NAME = 'altbrowser';
     const COOKIE_LIFETIME = 31536000;
 
@@ -28,10 +29,49 @@ class AltSessionManager
         return $this->table_prefix . self::TABLE;
     }
 
+    protected function browsers_table()
+    {
+        return $this->table_prefix . self::BROWSERS_TABLE;
+    }
+
+    protected function current_ua_hash()
+    {
+        return hash('sha256', (string) $this->request->header('User-Agent'));
+    }
+
+    protected function current_ip()
+    {
+        return (string) $this->user->ip;
+    }
+
+    protected function binding_matches($browser_id)
+    {
+        if ($browser_id === '') {
+            return false;
+        }
+        $sql = 'SELECT bound_ip, bound_ua_hash
+            FROM ' . $this->browsers_table() . '
+            WHERE browser_id = \'' . $this->db->sql_escape($browser_id) . '\'';
+        $result = $this->db->sql_query($sql);
+        $row = $this->db->sql_fetchrow($result);
+        $this->db->sql_freeresult($result);
+        if (!$row) {
+            return false;
+        }
+        return $row['bound_ip'] === $this->current_ip()
+            && $row['bound_ua_hash'] === $this->current_ua_hash();
+    }
+
     public function get_browser_id()
     {
         $raw = $this->request->variable($this->config['cookie_name'] . '_' . self::COOKIE_NAME, '', false, \phpbb\request\request_interface::COOKIE);
-        return (strlen($raw) === 32 && ctype_xdigit($raw)) ? $raw : '';
+        if (strlen($raw) !== 32 || !ctype_xdigit($raw)) {
+            return '';
+        }
+        if (!$this->binding_matches($raw)) {
+            return '';
+        }
+        return $raw;
     }
 
     public function ensure_browser_id()
@@ -41,6 +81,19 @@ class AltSessionManager
             return $browser_id;
         }
         $browser_id = bin2hex(random_bytes(16));
+
+        $sql = 'DELETE FROM ' . $this->browsers_table() . '
+            WHERE browser_id = \'' . $this->db->sql_escape($browser_id) . '\'';
+        $this->db->sql_query($sql);
+
+        $sql = 'INSERT INTO ' . $this->browsers_table() . ' ' . $this->db->sql_build_array('INSERT', array(
+            'browser_id'    => $browser_id,
+            'bound_ip'      => $this->current_ip(),
+            'bound_ua_hash' => $this->current_ua_hash(),
+            'created_at'    => time(),
+        ));
+        $this->db->sql_query($sql);
+
         $this->user->set_cookie(self::COOKIE_NAME, $browser_id, time() + self::COOKIE_LIFETIME);
         return $browser_id;
     }
@@ -128,34 +181,27 @@ class AltSessionManager
         $this->db->sql_query($sql);
     }
 
-    public function purge_autologin_key($user_id, $autologin_key)
-    {
-        $sql = 'DELETE FROM ' . SESSIONS_KEYS_TABLE . '
-            WHERE user_id = ' . (int) $user_id . '
-            AND key_id = \'' . $this->db->sql_escape(md5($autologin_key)) . '\'';
-        $this->db->sql_query($sql);
-    }
-
     public function wipe_browser($browser_id)
     {
         if ($browser_id === '') {
             return;
         }
-        $alts = $this->get_alts($browser_id);
-        foreach ($alts as $alt) {
-            $this->purge_autologin_key((int) $alt['user_id'], (string) $alt['autologin_key']);
-            $this->kill_sessions_for_user((int) $alt['user_id']);
-        }
-        $sql = 'DELETE FROM ' . $this->table() . '
-            WHERE browser_id = \'' . $this->db->sql_escape($browser_id) . '\'';
-        $this->db->sql_query($sql);
+        $escaped = $this->db->sql_escape($browser_id);
+        $this->db->sql_query('DELETE FROM ' . $this->table() . '
+            WHERE browser_id = \'' . $escaped . '\'');
+        $this->db->sql_query('DELETE FROM ' . $this->browsers_table() . '
+            WHERE browser_id = \'' . $escaped . '\'');
     }
 
-    public function kill_sessions_for_user($user_id)
+    public function get_user_viewonline($user_id)
     {
-        $sql = 'DELETE FROM ' . SESSIONS_TABLE . '
-            WHERE session_user_id = ' . (int) $user_id;
-        $this->db->sql_query($sql);
+        $sql = 'SELECT user_allow_viewonline
+            FROM ' . USERS_TABLE . '
+            WHERE user_id = ' . (int) $user_id;
+        $result = $this->db->sql_query($sql);
+        $row = $this->db->sql_fetchrow($result);
+        $this->db->sql_freeresult($result);
+        return $row ? (bool) $row['user_allow_viewonline'] : true;
     }
 }
 ?>

@@ -37,8 +37,9 @@ class LogoutCurrentController
         $alt = $browser_id === '' ? null : $this->alt_manager->pop_most_recent($browser_id);
 
         if ($alt) {
+            $viewonline = $this->alt_manager->get_user_viewonline((int) $alt['user_id']);
             $this->user->session_kill(false);
-            $this->user->session_create((int) $alt['user_id'], false, true, true);
+            $this->user->session_create((int) $alt['user_id'], false, true, $viewonline);
         } else {
             $this->user->session_kill(true);
         }
