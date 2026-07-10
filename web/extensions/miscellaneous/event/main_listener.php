@@ -46,6 +46,8 @@ class main_listener implements EventSubscriberInterface
 
     protected $current_search_id = null;
 
+    protected $hidden_cache = array();
+
     static public function getSubscribedEvents()
     {
         return array(
@@ -56,7 +58,10 @@ class main_listener implements EventSubscriberInterface
 			'core.viewtopic_modify_post_row' => 'viewtopic_modify_post_row',
 			'core.memberlist_prepare_profile_data' => 'memberlist_prepare_profile_data',
 			'core.search_modify_param_after'   => 'capture_search_id',
-			'core.search_backend_search_after' => 'filter_egosearch_hidden_topics',
+			'core.search_backend_search_after' => 'filter_search_hidden_topics',
+			'core.viewforum_get_topic_ids_data' => 'filter_viewforum_topic_ids',
+			'core.viewforum_get_announcement_topic_ids_data' => 'filter_viewforum_announcement_ids',
+			'core.feed_base_modify_item_sql' => 'filter_feed_hidden_topics',
 			'core.viewtopic_modify_page_title' => 'viewtopic_assign_hide_vars',
         );
     }
@@ -64,6 +69,22 @@ class main_listener implements EventSubscriberInterface
 	function capture_search_id($event)
 	{
 		$this->current_search_id = (string) $event['search_id'];
+	}
+
+	protected function get_hidden_cached($scope)
+	{
+		if (empty($this->user->data['user_id']) || $this->user->data['user_id'] == ANONYMOUS)
+		{
+			return array();
+		}
+		if (!isset($this->hidden_cache[$scope]))
+		{
+			$this->hidden_cache[$scope] = $this->hidden_topics->get_hidden_topic_ids(
+				(int) $this->user->data['user_id'],
+				$scope
+			);
+		}
+		return $this->hidden_cache[$scope];
 	}
     public function __construct( \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db,  \phpbb\user $user, \phpbb\user_loader $user_loader, \phpbb\language\language $language, \phpbb\auth\auth $auth, \phpbb\template\template $template, \mafiascum\miscellaneous\hidden\manager $hidden_topics, \phpbb\controller\helper $controller_helper)
     {
@@ -78,17 +99,21 @@ class main_listener implements EventSubscriberInterface
 		$this->controller_helper = $controller_helper;
     }
 
-	function filter_egosearch_hidden_topics($event)
+	function filter_search_hidden_topics($event)
 	{
-		if ($this->current_search_id !== 'egosearch' || empty($this->user->data['user_id']) || $this->user->data['user_id'] == ANONYMOUS)
+		if (empty($this->user->data['user_id']) || $this->user->data['user_id'] == ANONYMOUS)
 		{
 			return;
 		}
 
-		$hidden = $this->hidden_topics->get_hidden_topic_ids(
-			(int) $this->user->data['user_id'],
-			\mafiascum\miscellaneous\hidden\manager::SCOPE_EGOSEARCH
-		);
+		$hidden = $this->get_hidden_cached(\mafiascum\miscellaneous\hidden\manager::SCOPE_EVERYWHERE);
+		if ($this->current_search_id === 'egosearch')
+		{
+			$hidden = array_unique(array_merge(
+				$hidden,
+				$this->get_hidden_cached(\mafiascum\miscellaneous\hidden\manager::SCOPE_EGOSEARCH)
+			));
+		}
 		if (empty($hidden))
 		{
 			return;
@@ -146,6 +171,59 @@ class main_listener implements EventSubscriberInterface
 		$event['total_match_count'] = max(0, $total - $removed);
 	}
 
+	function filter_viewforum_topic_ids($event)
+	{
+		$hidden = $this->get_hidden_cached(\mafiascum\miscellaneous\hidden\manager::SCOPE_EVERYWHERE);
+		if (empty($hidden))
+		{
+			return;
+		}
+		$sql_ary = $event['sql_ary'];
+		$sql_ary['WHERE'] .= ' AND ' . $this->db->sql_in_set('t.topic_id', array_map('intval', $hidden), true);
+		$event['sql_ary'] = $sql_ary;
+	}
+
+	function filter_viewforum_announcement_ids($event)
+	{
+		$hidden = $this->get_hidden_cached(\mafiascum\miscellaneous\hidden\manager::SCOPE_EVERYWHERE);
+		if (empty($hidden))
+		{
+			return;
+		}
+		$sql_ary = $event['sql_ary'];
+		$sql_ary['WHERE'] = '(' . $sql_ary['WHERE'] . ') AND ' . $this->db->sql_in_set('t.topic_id', array_map('intval', $hidden), true);
+		$event['sql_ary'] = $sql_ary;
+	}
+
+	function filter_feed_hidden_topics($event)
+	{
+		$hidden = $this->get_hidden_cached(\mafiascum\miscellaneous\hidden\manager::SCOPE_EVERYWHERE);
+		if (empty($hidden))
+		{
+			return;
+		}
+		$sql_ary = $event['sql_ary'];
+		$from = isset($sql_ary['FROM']) ? $sql_ary['FROM'] : array();
+		$alias = null;
+		if (isset($from[POSTS_TABLE]))
+		{
+			$alias = $from[POSTS_TABLE];
+		}
+		else if (isset($from[TOPICS_TABLE]))
+		{
+			$alias = $from[TOPICS_TABLE];
+		}
+		if ($alias === null)
+		{
+			return;
+		}
+		$col = $alias . '.topic_id';
+		$where = isset($sql_ary['WHERE']) ? $sql_ary['WHERE'] : '';
+		$exclusion = $this->db->sql_in_set($col, array_map('intval', $hidden), true);
+		$sql_ary['WHERE'] = $where === '' ? $exclusion : '(' . $where . ') AND ' . $exclusion;
+		$event['sql_ary'] = $sql_ary;
+	}
+
 	function viewtopic_assign_hide_vars($event)
 	{
 		if (empty($this->user->data['user_id']) || $this->user->data['user_id'] == ANONYMOUS)
@@ -160,22 +238,22 @@ class main_listener implements EventSubscriberInterface
 			return;
 		}
 
-		$scope = \mafiascum\miscellaneous\hidden\manager::SCOPE_EGOSEARCH;
-		$is_hidden = $this->hidden_topics->is_hidden(
-			(int) $this->user->data['user_id'],
-			$topic_id,
-			$scope
-		);
+		$user_id = (int) $this->user->data['user_id'];
+		$hash = generate_link_hash('maf_hide_topic');
+
+		$egosearch = \mafiascum\miscellaneous\hidden\manager::SCOPE_EGOSEARCH;
+		$everywhere = \mafiascum\miscellaneous\hidden\manager::SCOPE_EVERYWHERE;
 
 		$this->template->assign_vars(array(
-			'MAF_TOPIC_EGOSEARCH_HIDDEN' => $is_hidden,
+			'MAF_TOPIC_EGOSEARCH_HIDDEN' => $this->hidden_topics->is_hidden($user_id, $topic_id, $egosearch),
 			'U_MAF_TOPIC_TOGGLE_EGOSEARCH_HIDE' => $this->controller_helper->route(
 				'mafiascum_miscellaneous_hidden_topics_toggle',
-				array(
-					'topic_id' => $topic_id,
-					'scope' => $scope,
-					'hash' => generate_link_hash('maf_hide_topic'),
-				)
+				array('topic_id' => $topic_id, 'scope' => $egosearch, 'hash' => $hash)
+			),
+			'MAF_TOPIC_EVERYWHERE_HIDDEN' => $this->hidden_topics->is_hidden($user_id, $topic_id, $everywhere),
+			'U_MAF_TOPIC_TOGGLE_EVERYWHERE_HIDE' => $this->controller_helper->route(
+				'mafiascum_miscellaneous_hidden_topics_toggle',
+				array('topic_id' => $topic_id, 'scope' => $everywhere, 'hash' => $hash)
 			),
 		));
 	}

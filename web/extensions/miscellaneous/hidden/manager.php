@@ -5,10 +5,11 @@ namespace mafiascum\miscellaneous\hidden;
 class manager
 {
 	const SCOPE_EGOSEARCH = 'egosearch';
+	const SCOPE_EVERYWHERE = 'everywhere';
 
 	static public function valid_scopes()
 	{
-		return array(self::SCOPE_EGOSEARCH);
+		return array(self::SCOPE_EGOSEARCH, self::SCOPE_EVERYWHERE);
 	}
 
 	protected $db;

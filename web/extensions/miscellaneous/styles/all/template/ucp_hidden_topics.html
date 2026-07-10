@@ -13,6 +13,7 @@
 			<thead>
 				<tr>
 					<th>{L_MAF_UCP_HIDDEN_COL_TOPIC}</th>
+					<th>{L_MAF_UCP_HIDDEN_COL_SCOPE}</th>
 					<th>{L_MAF_UCP_HIDDEN_COL_UNHIDE}</th>
 				</tr>
 			</thead>
@@ -20,7 +21,8 @@
 			<!-- BEGIN hidden_topics -->
 				<tr>
 					<td><a href="{hidden_topics.U_VIEWTOPIC}">{hidden_topics.TOPIC_TITLE}</a></td>
-					<td><input type="checkbox" name="unhide_ids[]" value="{hidden_topics.TOPIC_ID}" /></td>
+					<td>{hidden_topics.SCOPE_LABEL}</td>
+					<td><input type="checkbox" name="unhide_keys[]" value="{hidden_topics.UNHIDE_KEY}" /></td>
 				</tr>
 			<!-- END hidden_topics -->
 			</tbody>
