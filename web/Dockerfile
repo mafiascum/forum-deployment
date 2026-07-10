@@ -27,6 +27,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
+    libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -42,6 +43,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Install APCu from PECL
 RUN pecl install apcu \
     && docker-php-ext-enable apcu
+
+# Install Imagick from PECL (used for animated GIF avatar resizing)
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # Configure opcache
 RUN { \

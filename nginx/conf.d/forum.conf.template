@@ -24,6 +24,13 @@ server {
         proxy_pass http://web-cluster;
     }
 
+    # Avatar uploads (and other UCP form POSTs) — phpBB enforces its own
+    # per-field size caps; we just need to let the raw request past nginx.
+    location = /ucp.php {
+        client_max_body_size 12M;
+        proxy_pass http://web-cluster;
+    }
+
     # --- Dynamic pages: WITH rate limiting ---
     location ~ ^/(viewtopic\.php|viewforum\.php|search\.php|ucp\.php|mcp\.php|posting\.php) {
         proxy_pass http://web-cluster;
