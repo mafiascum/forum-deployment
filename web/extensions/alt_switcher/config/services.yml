@@ -1,0 +1,64 @@
+services:
+  mafiascum.alt_switcher.alt_session_manager:
+    class: mafiascum\alt_switcher\includes\AltSessionManager
+    arguments:
+      - '@dbal.conn'
+      - '@config'
+      - '@user'
+      - '@request'
+      - '%core.table_prefix%'
+
+  mafiascum.alt_switcher.listener:
+    class: mafiascum\alt_switcher\event\main_listener
+    arguments:
+      - '@config'
+      - '@template'
+      - '@request'
+      - '@user'
+      - '@user_loader'
+      - '@language'
+      - '@controller.helper'
+      - '@mafiascum.alt_switcher.alt_session_manager'
+      - '%core.root_path%'
+      - '%core.php_ext%'
+    tags:
+      - { name: event.listener }
+
+  mafiascum.alt_switcher.add_account_controller:
+    class: mafiascum\alt_switcher\controller\AddAccountController
+    arguments:
+      - '@user'
+      - '@request'
+      - '@language'
+      - '@controller.helper'
+      - '@mafiascum.alt_switcher.alt_session_manager'
+      - '%core.root_path%'
+      - '%core.php_ext%'
+
+  mafiascum.alt_switcher.switch_controller:
+    class: mafiascum\alt_switcher\controller\SwitchController
+    arguments:
+      - '@user'
+      - '@request'
+      - '@language'
+      - '@mafiascum.alt_switcher.alt_session_manager'
+      - '%core.root_path%'
+      - '%core.php_ext%'
+
+  mafiascum.alt_switcher.logout_current_controller:
+    class: mafiascum\alt_switcher\controller\LogoutCurrentController
+    arguments:
+      - '@user'
+      - '@request'
+      - '@mafiascum.alt_switcher.alt_session_manager'
+      - '%core.root_path%'
+      - '%core.php_ext%'
+
+  mafiascum.alt_switcher.logout_all_controller:
+    class: mafiascum\alt_switcher\controller\LogoutAllController
+    arguments:
+      - '@user'
+      - '@request'
+      - '@mafiascum.alt_switcher.alt_session_manager'
+      - '%core.root_path%'
+      - '%core.php_ext%'

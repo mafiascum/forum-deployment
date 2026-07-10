@@ -1,0 +1,17 @@
+alt_switcher_add_route:
+    path: /alt-switcher/add
+    defaults: { _controller: mafiascum.alt_switcher.add_account_controller:handle }
+
+alt_switcher_switch_route:
+    path: /alt-switcher/switch/{user_id}
+    defaults: { _controller: mafiascum.alt_switcher.switch_controller:handle }
+    requirements:
+        user_id: \d+
+
+alt_switcher_logout_current_route:
+    path: /alt-switcher/logout-current
+    defaults: { _controller: mafiascum.alt_switcher.logout_current_controller:handle }
+
+alt_switcher_logout_all_route:
+    path: /alt-switcher/logout-all
+    defaults: { _controller: mafiascum.alt_switcher.logout_all_controller:handle }

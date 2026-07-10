@@ -1,0 +1,28 @@
+{% if S_ALT_SWITCHER_ENABLED %}
+  <li class="separator"></li>
+  <li class="alt-switcher-header" role="presentation">
+    <span class="alt-switcher-heading">{{ lang('ALT_SWITCHER_SWITCH_ACCOUNT') }}</span>
+  </li>
+  {% for alt in alt_accounts %}
+    <li class="alt-switcher-account">
+      <a href="{alt.SWITCH_URL}" role="menuitem">
+        {% if alt.AVATAR %}<span class="alt-switcher-avatar">{alt.AVATAR}</span>{% endif %}
+        <span class="alt-switcher-username">{alt.USERNAME}</span>
+      </a>
+    </li>
+  {% endfor %}
+  <li class="alt-switcher-add">
+    <a href="{{ ALT_SWITCHER_URL_ADD }}" role="menuitem">
+      <i class="icon fa-plus fa-fw" aria-hidden="true"></i><span>{{ lang('ALT_SWITCHER_ADD_ACCOUNT') }}</span>
+    </a>
+  </li>
+  {% if S_ALT_SWITCHER_HAS_ALTS %}
+    <li class="alt-switcher-logout-all">
+      <a href="{{ ALT_SWITCHER_URL_LOGOUT_ALL }}" role="menuitem">
+        <i class="icon fa-sign-out fa-fw" aria-hidden="true"></i><span>{{ lang('ALT_SWITCHER_LOG_ALL_OUT') }}</span>
+      </a>
+    </li>
+  {% endif %}
+{% endif %}
+
+{% INCLUDECSS './ext/mafiascum/alt_switcher/styles/all/theme/alt_switcher.css' %}
