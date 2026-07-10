@@ -44,7 +44,6 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN pecl install apcu \
     && docker-php-ext-enable apcu
 
-# Install Imagick from PECL (used for animated GIF avatar resizing)
 RUN pecl install imagick \
     && docker-php-ext-enable imagick
 

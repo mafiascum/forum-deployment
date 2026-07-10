@@ -1,0 +1,7 @@
+mafiascum_miscellaneous_hidden_topics_toggle:
+    path: /hidden-topics/{scope}/{topic_id}/toggle
+    defaults: { _controller: mafiascum.miscellaneous.hidden_topics_controller:toggle }
+    methods: [GET, POST]
+    requirements:
+        topic_id: '\d+'
+        scope: '[a-z_]+'

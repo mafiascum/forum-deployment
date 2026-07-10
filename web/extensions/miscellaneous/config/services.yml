@@ -1,4 +1,20 @@
 services:
+    mafiascum.miscellaneous.hidden_topics_manager:
+        class: mafiascum\miscellaneous\hidden\manager
+        arguments:
+            - '@dbal.conn'
+            - '%mafiascum.miscellaneous.tables.hidden_topics%'
+
+    mafiascum.miscellaneous.hidden_topics_controller:
+        class: mafiascum\miscellaneous\controller\hidden_topics
+        arguments:
+            - '@mafiascum.miscellaneous.hidden_topics_manager'
+            - '@request'
+            - '@user'
+            - '@controller.helper'
+            - '@dbal.conn'
+            - '@language'
+
     mafiascum.miscellaneous.listener:
         class: mafiascum\miscellaneous\event\main_listener
         arguments:
@@ -9,5 +25,10 @@ services:
             - '@language'
             - '@auth'
             - '@template'
+            - '@mafiascum.miscellaneous.hidden_topics_manager'
+            - '@controller.helper'
         tags:
             - { name: event.listener }
+
+parameters:
+    mafiascum.miscellaneous.tables.hidden_topics: '%core.table_prefix%maf_hidden_topics'

@@ -1,0 +1,41 @@
+{% INCLUDE 'ucp_header.html' %}
+
+<form id="ucp" method="post" action="{U_ACTION}">
+
+<h2>{L_MAF_UCP_HIDDEN_TOPICS}</h2>
+
+<div class="panel">
+	<div class="inner">
+	<fieldset>
+	<!-- IF S_MAF_HAS_HIDDEN -->
+		<p>{L_MAF_UCP_HIDDEN_EXPLAIN}</p>
+		<table class="table1">
+			<thead>
+				<tr>
+					<th>{L_MAF_UCP_HIDDEN_COL_TOPIC}</th>
+					<th>{L_MAF_UCP_HIDDEN_COL_UNHIDE}</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!-- BEGIN hidden_topics -->
+				<tr>
+					<td><a href="{hidden_topics.U_VIEWTOPIC}">{hidden_topics.TOPIC_TITLE}</a></td>
+					<td><input type="checkbox" name="unhide_ids[]" value="{hidden_topics.TOPIC_ID}" /></td>
+				</tr>
+			<!-- END hidden_topics -->
+			</tbody>
+		</table>
+		<fieldset class="submit-buttons">
+			<input type="submit" name="unhide" value="{L_MAF_UCP_UNHIDE_SELECTED}" class="button1" />
+		</fieldset>
+	<!-- ELSE -->
+		<p>{L_MAF_UCP_NO_HIDDEN}</p>
+	<!-- ENDIF -->
+	{S_FORM_TOKEN}
+	</fieldset>
+	</div>
+</div>
+
+</form>
+
+{% INCLUDE 'ucp_footer.html' %}

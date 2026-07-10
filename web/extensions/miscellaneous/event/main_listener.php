@@ -39,7 +39,13 @@ class main_listener implements EventSubscriberInterface
 
     /* @var \phpbb\template\template */
     protected $template;
-	
+
+    protected $hidden_topics;
+
+    protected $controller_helper;
+
+    protected $current_search_id = null;
+
     static public function getSubscribedEvents()
     {
         return array(
@@ -48,10 +54,18 @@ class main_listener implements EventSubscriberInterface
 			'core.index_modify_birthdays_sql' => 'limit_birthdays',
 			'core.viewtopic_cache_user_data' => 'viewtopic_cache_user_data',
 			'core.viewtopic_modify_post_row' => 'viewtopic_modify_post_row',
-			'core.memberlist_prepare_profile_data' => 'memberlist_prepare_profile_data'
+			'core.memberlist_prepare_profile_data' => 'memberlist_prepare_profile_data',
+			'core.search_modify_param_after'   => 'capture_search_id',
+			'core.search_backend_search_after' => 'filter_egosearch_hidden_topics',
+			'core.viewtopic_modify_page_title' => 'viewtopic_assign_hide_vars',
         );
     }
-    public function __construct( \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db,  \phpbb\user $user, \phpbb\user_loader $user_loader, \phpbb\language\language $language, \phpbb\auth\auth $auth, \phpbb\template\template $template)
+
+	function capture_search_id($event)
+	{
+		$this->current_search_id = (string) $event['search_id'];
+	}
+    public function __construct( \phpbb\request\request $request, \phpbb\db\driver\driver_interface $db,  \phpbb\user $user, \phpbb\user_loader $user_loader, \phpbb\language\language $language, \phpbb\auth\auth $auth, \phpbb\template\template $template, \mafiascum\miscellaneous\hidden\manager $hidden_topics, \phpbb\controller\helper $controller_helper)
     {
         $this->request = $request;
         $this->db = $db;
@@ -60,7 +74,111 @@ class main_listener implements EventSubscriberInterface
         $this->language = $language;
 		$this->auth = $auth;
 		$this->template = $template;
+		$this->hidden_topics = $hidden_topics;
+		$this->controller_helper = $controller_helper;
     }
+
+	function filter_egosearch_hidden_topics($event)
+	{
+		if ($this->current_search_id !== 'egosearch' || empty($this->user->data['user_id']) || $this->user->data['user_id'] == ANONYMOUS)
+		{
+			return;
+		}
+
+		$hidden = $this->hidden_topics->get_hidden_topic_ids(
+			(int) $this->user->data['user_id'],
+			\mafiascum\miscellaneous\hidden\manager::SCOPE_EGOSEARCH
+		);
+		if (empty($hidden))
+		{
+			return;
+		}
+
+		$id_ary = $event['id_ary'];
+		if (empty($id_ary))
+		{
+			return;
+		}
+
+		$show_results = $event['show_results'];
+		$total = (int) $event['total_match_count'];
+
+		if ($show_results === 'topics')
+		{
+			$hidden_flip = array_flip($hidden);
+			$filtered = array();
+			foreach ($id_ary as $tid)
+			{
+				if (!isset($hidden_flip[(int) $tid]))
+				{
+					$filtered[] = $tid;
+				}
+			}
+			$removed = count($id_ary) - count($filtered);
+			$event['id_ary'] = $filtered;
+			$event['total_match_count'] = max(0, $total - $removed);
+			return;
+		}
+
+		$sql = 'SELECT post_id, topic_id FROM ' . POSTS_TABLE . '
+			WHERE ' . $this->db->sql_in_set('post_id', array_map('intval', $id_ary));
+		$result = $this->db->sql_query($sql);
+		$post_topic = array();
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$post_topic[(int) $row['post_id']] = (int) $row['topic_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		$hidden_flip = array_flip($hidden);
+		$filtered = array();
+		foreach ($id_ary as $pid)
+		{
+			$pid_int = (int) $pid;
+			$tid = isset($post_topic[$pid_int]) ? $post_topic[$pid_int] : null;
+			if ($tid === null || !isset($hidden_flip[$tid]))
+			{
+				$filtered[] = $pid;
+			}
+		}
+		$removed = count($id_ary) - count($filtered);
+		$event['id_ary'] = $filtered;
+		$event['total_match_count'] = max(0, $total - $removed);
+	}
+
+	function viewtopic_assign_hide_vars($event)
+	{
+		if (empty($this->user->data['user_id']) || $this->user->data['user_id'] == ANONYMOUS)
+		{
+			return;
+		}
+
+		$topic_data = $event['topic_data'];
+		$topic_id = isset($topic_data['topic_id']) ? (int) $topic_data['topic_id'] : 0;
+		if ($topic_id <= 0)
+		{
+			return;
+		}
+
+		$scope = \mafiascum\miscellaneous\hidden\manager::SCOPE_EGOSEARCH;
+		$is_hidden = $this->hidden_topics->is_hidden(
+			(int) $this->user->data['user_id'],
+			$topic_id,
+			$scope
+		);
+
+		$this->template->assign_vars(array(
+			'MAF_TOPIC_EGOSEARCH_HIDDEN' => $is_hidden,
+			'U_MAF_TOPIC_TOGGLE_EGOSEARCH_HIDE' => $this->controller_helper->route(
+				'mafiascum_miscellaneous_hidden_topics_toggle',
+				array(
+					'topic_id' => $topic_id,
+					'scope' => $scope,
+					'hash' => generate_link_hash('maf_hide_topic'),
+				)
+			),
+		));
+	}
 	function memberlist_prepare_profile_data($event) {
 		global $phpEx;
 

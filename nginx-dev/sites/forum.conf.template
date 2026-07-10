@@ -16,8 +16,6 @@ server {
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-    # Avatar uploads (and other UCP form POSTs) — phpBB enforces its own
-    # per-field size caps; we just need to let the raw request past nginx.
     location = /ucp.php {
         client_max_body_size 12M;
         proxy_pass http://web-cluster;
