@@ -1,5 +1,5 @@
 {% set flex_justify = S_VIEWTOPIC or S_VIEWFORUM or SEARCH_TOPIC or S_SEARCH_ACTION ? 'justify-between' : 'justify-end' %}
-<div class="action-bar actions-jump{% if S_VIEWTOPIC %} topic-bottom-controls{% endif %} flex flex-wrap gap-2 items-center my-4 {{ flex_justify }}">
+<div class="action-bar actions-jump{% if S_VIEWTOPIC %} topic-bottom-controls{% endif %} flex flex-wrap gap-2 items-center my-4 {{ flex_justify }}"{% if S_VIEWTOPIC %} style="width:100%;max-width:68rem;margin-left:auto;margin-right:auto"{% endif %}>
 		<!-- IF S_VIEWTOPIC -->
 	<p class="jumpbox-return">
 		<a href="{U_VIEW_FORUM}" class="relative flex overflow-hidden transition-all duration-300 card-sm" accesskey="r">
