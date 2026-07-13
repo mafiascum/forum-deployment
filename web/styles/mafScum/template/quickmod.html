@@ -1,0 +1,19 @@
+<div id="quickmod" class="quickmod topic-tools zn-dropdown relative flex shrink-0 items-center">
+	<button type="button" class="zn-dropdown-toggle relative flex shrink-0 justify-center overflow-hidden transition-all duration-300 card-sm link" title="{L_QUICK_MOD}">
+		<i class="iconify p-px" data-mode="style" data-icon="ph:gavel" data-width="18" data-height="18" aria-hidden="true"></i>
+		<span class="sr-only">{L_QUICK_MOD}</span>
+	</button>
+	<div class="zn-dropdown-menu dropdown dropdown-start dropdown-bottom md:w-56">
+		<ul class="dropdown-content text-sm">
+			<!-- BEGIN quickmod -->
+				<!-- DEFINE $QUICKMOD_AJAX = (quickmod.VALUE in ['lock', 'unlock', 'delete_topic', 'restore_topic', 'make_normal', 'make_sticky', 'make_announce', 'make_global']) -->
+				<li>
+					<a href="{quickmod.LINK}" class="relative flex min-w-0 overflow-hidden transition-all duration-300 dropdown-item gap-2"<!-- IF $QUICKMOD_AJAX --> data-ajax="true" data-refresh="true"<!-- ENDIF -->>
+						<i class="iconify shrink-0" data-mode="style" data-icon="<!-- IF quickmod.VALUE in ['lock', 'unlock'] -->ph:lock<!-- ELSEIF quickmod.VALUE in ['delete_topic', 'restore_topic'] -->ph:trash<!-- ELSEIF quickmod.VALUE in ['make_sticky', 'make_announce', 'make_global', 'make_normal'] -->ph:push-pin<!-- ELSE -->ph:gavel<!-- ENDIF -->" data-width="18" data-height="18" aria-hidden="true"></i>
+						<span>{quickmod.TITLE}</span>
+					</a>
+				</li>
+			<!-- END quickmod -->
+		</ul>
+	</div>
+</div>

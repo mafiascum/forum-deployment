@@ -1,0 +1,13 @@
+{% if postrow.S_VLA and not postrow.S_IGNORE_POST %}
+	<div class="profile-vla flex flex-wrap items-center gap-1 rounded-md bg-amber-500/10 px-2 py-1 text-xs text-amber-300">
+		<i class="iconify" data-mode="style" data-icon="ph:airplane-tilt" data-width="14" data-height="14" aria-hidden="true"></i>
+		<span class="font-medium">V/LA</span>
+		<span>until {{ postrow.S_VLA_END }}</span>
+	</div>
+{% endif %}
+{% if postrow.S_BIRTHDAY %}
+	<div class="profile-birthday text-xs">{{ lang('VIEWTOPIC_BIRTHDAY') }}</div>
+{% endif %}
+{% if postrow.S_SCUMDAY %}
+	<div class="profile-scumday text-xs">{{ lang('VIEWTOPIC_SCUMDAY') }}</div>
+{% endif %}

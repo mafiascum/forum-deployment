@@ -38,6 +38,7 @@ class main_listener implements EventSubscriberInterface
 	protected $language;
 
 	protected $post_id_to_post_number_map;
+	protected $iso_original_first_post_id;
 
 	protected $special_marathon_forum_id = 24;
 
@@ -52,7 +53,10 @@ class main_listener implements EventSubscriberInterface
 			'core.ucp_profile_modify_signature_sql_ary' => 'ucp_profile_modify_signature_sql_ary',
 			'core.acp_board_config_edit_add' => 'acp_board_config_edit_add',
 			'core.viewtopic_get_post_data' => 'viewtopic_get_post_data',
-			'core.viewtopic_modify_post_data' => 'viewtopic_modify_post_data',
+			'core.viewtopic_modify_post_data' => array(
+				array('viewtopic_modify_post_data', 100),
+				array('restore_isolation_topic_data', -100),
+			),
 			'core.viewtopic_before_f_read_check' => 'viewtopic_before_f_read_check',
 			'core.viewtopic_highlight_modify' => 'viewtopic_highlight_modify',
 			'core.page_header' => 'page_header_after',
@@ -448,6 +452,22 @@ class main_listener implements EventSubscriberInterface
 		$post_list = $event['post_list'];
 		$topic_id = $event['topic_id'];
 
+		$post_list = array_values(array_filter($post_list, function ($post_id) use ($rowset) {
+			return isset($rowset[$post_id]);
+		}));
+
+		if (!empty($this->get_isolation_author_ids()) && !empty($rowset)) {
+			$topic_data = $event['topic_data'];
+			$first_post_id = $topic_data['topic_first_post_id'];
+
+			if (!isset($rowset[$first_post_id])) {
+				$this->iso_original_first_post_id = $first_post_id;
+				$rowset_post_ids = array_keys($rowset);
+				$topic_data['topic_first_post_id'] = $rowset_post_ids[0];
+				$event['topic_data'] = $topic_data;
+			}
+		}
+
 		if(!is_null($this->post_id_to_post_number_map)) {
 			//Record the actual post number on the post rows
 			foreach($rowset as $i => $row) {
@@ -461,6 +481,17 @@ class main_listener implements EventSubscriberInterface
 		}
 
 		$event['rowset'] = $rowset;
+		$event['post_list'] = $post_list;
+	}
+
+	public function restore_isolation_topic_data($event)
+	{
+		if ($this->iso_original_first_post_id !== null) {
+			$topic_data = $event['topic_data'];
+			$topic_data['topic_first_post_id'] = $this->iso_original_first_post_id;
+			$event['topic_data'] = $topic_data;
+			$this->iso_original_first_post_id = null;
+		}
 	}
 
 	function viewtopic_before_f_read_check($event) {

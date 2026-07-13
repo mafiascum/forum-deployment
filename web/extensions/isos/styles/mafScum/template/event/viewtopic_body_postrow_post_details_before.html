@@ -1,0 +1,12 @@
+<p class="author text-xs text-secondary flex flex-wrap items-center gap-1">
+	<!-- IF S_IS_BOT -->
+		<span class="leading-[0]"><i class="iconify<!-- IF postrow.S_UNREAD_POST --> text-red-700<!-- ENDIF -->" data-mode="style" data-icon="ph:file" data-height="12" data-width="12" aria-hidden="true"></i><span class="sr-only">{postrow.MINI_POST}</span></span>
+	<!-- ELSE -->
+		<a class="unread leading-[0]" href="{postrow.U_MINI_POST}" title="{postrow.MINI_POST}">
+			<i class="iconify<!-- IF postrow.S_UNREAD_POST --> text-red-700<!-- ENDIF -->" data-mode="style" data-icon="ph:file" data-height="12" data-width="12" aria-hidden="true"></i><span class="sr-only">{postrow.MINI_POST}</span>
+		</a>
+	<!-- ENDIF -->
+	<span>{L_POST_NUMBER_LABEL} <a href="{postrow.U_MINI_POST}" class="post-number-link"><span class="post-number-bolded font-semibold">#{postrow.POST_NUMBER}</span></a> (<!-- IF postrow.S_IS_ISOLATION -->{L_ISOLATION_NR_LABEL} <span class="post-number-bolded font-semibold">#{postrow.ISO_POST_NUMBER}</span><!-- ELSE --><a href="{postrow.ISO_URL}" class="iso-link">{L_ISO}</a><!-- ENDIF -->)</span>
+	<span class="opacity-40" aria-hidden="true">&bull;</span>
+	<time class="tabular-nums" datetime="{postrow.POST_DATE_RFC3339}">{postrow.POST_DATE}</time>
+</p>

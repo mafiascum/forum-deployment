@@ -1,0 +1,28 @@
+{% if S_ALT_SWITCHER_ENABLED %}
+	<li class="border-t pt-1 mt-1"></li>
+	<li class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-secondary" role="presentation">
+		<span>{{ lang('ALT_SWITCHER_SWITCH_ACCOUNT') }}</span>
+	</li>
+	{% for alt in alt_accounts %}
+		<li>
+			<a href="{alt.SWITCH_URL}" class="relative flex overflow-hidden transition-all duration-300 dropdown-item gap-2" role="menuitem">
+				{% if alt.AVATAR %}<span class="alt-switcher-avatar leading-[0]">{alt.AVATAR}</span>{% else %}<i class="iconify" data-mode="style" data-icon="ph:user-circle" data-width="20" data-height="20" aria-hidden="true"></i>{% endif %}
+				<span class="alt-switcher-username">{alt.USERNAME}</span>
+			</a>
+		</li>
+	{% endfor %}
+	<li>
+		<a href="{{ ALT_SWITCHER_URL_ADD }}" class="relative flex overflow-hidden transition-all duration-300 dropdown-item gap-2" role="menuitem">
+			<i class="iconify" data-mode="style" data-icon="ph:user-plus" data-width="18" data-height="18" aria-hidden="true"></i><span>{{ lang('ALT_SWITCHER_ADD_ACCOUNT') }}</span>
+		</a>
+	</li>
+	{% if S_ALT_SWITCHER_HAS_ALTS %}
+		<li>
+			<a href="{{ ALT_SWITCHER_URL_LOGOUT_ALL }}" class="relative flex overflow-hidden transition-all duration-300 dropdown-item gap-2" role="menuitem">
+				<i class="iconify" data-mode="style" data-icon="ph:sign-out" data-width="18" data-height="18" aria-hidden="true"></i><span>{{ lang('ALT_SWITCHER_LOG_ALL_OUT') }}</span>
+			</a>
+		</li>
+	{% endif %}
+{% endif %}
+
+{% INCLUDECSS './ext/mafiascum/alt_switcher/styles/all/theme/alt_switcher.css' %}

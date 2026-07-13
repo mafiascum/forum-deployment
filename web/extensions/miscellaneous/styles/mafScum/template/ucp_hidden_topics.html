@@ -1,0 +1,49 @@
+{% INCLUDE 'ucp_header.html' %}
+
+<form id="ucp" method="post" action="{U_ACTION}">
+	<h2 class="leading-6">{L_MAF_UCP_HIDDEN_TOPICS}</h2>
+
+	<div class="card p-0 overflow-hidden mt-4">
+		<div class="p-4 border-b">
+			<p class="text-sm text-secondary">{L_MAF_UCP_HIDDEN_EXPLAIN}</p>
+		</div>
+
+		<!-- IF S_MAF_HAS_HIDDEN -->
+			<div class="overflow-auto">
+				<div class="min-w-full inline-block align-middle">
+					<div class="border border-gray-200 rounded-lg overflow-hidden">
+						<table class="min-w-full">
+							<thead class="bg-slate-50 border-b">
+								<tr>
+									<th scope="col" class="p-3 text-start text-xs font-medium text-secondary uppercase">{L_MAF_UCP_HIDDEN_COL_TOPIC}</th>
+									<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase">{L_MAF_UCP_HIDDEN_COL_SCOPE}</th>
+									<th scope="col" class="p-3 w-20 text-xs font-medium text-secondary uppercase">{L_MAF_UCP_HIDDEN_COL_UNHIDE}</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y">
+							<!-- BEGIN hidden_topics -->
+								<tr class="divide-y">
+									<td class="p-3"><dfn>{L_MAF_UCP_HIDDEN_COL_TOPIC}{L_COLON}</dfn><a class="text-sm font-semibold" href="{hidden_topics.U_VIEWTOPIC}">{hidden_topics.TOPIC_TITLE}</a></td>
+									<td class="p-3"><dfn>{L_MAF_UCP_HIDDEN_COL_SCOPE}{L_COLON}</dfn><div class="text-sm lg:text-center">{hidden_topics.SCOPE_LABEL}</div></td>
+									<td class="p-3 max-lg:flex max-lg:items-center max-lg:gap-2"><dfn class="mb-0">{L_MAF_UCP_HIDDEN_COL_UNHIDE}{L_COLON}</dfn><div class="text-center leading-[0]"><input id="unhide-topic-{hidden_topics.S_ROW_COUNT}" class="checkbox-primary" type="checkbox" name="unhide_keys[]" value="{hidden_topics.UNHIDE_KEY}"><label class="sr-only" for="unhide-topic-{hidden_topics.S_ROW_COUNT}">{L_MAF_UCP_HIDDEN_COL_UNHIDE}</label></div></td>
+								</tr>
+							<!-- END hidden_topics -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="flex justify-end p-4 border-t">
+				<button type="submit" name="unhide" class="btn-primary relative flex overflow-hidden transition-all duration-300 justify-center">{L_MAF_UCP_UNHIDE_SELECTED}</button>
+			</div>
+		<!-- ELSE -->
+			<div class="flex items-center gap-2 text-sm text-secondary p-4" role="status">
+				<i class="iconify" data-mode="style" data-icon="ph:eye" data-width="18" data-height="18" aria-hidden="true"></i>
+				{L_MAF_UCP_NO_HIDDEN}
+			</div>
+		<!-- ENDIF -->
+		{S_FORM_TOKEN}
+	</div>
+</form>
+
+{% INCLUDE 'ucp_footer.html' %}

@@ -336,10 +336,14 @@ class main_listener implements EventSubscriberInterface
 
 		$member = $event['member'];
 		$username = $member['username'];
+		$is_vla = self::is_user_vla($member['user_vla_start'] ?? '', $member['user_vla_till'] ?? '');
 		
+		$vla_end = $member['user_vla_till'] ?? '';
 		$this->template->assign_vars(array(
 			'WIKI_NAME' => $username,
-			'WIKI_URL' => $this->get_user_wiki_url($username)
+			'WIKI_URL' => $this->get_user_wiki_url($username),
+			'S_MEMBER_VLA' => $is_vla,
+			'S_MEMBER_VLA_UNTIL' => $is_vla ? $this->language->lang('VLA_UNTIL', strftime("%A, %B %d %Y", self::get_vla_end_time($vla_end))) : '',
 		));
 	}
 
@@ -434,7 +438,7 @@ class main_listener implements EventSubscriberInterface
         $user_cache_data['vla'] = (bool) $is_vla;
         $user_cache_data['vla_start'] = ($row['user_vla_start'] != '') ? $row['user_vla_start'] : '';
         $user_cache_data['vla_end'] = ($row['user_vla_till'] != '') ? $row['user_vla_till'] : '';
-        $user_cache_data['vla_display'] = $is_vla ? strftime("%A, %B %d %Y") : "";
+		$user_cache_data['vla_display'] = $is_vla ? strftime("%A, %B %d %Y", self::get_vla_end_time($row['user_vla_till'])) : "";
 
         $event['user_cache_data'] = $user_cache_data;
     }

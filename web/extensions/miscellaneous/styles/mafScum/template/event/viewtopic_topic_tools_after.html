@@ -1,0 +1,16 @@
+<!-- IF S_USER_LOGGED_IN and U_MAF_TOPIC_TOGGLE_EVERYWHERE_HIDE -->
+	<li>
+		<a href="{U_MAF_TOPIC_TOGGLE_EVERYWHERE_HIDE}" class="relative flex overflow-hidden transition-all duration-300 dropdown-item gap-2" title="<!-- IF MAF_TOPIC_EVERYWHERE_HIDDEN -->{L_MAF_UNHIDE_EVERYWHERE}<!-- ELSE -->{L_MAF_HIDE_EVERYWHERE}<!-- ENDIF -->">
+			<i class="iconify" data-mode="style" data-icon="<!-- IF MAF_TOPIC_EVERYWHERE_HIDDEN -->ph:eye<!-- ELSE -->ph:eye-slash<!-- ENDIF -->" data-width="18" data-height="18" aria-hidden="true"></i>
+			<span><!-- IF MAF_TOPIC_EVERYWHERE_HIDDEN -->{L_MAF_UNHIDE_EVERYWHERE}<!-- ELSE -->{L_MAF_HIDE_EVERYWHERE}<!-- ENDIF --></span>
+		</a>
+	</li>
+<!-- ENDIF -->
+<!-- IF S_USER_LOGGED_IN and U_MAF_TOPIC_TOGGLE_EGOSEARCH_HIDE -->
+	<li>
+		<a href="{U_MAF_TOPIC_TOGGLE_EGOSEARCH_HIDE}" class="relative flex overflow-hidden transition-all duration-300 dropdown-item gap-2" title="<!-- IF MAF_TOPIC_EGOSEARCH_HIDDEN -->{L_MAF_UNHIDE_FROM_EGOSEARCH}<!-- ELSE -->{L_MAF_HIDE_FROM_EGOSEARCH}<!-- ENDIF -->">
+			<i class="iconify" data-mode="style" data-icon="<!-- IF MAF_TOPIC_EGOSEARCH_HIDDEN -->ph:eye<!-- ELSE -->ph:eye-slash<!-- ENDIF -->" data-width="18" data-height="18" aria-hidden="true"></i>
+			<span><!-- IF MAF_TOPIC_EGOSEARCH_HIDDEN -->{L_MAF_UNHIDE_FROM_EGOSEARCH}<!-- ELSE -->{L_MAF_HIDE_FROM_EGOSEARCH}<!-- ENDIF --></span>
+		</a>
+	</li>
+<!-- ENDIF -->

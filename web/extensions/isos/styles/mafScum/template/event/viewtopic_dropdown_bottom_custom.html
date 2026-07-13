@@ -1,0 +1,30 @@
+{% if U_ACTIVITY_OVERVIEW %}
+	<a href="{{ U_ACTIVITY_OVERVIEW }}" class="card-sm relative flex overflow-hidden transition-all duration-300 link topic-tools" title="{{ lang('ACTIVITY_OVERVIEW') }}">
+		<i class="iconify" data-mode="style" data-icon="ph:chart-bar" data-width="18" data-height="18" aria-hidden="true"></i>
+		<span>{{ lang('ACTIVITY_OVERVIEW') }}</span>
+	</a>
+{% endif %}
+
+<form action="{U_ISO_BASE_URL}" method="get" class="topic-tools zn-dropdown relative">
+	<button type="button" class="zn-dropdown-toggle relative flex overflow-hidden transition-all duration-300 card-sm link" title="{{ lang('ISO_SELECTED') }}">
+		<i class="iconify" data-mode="style" data-icon="ph:users-three" data-width="18" data-height="18" aria-hidden="true"></i>
+		<span>{{ lang('ISO_SELECTED') }}</span>
+		<i class="iconify" data-mode="style" data-icon="ph:caret-down" data-width="14" data-height="14" aria-hidden="true"></i>
+	</button>
+	<div class="zn-dropdown-menu dropdown dropdown-bottom dropdown-start sm:w-52">
+		<div class="p-2">
+			<input type="hidden" name="sid" value="{{ _SID }}">
+			<input type="hidden" name="f" value="{{ FORUM_ID }}">
+			<input type="hidden" name="t" value="{{ TOPIC_ID }}">
+			<div class="max-h-64 overflow-auto">
+				{% for user in TOPIC_USERS %}
+					<label class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-primary/[0.08] cursor-pointer">
+						<input class="checkbox-primary" type="checkbox" name="user_select[]" value="{{ user.ID }}">
+						<span>{{ user.USERNAME }}</span>
+					</label>
+				{% endfor %}
+			</div>
+			<button class="btn-primary relative flex overflow-hidden transition-all duration-300 mt-2 w-full justify-center" type="submit">{{ lang('GO') }}</button>
+		</div>
+	</div>
+</form>

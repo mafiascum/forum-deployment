@@ -1,0 +1,64 @@
+{% include 'overall_header.html' %}
+
+<div class="mb-3">
+	<a href="{{ ROOT_PATH }}viewtopic.php?t={{ TOPIC_ID }}" class="btn-primary-outline relative inline-flex overflow-hidden transition-all duration-300 items-center gap-2">
+		<i class="iconify" data-mode="style" data-icon="ph:arrow-left" data-width="18" data-height="18" aria-hidden="true"></i>
+		<span>{{ lang('LINK_TO_PARENT_TOPIC') }}</span>
+	</a>
+</div>
+
+<section class="card p-0 overflow-hidden">
+	<div class="flex items-center justify-between gap-3 border-b p-4">
+		<div>
+			<h1 class="text-lg font-semibold">{{ lang('ACTIVITY_OVERVIEW') }}</h1>
+			<p class="text-sm text-secondary mt-1">{{ lang('POST_COUNT') }} and recent posting activity by player.</p>
+		</div>
+		<i class="iconify text-secondary" data-mode="style" data-icon="ph:chart-bar" data-width="24" data-height="24" aria-hidden="true"></i>
+	</div>
+
+	<form class="activity-overview" action="{{ ROOT_PATH }}ucp.php?i=pm&amp;mode=compose&amp;action=post" method="post">
+		<div class="overflow-auto">
+			<div class="min-w-full inline-block align-middle">
+				<div class="border border-gray-200 rounded-lg overflow-hidden">
+					<table class="min-w-full">
+						<thead class="bg-slate-50 border-b">
+							<tr>
+								<th scope="col" class="p-3 w-16"><span class="sr-only">{{ lang('PM_SELECTED') }}</span></th>
+								<th scope="col" class="p-3 text-start text-xs font-medium text-secondary uppercase"><a href="{{ U_ACTIVITY_OVERVIEW }}?sort_type=un&amp;sort_order={{ UN_LINK_SORT_ORDER }}">{{ lang('USERNAME') }}</a></th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase"><a href="{{ U_ACTIVITY_OVERVIEW }}?sort_type=fpt&amp;sort_order={{ FPT_LINK_SORT_ORDER }}">{{ lang('FIRST_POST') }}</a></th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase"><a href="{{ U_ACTIVITY_OVERVIEW }}?sort_type=pt&amp;sort_order={{ PT_LINK_SORT_ORDER }}">{{ lang('LAST_POST') }}</a></th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase"><a href="{{ U_ACTIVITY_OVERVIEW }}?sort_type=pt&amp;sort_order={{ PT_LINK_SORT_ORDER }}">{{ lang('ELAPSED_TIME') }}</a></th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase"><a href="{{ U_ACTIVITY_OVERVIEW }}?sort_type=pc&amp;sort_order={{ PC_LINK_SORT_ORDER }}">{{ lang('POST_COUNT') }}</a></th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase">{{ lang('VLA_ENDS') }}</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y">
+							{% for post in POSTS_BY_USER %}
+								<tr class="divide-y">
+									<td class="p-3 max-lg:flex max-lg:items-center max-lg:gap-2">
+										<dfn class="mb-0">{{ lang('PM_SELECTED') }}{{ lang('COLON') }}</dfn>
+										<div class="text-center leading-[0]"><input id="activity-overview-user-{{ post.POSTER_ID }}" class="checkbox-primary" type="checkbox" name="address_list[u][{{ post.POSTER_ID }}]" value="bcc"><label class="sr-only" for="activity-overview-user-{{ post.POSTER_ID }}">{{ lang('PM_SELECTED') }}</label></div>
+									</td>
+									<td class="p-3"><dfn>{{ lang('USERNAME') }}{{ lang('COLON') }}</dfn><div class="text-sm text-nowrap font-semibold">{{ post.USERNAME }}</div></td>
+									<td class="p-3"><dfn>{{ lang('FIRST_POST') }}{{ lang('COLON') }}</dfn><div class="text-sm lg:text-center text-nowrap">{{ post.FIRST_POST_TIME }}</div></td>
+									<td class="p-3"><dfn>{{ lang('LAST_POST') }}{{ lang('COLON') }}</dfn><div class="text-sm lg:text-center text-nowrap">{{ post.LAST_POST_TIME }}</div></td>
+									<td class="p-3"><dfn>{{ lang('ELAPSED_TIME') }}{{ lang('COLON') }}</dfn><div class="text-sm lg:text-center text-nowrap">{{ post.IDLE_TIME }}</div></td>
+									<td class="p-3"><dfn>{{ lang('POST_COUNT') }}{{ lang('COLON') }}</dfn><div class="text-sm lg:text-center"><a class="btn-primary-outline relative inline-flex overflow-hidden transition-all duration-300 justify-center" href="{{ post.ISO_URL }}">{{ post.COUNT }}</a></div></td>
+									<td class="p-3"><dfn>{{ lang('VLA_ENDS') }}{{ lang('COLON') }}</dfn><div class="text-sm lg:text-center text-nowrap">{{ post.VLA_END }}</div></td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="flex justify-end border-t p-3">
+			<button class="btn-primary relative flex overflow-hidden transition-all duration-300 items-center gap-2" type="submit">
+				<i class="iconify" data-mode="style" data-icon="ph:paper-plane-tilt" data-width="18" data-height="18" aria-hidden="true"></i>
+				{{ lang('PM_SELECTED') }}
+			</button>
+		</div>
+	</form>
+</section>
+
+{% include 'overall_footer.html' %}

@@ -1,0 +1,7 @@
+<div class="grid md:grid-cols-3 gap-3 pt-3"><span class="md:text-end font-medium">{L_WIKI_PAGE}{L_COLON}</span><span class="md:col-span-2"><a href="{WIKI_URL}">{WIKI_NAME}</a></span></div>
+{% if S_MEMBER_VLA %}
+	<div class="grid md:grid-cols-3 gap-3 pt-3">
+		<span class="md:text-end font-medium">V/LA{L_COLON}</span>
+		<span class="md:col-span-2 inline-flex items-center gap-1 text-amber-300"><i class="iconify" data-mode="style" data-icon="ph:airplane-tilt" data-width="16" data-height="16" aria-hidden="true"></i>{S_MEMBER_VLA_UNTIL}</span>
+	</div>
+{% endif %}

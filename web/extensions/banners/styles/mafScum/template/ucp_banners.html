@@ -1,0 +1,57 @@
+<!-- INCLUDE ucp_header.html -->
+
+<h2 class="leading-6">{L_UCP_BANNERS}</h2>
+
+<div class="card p-0 overflow-hidden mt-4">
+	<div class="p-4 border-b"><p class="text-sm text-secondary">{L_UCP_BANNERS_INTRO}</p></div>
+
+	<!-- IF S_HAS_AVAILABLE -->
+		<div class="overflow-auto">
+			<div class="min-w-full inline-block align-middle">
+				<div class="border border-gray-200 rounded-lg overflow-hidden">
+					<table class="min-w-full">
+						<thead class="bg-slate-50 border-b">
+							<tr>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase">{L_UCP_BANNERS_SLOT}</th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase">{L_UCP_BANNERS_PREVIEW}</th>
+								<th scope="col" class="p-3 text-start text-xs font-medium text-secondary uppercase">{L_UCP_BANNERS_NAME}</th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase">{L_UCP_BANNERS_ORDER}</th>
+								<th scope="col" class="p-3 text-xs font-medium text-secondary uppercase">{L_UCP_BANNERS_REMOVE}</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y">
+							<!-- BEGIN equipped -->
+								<tr class="divide-y">
+									<td class="p-3"><dfn>{L_UCP_BANNERS_SLOT}{L_COLON}</dfn><div class="text-sm lg:text-center">{equipped.SLOT}</div></td>
+									<td class="p-3"><dfn>{L_UCP_BANNERS_PREVIEW}{L_COLON}</dfn><div class="flex justify-center"><img class="max-h-8 w-auto" src="{equipped.BANNER_URL}" alt="{equipped.BANNER_NAME}"></div></td>
+									<td class="p-3"><dfn>{L_UCP_BANNERS_NAME}{L_COLON}</dfn><div class="text-sm font-semibold">{equipped.BANNER_NAME}</div></td>
+									<td class="p-3"><dfn>{L_UCP_BANNERS_ORDER}{L_COLON}</dfn><div class="flex justify-center gap-1">
+										<!-- IF not equipped.IS_FIRST --><form method="post" action="{U_ACTION}"><input type="hidden" name="action" value="move_up"><input type="hidden" name="banner_id" value="{equipped.BANNER_ID}"><button type="submit" name="submit" value="1" class="btn-primary-outline relative flex overflow-hidden transition-all duration-300" title="{L_UCP_BANNERS_MOVE_UP}"><i class="iconify" data-mode="style" data-icon="ph:arrow-up" data-width="16" data-height="16" aria-hidden="true"></i><span class="sr-only">{L_UCP_BANNERS_MOVE_UP}</span></button>{S_FORM_TOKEN}</form><!-- ENDIF -->
+										<!-- IF not equipped.IS_LAST --><form method="post" action="{U_ACTION}"><input type="hidden" name="action" value="move_down"><input type="hidden" name="banner_id" value="{equipped.BANNER_ID}"><button type="submit" name="submit" value="1" class="btn-primary-outline relative flex overflow-hidden transition-all duration-300" title="{L_UCP_BANNERS_MOVE_DOWN}"><i class="iconify" data-mode="style" data-icon="ph:arrow-down" data-width="16" data-height="16" aria-hidden="true"></i><span class="sr-only">{L_UCP_BANNERS_MOVE_DOWN}</span></button>{S_FORM_TOKEN}</form><!-- ENDIF -->
+									</div></td>
+									<td class="p-3"><dfn>{L_UCP_BANNERS_REMOVE}{L_COLON}</dfn><div class="flex justify-center"><form method="post" action="{U_ACTION}"><input type="hidden" name="action" value="remove"><input type="hidden" name="banner_id" value="{equipped.BANNER_ID}"><button type="submit" name="submit" value="1" class="btn-primary-outline relative flex overflow-hidden transition-all duration-300" title="{L_UCP_BANNERS_REMOVE}"><i class="iconify" data-mode="style" data-icon="ph:trash" data-width="16" data-height="16" aria-hidden="true"></i><span class="sr-only">{L_UCP_BANNERS_REMOVE}</span></button>{S_FORM_TOKEN}</form></div></td>
+								</tr>
+							<!-- BEGINELSE -->
+								<tr><td colspan="5" class="p-4 text-center text-sm text-secondary">{L_UCP_BANNERS_NONE_EQUIPPED}</td></tr>
+							<!-- END equipped -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- IF S_CAN_ADD -->
+			<form method="post" action="{U_ACTION}" class="flex max-md:flex-col gap-2 p-4 border-t">
+				<input type="hidden" name="action" value="add">
+				<select class="inputbox grow" name="banner_id"><!-- BEGIN unequipped --><option value="{unequipped.BANNER_ID}">{unequipped.BANNER_NAME}</option><!-- END unequipped --></select>
+				<button type="submit" name="submit" value="1" class="btn-primary relative flex overflow-hidden transition-all duration-300 justify-center">{L_UCP_BANNERS_ADD}</button>
+				{S_FORM_TOKEN}
+			</form>
+		<!-- ELSEIF S_AT_LIMIT -->
+			<div class="p-4 border-t text-sm text-secondary">{L_UCP_BANNERS_LIMIT_REACHED}</div>
+		<!-- ENDIF -->
+	<!-- ELSE -->
+		<div class="flex items-center gap-2 text-sm text-secondary p-4" role="status"><i class="iconify" data-mode="style" data-icon="ph:image" data-width="18" data-height="18" aria-hidden="true"></i>{L_UCP_BANNERS_NONE_AVAILABLE}</div>
+	<!-- ENDIF -->
+</div>
+
+<!-- INCLUDE ucp_footer.html -->
