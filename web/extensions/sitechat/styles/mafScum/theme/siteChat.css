@@ -1,5 +1,5 @@
 /* mafScum site chat */
-#chatPanel{position:fixed;right:1rem;bottom:1rem;z-index:1000;display:flex;flex-direction:row-reverse;align-items:flex-end;gap:.5rem;color:#e5e5e5;font:14px/1.4 system-ui,sans-serif}
+#chatPanel{position:fixed;right:1rem;bottom:1rem;z-index:1000;display:flex;flex-direction:row-reverse;flex-wrap:wrap;align-items:flex-end;justify-content:flex-start;max-width:calc(100vw - 2rem);gap:.5rem;color:#e5e5e5;font:14px/1.4 system-ui,sans-serif}
 #chatPanel *{box-sizing:border-box}
 #chatPanel .chatWindow{float:none;position:relative}
 #chatPanel .chatWindow.collapsed{width:3.5rem;height:3.5rem}
@@ -17,6 +17,16 @@
 #chatPanel #utilitywindow.expanded .title .exclamation{display:grid;place-items:center;width:1.1rem;height:1.1rem;margin-left:.45rem;border-radius:50%;background:rgba(var(--color-primary),1);color:#fff;font-size:.7rem;line-height:1}
 #chatPanel #utilitywindow.expanded .title .exclamation.hidden{display:none!important}
 #chatPanel #utilitywindow.expanded .title,#chatPanel .conversation.expanded .title{height:2.75rem;padding:.75rem 1rem;background:#1d1d1d;border-bottom:1px solid #333;color:#f5f5f5;font-weight:700;cursor:pointer}
+#chatPanel .conversation.expanded{width:min(20rem,calc(100vw - 2rem));height:26rem}
+#chatPanel .conversation.expanded .title{display:flex;align-items:center;gap:.5rem}
+#chatPanel .conversation.expanded .title .name{flex:1;min-width:0}
+#chatPanel .conversation.expanded .title .options{margin-left:auto;margin-right:.25rem}
+#chatPanel .conversation.expanded .title .close{float:none;padding:.15rem .35rem;border-radius:.25rem;font-size:.85rem;line-height:1}
+#chatPanel .conversation.expanded .title .close:hover{background:#333;color:#fff}
+#chatPanel .conversation.collapsed{width:min(14rem,calc(100vw - 2rem));height:2.75rem}
+#chatPanel .conversation.collapsed .title{display:flex;align-items:center;width:100%;height:100%;padding:.65rem .75rem;background:#1d1d1d;border-radius:.75rem;color:#e5e5e5;font-weight:700;cursor:pointer}
+#chatPanel .conversation.collapsed .title .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#chatPanel .conversation.collapsed .title .options,#chatPanel .conversation.collapsed .title .close{display:none}
 #chatPanel .title:hover{background:#262626}
 #chatPanel .title.blink{animation:mafscum-chat-blink .9s ease-in-out infinite alternate}
 @keyframes mafscum-chat-blink{to{background:rgba(var(--color-primary),.8);border-color:rgba(var(--color-primary),1)}}
@@ -52,20 +62,13 @@
 #chatPanel .emojiPicker .emoji{display:inline-grid;place-items:center;width:2.2rem;height:2.2rem;cursor:pointer;border-radius:.3rem}
 #chatPanel .emojiPicker .emoji:hover{background:rgba(var(--color-primary),.18)}
 
-#chatPanel #chattabs{display:flex;gap:.25rem;margin:0;padding:.5rem .5rem 0;overflow-x:auto;list-style:none;background:#1d1d1d}
+#chatPanel #chattabs{display:flex;gap:.25rem;margin:0;padding:.5rem .5rem 0;list-style:none;background:#1d1d1d}
 #chatPanel ul li.tab{list-style:none}
 #chatPanel ul li.tab a{display:block;padding:.4rem .6rem;color:#a3a3a3;text-decoration:none;font-size:.75rem;font-weight:700;text-transform:uppercase;border-radius:.35rem .35rem 0 0}
-#chatPanel ul li.conversation-tab{flex:none}
-#chatPanel ul li.conversation-tab a{max-width:9rem;overflow:hidden;text-overflow:ellipsis;text-transform:none;white-space:nowrap}
 #chatPanel ul li.tab.active a,#chatPanel ul li.tab a:hover{color:#fff;background:#292929}
 #chatPanel .tab_content{height:calc(100% - 5.5rem);overflow:auto;background:#111}
 #chatPanel #utilitywindow.expanded .tab_content{height:calc(100% - 5.5rem)}
 #chatPanel #utilitywindow.expanded .outputBuffer{height:auto}
-#chatPanel #utilitywindow .embedded-conversation{flex-direction:column;padding:0;overflow:hidden}
-#chatPanel #utilitywindow .embedded-conversation .conversationToolbar{display:flex;align-items:center;min-height:2.5rem;padding:.65rem .75rem;background:#1d1d1d;border-bottom:1px solid #333;color:#f5f5f5;font-weight:700}
-#chatPanel #utilitywindow .embedded-conversation .conversationToolbar .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#chatPanel #utilitywindow .embedded-conversation .conversationToolbar .close{padding:0 .25rem;color:#a3a3a3;cursor:pointer}
-#chatPanel #utilitywindow .embedded-conversation .outputBuffer{display:block;flex:1;min-height:0;height:auto;padding:.6rem;overflow:auto;background:#111}
 #chatPanel #onlinelisttitle,.chatWindow .roomtitle{margin:0;padding:.55rem .75rem;background:#1d1d1d;border-bottom:1px solid #333;font-size:.8rem;font-weight:700}
 #chatPanel #onlinelistcontainer,#chatPanel #roomstab,#chatPanel #settingstab{height:100%;overflow:auto}
 #chatPanel #onlinelist,#chatPanel .userlist{margin:0;padding:0;list-style:none}

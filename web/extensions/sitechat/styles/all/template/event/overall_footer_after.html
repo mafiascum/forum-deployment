@@ -1,5 +1,4 @@
 <script>
-window.siteChatEmbedConversations = {% if T_THEME_NAME == 'mafScum' %}true{% else %}false{% endif %};
 $(document).ready(function(){
 	siteChat.setup("{{ SESSION_ID }}", {{ S_USER_ID }}, {{ !!S_LOBBY }},
 			"{{ SITE_CHAT_URL }}", "{{ SITE_CHAT_PROTOCOL }}", "{{ ROOT_PATH }}",
