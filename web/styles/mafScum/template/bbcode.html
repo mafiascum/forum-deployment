@@ -22,6 +22,10 @@
 	<div>
 		<xsl:if test="@author">
 			<cite>
+				<span class="quote-attribution">
+				<xsl:if test="@post_url and @post_num">
+					<a href="{@post_url}" data-post-id="{@post_id}" onclick="if(document.getElementById(hash.substr(1)))href=hash"><xsl:text>In #</xsl:text><xsl:value-of select="@post_num"/></a><xsl:text>, </xsl:text>
+				</xsl:if>
 				<xsl:choose>
 					<xsl:when test="@url">
 						<a href="{@url}" class="postlink"><xsl:value-of select="@author"/></a>
@@ -36,7 +40,7 @@
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="$L_WROTE"/>
 				<xsl:value-of select="$L_COLON"/>
-				<xsl:if test="@post_url">
+				<xsl:if test="@post_url and not(@post_num)">
 					<xsl:text> </xsl:text>
 					<a href="{@post_url}" data-post-id="{@post_id}" onclick="if(document.getElementById(hash.substr(1)))href=hash">&#8593;</a>
 				</xsl:if>
@@ -44,6 +48,7 @@
 					<xsl:text> </xsl:text>
 					<a href="{@msg_url}" data-msg-id="{@msg_id}">&#8593;</a>
 				</xsl:if>
+				</span>
 				<xsl:if test="@date">
 					<span class="responsive-hide"><xsl:value-of select="@date"/></span>
 				</xsl:if>

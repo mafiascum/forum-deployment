@@ -66,6 +66,7 @@ blockquote{background-color:#141414;border-color:#262626}
 blockquote>div>blockquote{background-color:#0a0a0a}
 blockquote>div>blockquote>div>blockquote{background-color:#141414}
 blockquote cite{border-color:#262626}
+blockquote cite .quote-attribution{margin-inline-start:0;font-size:inherit;line-height:inherit;color:inherit}
 
 /* content / code */
 .content .codebox p{background-color:#141414;border-color:#262626}
