@@ -164,18 +164,7 @@
 											<!-- ENDIF -->
 										</div>
 
-										<div class="flex max-lg:flex-col max-lg:gap-2 max-md:w-full md:border-0 border rounded-lg{% if not searchresults.TOPIC_REPLIES and not searchresults.TOPIC_VIEWS %} max-md:hidden{% endif %}">
-          									<div class="lg:flex grid grid-cols-2 md:p-0 p-1.5 max-md:divide-x divide-gray-200">
-          										<div class="topics font-medium text-sm max-md:flex items-center gap-2 lg:w-20 justify-center">
-													{searchresults.TOPIC_REPLIES}
-													<div class="text-secondary md:text-xs md:mt-0.5">{L_REPLIES}</div>
-												</div>
-												<div class="posts font-medium text-sm max-md:flex items-center gap-2 lg:w-20 justify-center">
-													{searchresults.TOPIC_VIEWS}
-													<div class="text-secondary md:text-xs md:mt-0.5">{L_VIEWS}</div>
-												</div>
-											</div>
-
+										<div class="max-md:w-full">
 											<div class="lastpost text-sm max-lg:pt-2 font-medium max-lg:border-t sm:w-52 w-full max-md:hidden">
 												{L_POST_BY_AUTHOR} <!-- EVENT search_results_last_post_author_username_prepend -->{searchresults.LAST_POST_AUTHOR_FULL}<!-- EVENT search_results_last_post_author_username_append -->
 												{% if not S_IS_BOT and searchresults.U_LAST_POST %}
@@ -229,8 +218,6 @@
 							<div><span class="text-secondary">{L_FORUM}{L_COLON}</span> <a href="{searchresults.U_VIEW_FORUM}">{searchresults.FORUM_TITLE}</a></div>
 							<div><span class="text-secondary">{L_TOPIC}{L_COLON}</span> <a href="{searchresults.U_VIEW_TOPIC}">{searchresults.TOPIC_TITLE}</a></div>
 							<!-- EVENT search_results_topic_title_after -->
-							<div><span class="text-secondary">{L_REPLIES}{L_COLON}</span> <strong>{searchresults.TOPIC_REPLIES}</strong></div>
-							<div><span class="text-secondary">{L_VIEWS}{L_COLON}</span> <strong>{searchresults.TOPIC_VIEWS}</strong></div>
 						</div>
 						<!-- EVENT search_results_postprofile_after -->
 					</div>
