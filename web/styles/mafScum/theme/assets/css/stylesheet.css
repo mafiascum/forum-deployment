@@ -151,3 +151,5 @@ select option:checked,select option:hover{color:#fff}
 #phpbb_alert .alert_text{max-height:10rem;overflow:auto;font-size:.75rem;line-height:1.25rem}
 #page-footer .footer-row:has(.footer-info){max-height:10rem;overflow:auto;font-size:.75rem;line-height:1.25rem}
 @media (max-width:767px){.post-actions{position:absolute;top:.75rem;right:.75rem;flex-grow:0;z-index:10}.post-header-row{justify-content:flex-start}.profile-banner{display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;margin-top:.125rem}.profile-banner br{display:none}.profile-banner img{max-height:14px;width:auto}.pagination nav>.active+a[role="button"]:not([rel]),.pagination nav>a[role="button"]:not([rel]):has(+ .active){display:none}}
+
+.unread,.unread .iconify,.topic-icon[class*=unread] .iconify,.row-title[class*=unread] .forum_icon .iconify{color:rgba(var(--color-primary),1)}
