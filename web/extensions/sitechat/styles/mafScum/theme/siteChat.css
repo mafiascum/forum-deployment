@@ -47,7 +47,7 @@
 #chatPanel .outputBuffer .message{clear:both;min-height:2.5rem;margin:.45rem 0;padding:0 0 .45rem;border-bottom:1px solid #262626}
 #chatPanel .outputBuffer .message.ignored{display:none}
 #chatPanel .outputBuffer .message .profile,#chatPanel .outputBuffer .message .avatar-container{float:left;width:2rem;height:2rem;margin-right:.5rem}
-#chatPanel .outputBuffer .message .profile img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+#chatPanel .outputBuffer .message .profile img{width:100%;height:100%;border-radius:.5rem;object-fit:cover}
 #chatPanel .outputBuffer .messagecontent{overflow:hidden;overflow-wrap:anywhere;font-size:.82rem}
 #chatPanel .messageUserName{font-weight:700;color:rgba(var(--color-primary),1)}
 #chatPanel .messageTimestamp{margin-left:.35rem;color:#737373;font-size:.72rem}
