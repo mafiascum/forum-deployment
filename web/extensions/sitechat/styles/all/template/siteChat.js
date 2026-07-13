@@ -166,6 +166,19 @@ var siteChat = (function() {
 		+	'</div>'
 	);
 
+	siteChat.embeddedConversationTabTemplate = Handlebars.compile(
+		'<li id="tab{{tabId}}" data-tab-id="{{tabId}}" class="tab conversation-tab"><a href="#utilitywindow-{{tabId}}">{{title}}</a></li>'
+	);
+
+	siteChat.embeddedConversationTemplate = Handlebars.compile(
+		'<div class="chatWindow conversation embedded-conversation tab_content" data-tab-id="{{tabId}}" data-key="{{key}}" {{#if conversationId}}data-conversation-id="{{conversationId}}" {{/if}} {{#if recipientUserId}}data-recipient-user-id="{{recipientUserId}}" {{/if}} id="chat{{idPrefix}}{{uniqueIdentifier}}">'
+		+	'<div class="conversationToolbar title"><div class="name dynamic-color" {{#if isUser}}style="{{userColor}}"{{/if}}>{{#if isUser}}<span id="span{{idPrefix}}{{uniqueIdentifier}}" class="onlineindicator titlemarker {{activeClass}}" data-recipient-user-id="{{recipientUserId}}"></span> {{/if}}{{title}}</div><div class="options"></div><div class="close">X</div></div>'
+		+	'<div class="menu"><ul></ul></div>'
+		+	'<div class="outputBuffer"><a href="#" class="loadMore">Load More Messages</a><div class="messages"></div></div>'
+		+	'<div class="inputBufferContainer"><textarea class="inputBuffer" name="input" style="height:20px;"></textarea><div class="emojiIcon">😀</div><div class="emojiPicker hidden"></div></div>'
+		+'</div>'
+	);
+
 	siteChat.utilityWindowTemplate = Handlebars.compile(
 			'<div class="chatWindow {{windowStateClass}}" id="utilitywindow">'
 		+	'	<div class="chatWindowOuter">'
@@ -511,6 +524,12 @@ var siteChat = (function() {
 		var $emojiPicker = $window.find(".emojiPicker");
 		var chatWindow = siteChat.chatWindows[ siteChat.getWindowMapKeyFromDomObject($window) ];
 
+		if($window.hasClass("embedded-conversation")) {
+			if(chatWindow)
+				chatWindow.stopBlinking();
+			return;
+		}
+
 		if (chatWindow)
 			chatWindow.stopBlinking();
 		$title.removeClass("backgroundColorTransition");
@@ -550,6 +569,7 @@ var siteChat = (function() {
 		var recipientUserId = $window.data("recipient-user-id");
 		var uniqueIdentifier = conversationId != null ? parseInt(conversationId) : parseInt(recipientUserId);
 		var windowKey = (conversationId != null ? "C" : "P") + uniqueIdentifier;
+		var tabId = $window.data("tab-id");
 
 		if(conversationId != null) {
 			var siteChatPacket = {
@@ -561,6 +581,15 @@ var siteChat = (function() {
 
 		//Remove window from DOM
 		$window.remove();
+		if(tabId) {
+			$("#tab" + tabId).remove();
+			siteChat.tabs = siteChat.tabs.filter(function(tab) { return tab.id != tabId; });
+			if(siteChat.selectedTab == tabId) {
+				siteChat.selectedTab = 1;
+				siteChat.setActiveTab(1);
+				siteChat.setLocalStorage('selectedTab', 1);
+			}
+		}
 
 		var conversation = siteChat.chatWindows[ windowKey ];
 		if(conversation) {
@@ -729,7 +758,7 @@ var siteChat = (function() {
 			online = siteChat.isUserOnline(siteChatUser.id);
 		}
 
-		$("#chatPanel").append(this.chatWindowTemplate({
+		var chatWindowData = {
 			idPrefix: chatWindowIdPrefix,
 			isUser: isUser,
 			uniqueIdentifier: chatWindowUniqueIdentifier,
@@ -739,7 +768,18 @@ var siteChat = (function() {
 			key: chatWindowIdPrefix + chatWindowUniqueIdentifier,
 			activeClass : online ? (active ? "active" : "idle") : "offline" ,
 			userColor : userColor
-		}));
+		};
+		var embedded = window.siteChatEmbedConversations === true;
+
+		if(embedded) {
+			chatWindowData.tabId = "conversation-" + chatWindowIdPrefix + chatWindowUniqueIdentifier;
+			$("#chattabs .clear").before(this.embeddedConversationTabTemplate(chatWindowData));
+			$("#utilitywindow .chatWindowInner").append(this.embeddedConversationTemplate(chatWindowData));
+			siteChat.tabs.push({id: chatWindowData.tabId});
+		}
+		else {
+			$("#chatPanel").append(this.chatWindowTemplate(chatWindowData));
+		}
 
 		var $chatWindow = $("#chat" + chatWindowIdPrefix + chatWindowUniqueIdentifier);
 		var $inputBuffer = $chatWindow.find(".inputBuffer");
@@ -770,12 +810,14 @@ var siteChat = (function() {
 		);
 
 		$chatWindow.windowObject = chatWindow;
-		$chatWindow.width(chatWindow.width);
-		$outputBuffer.height(chatWindow.height);
+		if(!embedded) {
+			$chatWindow.width(chatWindow.width);
+			$outputBuffer.height(chatWindow.height);
+		}
 
-		if(chatWindow.expanded)
+		if(!embedded && chatWindow.expanded)
 			$chatWindow.addClass("expanded").removeClass("collapsed");
-		else
+		else if(!embedded)
 			$chatWindow.addClass("collapsed").removeClass("expanded");
 
 		if(siteChat.userId != createdByUserId)
@@ -791,6 +833,10 @@ var siteChat = (function() {
 			chatWindow.startBlinking();
 		
 		if(save) {
+			if(embedded && focus) {
+				siteChat.setActiveTab(chatWindowData.tabId);
+				siteChat.setLocalStorage('selectedTab', chatWindowData.tabId);
+			}
 			if(focus)
 				$inputBuffer.focus();
 			chatWindow.save();
@@ -1226,7 +1272,8 @@ var siteChat = (function() {
 
 	siteChat.setActiveTab = function(id) {
 		$('#tab' + id).addClass('active');
-		$($('#tab' + id).children('a').attr('href')).css('display','block');
+		var $activeContent = $($('#tab' + id).children('a').attr('href'));
+		$activeContent.css('display', $activeContent.hasClass('embedded-conversation') ? 'flex' : 'block');
 		for (var i= 0; i < siteChat.tabs.length; i++){
 			if(id != siteChat.tabs[i].id){
 				$($('#tab' + siteChat.tabs[i].id).children('a').attr('href')).css('display','none');
@@ -1246,9 +1293,11 @@ var siteChat = (function() {
 		$("#utilitywindow .inputBuffer").bind("keypress", siteChat.handleWindowInputSubmission);
 		$("#onlinelisttitle").bind('click', this.onlinelistexpand);
 
-		$('#tab0, #tab1, #tab2').bind('click', function() {
-			siteChat.setActiveTab(Number($(this).data("tab-id")));
-			siteChat.setLocalStorage('selectedTab', Number($(this).data("tab-id")));
+		$(document).on('click', '#chattabs .tab', function() {
+			var tabId = $(this).data("tab-id");
+			siteChat.selectedTab = tabId;
+			siteChat.setActiveTab(tabId);
+			siteChat.setLocalStorage('selectedTab', tabId);
 			return false;
 		});
 	};
@@ -1966,4 +2015,3 @@ var siteChat = (function() {
 
 	return siteChat;
 })();
-

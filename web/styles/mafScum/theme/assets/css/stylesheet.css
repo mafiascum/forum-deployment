@@ -106,6 +106,9 @@ select option:checked,select option:hover{color:#fff}
 .pagination{max-width:100%;overflow-x:auto}
 .pagination .active{text-decoration-line:underline;text-decoration-color:rgba(var(--color-primary),1);text-decoration-thickness:2px;text-underline-offset:3px}
 
+/* Keep the controls following a topic in the same column as its posts. */
+body.section-viewtopic .action-bar.bar-bottom,body.section-viewtopic .actions-jump{width:100%;max-width:68rem;margin-left:auto;margin-right:auto}
+
 @media (hover:hover){#user-menu [data-tooltip]:hover:after{content:attr(data-tooltip);position:absolute;top:calc(100% + .35rem);left:50%;z-index:30;transform:translateX(-50%);border:1px solid #333;border-radius:.375rem;background:#1d1d1d;padding:.3rem .5rem;color:#e5e5e5;font-size:.75rem;font-weight:500;white-space:nowrap;box-shadow:0 6px 16px #0006;pointer-events:none}}
 
 /* ger/modernquote (multi-quote) — zeina-flavored styling. */

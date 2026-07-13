@@ -463,6 +463,10 @@ class main_listener implements EventSubscriberInterface
 		$event['rowset'] = $rowset;
 	}
 
+	public function restore_isolation_topic_data($event)
+	{
+	}
+
 	function viewtopic_before_f_read_check($event) {
 		global $config;
 
