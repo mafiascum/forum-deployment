@@ -69,7 +69,7 @@ RUN mkdir -p /opt/mafiascum/scripts
 # Change this to change the version
 ENV PHPBB_MAJOR_VERSION=3
 ENV PHPBB_MINOR_VERSION=3
-ENV PHPBB_PATCH_VERSION=14
+ENV PHPBB_PATCH_VERSION=19
 
 # copy legacy sites
 COPY www /opt/mafiascum/www
